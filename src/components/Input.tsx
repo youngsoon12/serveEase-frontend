@@ -9,6 +9,7 @@ interface InputProps {
   label?: string;
   className?: string;
   value?: string;
+  name?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -20,6 +21,7 @@ export default function Input({
   className = '',
   value,
   onChange,
+  name,
 }: InputProps) {
   const autoId = useId();
   const inputId = id || autoId;
@@ -35,6 +37,8 @@ export default function Input({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        className={className}
+        name={name}
       />
     </div>
   );

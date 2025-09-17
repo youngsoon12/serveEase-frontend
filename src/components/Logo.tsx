@@ -12,7 +12,7 @@ export default function Logo({
   const sizeClasses = {
     sm: 'text-xl',
     md: 'text-page-title',
-    lg: 'text-4xl',
+    lg: 'text-5xl',
   };
   const colorClasses = {
     default: 'text-white',
