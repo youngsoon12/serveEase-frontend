@@ -2,8 +2,14 @@ import { Button as UIButton } from '@/components/ui/button';
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: string;
-  size?: string;
+  variant?:
+    | 'default'
+    | 'secondary'
+    | 'destructive'
+    | 'link'
+    | 'outline'
+    | 'ghost';
+  size?: 'default' | 'sm' | 'lg';
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
@@ -19,8 +25,8 @@ export default function Button({
 }: ButtonProps) {
   return (
     <UIButton
-      // variant={variant}
-      // size={size}
+      variant={variant}
+      size={size}
       onClick={onClick}
       disabled={disabled}
       className={className}
