@@ -10,7 +10,7 @@ export default function BackButton() {
     <Button
       type="button"
       variant={'ghost'}
-      className="w-14"
+      className="w-14 hover:bg-gray-300"
       onClick={() => router.back()}
       aria-label="뒤로가기"
     >
