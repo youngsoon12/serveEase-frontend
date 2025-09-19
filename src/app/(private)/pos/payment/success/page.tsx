@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import { Check, CreditCard, Clock, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 // 토스 결제 응답 타입 정의
 interface PaymentData {
@@ -27,12 +27,6 @@ const paymentData: PaymentData = {
 };
 
 export default function PaymentSuccessPage() {
-  const router = useRouter();
-
-  const handleBackToTables = () => {
-    router.push('/pos/tables');
-  };
-
   return (
     <div className="flex flex-col items-center justify-center ">
       {/* 성공 아이콘 & 메시지 */}
@@ -103,8 +97,8 @@ export default function PaymentSuccessPage() {
       </Card>
 
       {/* CTA 버튼 */}
-      <Button onClick={handleBackToTables} className="w-full max-w-sm">
-        테이블 페이지로 돌아가기
+      <Button className="w-full max-w-sm">
+        <Link href={'/pos/tables'}>테이블 페이지로 돌아가기</Link>
       </Button>
 
       {/* 추가 안내 */}
