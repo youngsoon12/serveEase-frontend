@@ -1,9 +1,87 @@
+'use client';
+import Image from 'next/image';
+import { useState } from 'react';
+import Link from 'next/link';
+import Logo from '@/components/Logo';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+
 export default function Home() {
-  console.log(process.env.API_URL);
+  const [userInfo, setUserInfo] = useState({
+    id: '',
+    pwd: '',
+  });
+
+  const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
-    <div>
-      메인 페이지 입니다.
-      <h1 className="--color-header">페이지 타이틀</h1>
+    <div className="relative h-screen w-full">
+      <Image
+        src="/images/landingImg.png"
+        alt="랜딩 배경"
+        fill
+        className="object-cover"
+      />
+
+      <div className="relative z-10 flex items-center justify-center h-full">
+        {/** 왼쪽 로고 박스 */}
+        <div className="w-full h-full">
+          <div className="absolute bottom-32 left-20 z-10 ">
+            <h1 className="text-white text-3xl md:text-5xl font-bold">
+              빠르고 직관적인 매장 결제
+            </h1>
+            <Logo size="lg" color="landing" />
+          </div>
+        </div>
+
+        {/** 오른쪽 로그인 박스*/}
+        <div className="w-full flex justify-center items-center mr-5">
+          <div
+            className="w-[clamp(20rem,40vw,28rem)] h-[clamp(18rem,50vh,26rem)] flex flex-col items-center border-gray bg-white p-4 rounded-[24px]"
+            style={{ boxShadow: '0px 8px 12px rgba(0,0,0,0.25)' }}
+          >
+            <h1 className="text-black text-[40px] font-bold text-center mt-5 mb-5">
+              SERVE NOW
+            </h1>
+            <Input
+              type="text"
+              placeholder="아이디를 입력하세요"
+              className="h-12"
+              name="id"
+              onChange={handleUserInfoChange}
+            />
+            <Input
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              className="h-12"
+              name="pwd"
+              onChange={handleUserInfoChange}
+            />
+            <div className="w-full max-w-sm flex justify-end">
+              <Link href="/signup" className="self-end px-0 mt-2">
+                <Button
+                  variant="link"
+                  className="px-0 mt-2 text-[#BBBBBB] hover:text-black transition-colors"
+                >
+                  회원가입
+                </Button>
+              </Link>
+            </div>
+            <Button
+              variant="default"
+              className="w-full max-w-sm h-12 mt-2 mx-auto"
+            >
+              로그인
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
