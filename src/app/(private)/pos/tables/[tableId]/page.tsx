@@ -83,7 +83,14 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
                 RECEIVED
               </span>
             </div>
-            <Trash2 className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
+
+            <div className="flex gap-6  items-center">
+              <input
+                type="checkbox"
+                className="h-5 w-5 cursor-pointer rounded-md border border-gray-300 bg-gray-300"
+              />
+              <Trash2 className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
+            </div>
           </div>
         </div>
 
@@ -94,9 +101,9 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
               {ORDER_ITEMS.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between bg-gray-50 p-3 rounded"
+                  className="flex items-center justify-between bg-gray-50 p-4 rounded"
                 >
-                  <div className="flex-1">
+                  <div className="flex-1 pl-1">
                     <h4 className="font-medium">
                       {item.name} x {item.quantity}
                     </h4>
@@ -112,7 +119,7 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
                     <button className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300">
                       <Plus className="w-3 h-3" />
                     </button>
-                    <button className="text-red-500 hover:text-red-700 ml-2 text-sm">
+                    <button className="text-red-500 hover:text-red-700 ml-2 text-sm cursor-pointer">
                       삭제
                     </button>
                   </div>
