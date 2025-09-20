@@ -1,3 +1,5 @@
+import Header from '@/components/Header';
+
 export default function PosMenuLayout({
   children,
   modal,
@@ -7,8 +9,11 @@ export default function PosMenuLayout({
 }) {
   return (
     <>
-      <main>{children}</main>
-      {modal}
+      <div className="bg-default flex flex-col min-h-screen">
+        <Header storeName={'/'} />
+        <main>{children}</main>
+        {modal}
+      </div>
     </>
   );
 }
