@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import { Search, X } from 'lucide-react';
 import Button from '@/components/Button';
 
@@ -18,8 +19,14 @@ const mockProducts = [
     status: '품절',
   },
 ];
-// w-[70%] min-w-[760px]
-const page = () => {
+
+function page() {
+  const [searchName, setSearchName] = useState('');
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchName(e.target.value);
+  };
+
   return (
     <div className="flex flex-col  w-[clamp(760px, 70%, 1200px)]  min-w-[450px] h-full mx-auto border-1 gap-5">
       <h1 className="font-bold my-5 text-[clamp(2.25rem,5vw,3rem)]">
@@ -33,6 +40,7 @@ const page = () => {
             type="text"
             className="w-full outline-0"
             placeholder="검색어를 입력해주세요."
+            onChange={handleSearchChange}
           />
           <X />
         </div>
@@ -40,6 +48,7 @@ const page = () => {
           추가
         </Button>
       </div>
+      {/* 아이템 테이블 */}
       <table className="w-full table-fixed border-separate border-spacing-y-3">
         <colgroup>
           <col className="w-[40%]" />
@@ -70,6 +79,6 @@ const page = () => {
       </table>
     </div>
   );
-};
+}
 
 export default page;
