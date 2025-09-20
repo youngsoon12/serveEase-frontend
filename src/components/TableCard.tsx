@@ -24,7 +24,7 @@ export default function TableCard({
 }: TableCardProps) {
   return (
     <Link href={href}>
-      <Card className="h-40 w-48 relative">
+      <Card className="h-38 relative w-[clamp(2rem,20vw,12rem)]">
         <CardHeader className="">
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl">{tableNumber}</CardTitle>
