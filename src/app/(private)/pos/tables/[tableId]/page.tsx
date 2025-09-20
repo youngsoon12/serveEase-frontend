@@ -56,8 +56,8 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
         </div>
 
         {/* 메뉴 그리드 영역 */}
-        <div className="flex-1 p-4 overflow-y-auto">
-          <div className="grid grid-cols-5 gap-4 h-fit">
+        <div className="flex-1 p-5 overflow-y-auto">
+          <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 h-fit">
             {MENU_ITEMS.map((item) => (
               <MenuButton
                 key={item.id}
@@ -73,9 +73,9 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
       </div>
 
       {/* 오른쪽 주문 영역 */}
-      <div className="w-80 bg-white border-l flex flex-col h-full ">
+      <div className="w-[clamp(18rem,30vw,24rem)] shrink-0 bg-white border-l flex flex-col h-full">
         {/* 테이블 정보 */}
-        <div className="p-4 border-b flex-shrink-0">
+        <div className="p-[18px] border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <span className="text-lg font-semibold">{tableId}번 테이블</span>
@@ -132,10 +132,7 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
           </Button>
 
           <Button className="w-full bg-slate-600 h-12">
-            <span className="bg-white text-slate-600 rounded-full px-2 py-1 text-sm font-bold">
-              {'1'}
-            </span>
-            <span>nn원 결제</span>
+            <span className="font-semibold">{'10,000'}원 결제</span>
           </Button>
         </div>
       </div>
