@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Search, X } from 'lucide-react';
 import Button from '@/components/Button';
 
@@ -28,7 +29,7 @@ function page() {
   };
 
   return (
-    <div className="flex flex-col  w-[clamp(760px, 70%, 1200px)]  min-w-[450px] h-full mx-auto border-1 gap-5">
+    <div className="flex flex-col  w-[clamp(760px, 70%, 1200px)]  min-w-[450px] h-full mx-auto gap-5">
       <h1 className="font-bold my-5 text-[clamp(2.25rem,5vw,3rem)]">
         상품 관리
       </h1>
@@ -44,9 +45,11 @@ function page() {
           />
           <X />
         </div>
-        <Button variant="default" className="h-[clamp(2rem,5vh,3rem)] px-12">
-          추가
-        </Button>
+        <Link href="/pos/products/new">
+          <Button variant="default" className="h-[clamp(2rem,5vh,3rem)] px-12">
+            추가
+          </Button>
+        </Link>
       </div>
       {/* 아이템 테이블 */}
       <table className="w-full table-fixed border-separate border-spacing-y-3">
