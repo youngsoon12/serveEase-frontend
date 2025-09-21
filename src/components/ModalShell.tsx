@@ -1,24 +1,43 @@
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from '@radix-ui/react-dialog';
-import { DialogHeader } from './ui/dialog';
+'use client';
 
-export default function ModalShell() {
+import { Dialog, DialogContent, DialogTitle } from '@radix-ui/react-dialog';
+import { DialogOverlay } from './ui/dialog';
+import { useRouter } from 'next/navigation';
+import { X } from 'lucide-react';
+
+interface ModalShellProps {
+  title: string;
+  dismissible: boolean;
+  children: React.ReactNode;
+}
+
+export default function ModalShell({
+  title,
+  dismissible = true,
+  children,
+}: ModalShellProps) {
+  const router = useRouter();
+
   return (
-    <Dialog>
-      <DialogTrigger>Open</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
-        </DialogHeader>
+    <Dialog open onOpenChange={() => dismissible && router.back()}>
+      <DialogOverlay className="fixed inset-0 bg-black/60 backdrop-blur-[1px] z-50" />
+      <DialogContent className="fixed inset-0 grid place-items-center p-4 z-50">
+        <div className="w-[clamp(20rem,92vw,40rem)] rounded-2xl bg-white shadow-xl max-h-[90vh] overflow-y-auto">
+          <div className="sticky top-0 bg-white/95 px-6 py-1 flex justify-between items-center">
+            <DialogTitle className="text-2xl p-4">{title}</DialogTitle>
+            <button
+              aria-label="닫기"
+              onClick={() => router.back()}
+              className="cursor-pointer hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center"
+            >
+              <X size={23} />
+            </button>
+          </div>
+
+          <div className="pb-6 pt-2 flex flex-col justify-center items-center">
+            {children}
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
