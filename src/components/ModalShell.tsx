@@ -26,7 +26,7 @@ export default function ModalShell({
 
   const SIZE = {
     sm: 'w-[clamp(16rem,85vw,28rem)]',
-    default: 'w-[clamp(20rem,92vw,40rem)]',
+    default: 'w-[clamp(20rem,92vw,36rem)]',
   } as const;
 
   return (
