@@ -11,7 +11,7 @@ import { X } from 'lucide-react';
 
 interface ModalShellProps {
   title: string;
-  size?: 'sm' | 'default';
+  size?: 'sm' | 'default' | 'lg';
   dismissible?: boolean;
   children: React.ReactNode;
 }
@@ -26,7 +26,8 @@ export default function ModalShell({
 
   const SIZE = {
     sm: 'w-[clamp(16rem,85vw,28rem)]',
-    default: 'w-[clamp(20rem,92vw,36rem)]',
+    default: 'w-[clamp(18rem,80vw,30rem)]',
+    lg: 'w-[clamp(20rem,92vw,36rem)]',
   } as const;
 
   return (
