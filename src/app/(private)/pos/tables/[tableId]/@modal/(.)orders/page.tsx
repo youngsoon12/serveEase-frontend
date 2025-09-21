@@ -23,8 +23,8 @@ export default function OrderCheckModal() {
   );
 
   return (
-    <ModalShell title={'주문 내역'}>
-      <div className="flex flex-col w-[28rem] max-w-full">
+    <ModalShell title={'주문 내역'} size="default">
+      <div className="flex flex-col w-[21rem] max-w-full">
         {/* 주문 리스트 (스크롤 영역) */}
         <div className="max-h-[250px] overflow-y-auto scrollbar-hide">
           {ORDER_ITEMS.map((item) => (
