@@ -97,7 +97,7 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
 
         {/* 주문 내역 - 스크롤 영역 */}
         <div className="flex-1">
-          <div className="h-[450px] overflow-y-auto">
+          <div className="h-[450px] overflow-y-auto scrollbar-hide">
             <div className="p-4 space-y-3">
               {ORDER_ITEMS.map((item) => (
                 <div
