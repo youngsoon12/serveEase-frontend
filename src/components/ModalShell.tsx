@@ -1,7 +1,11 @@
 'use client';
 
-import { Dialog, DialogContent, DialogTitle } from '@radix-ui/react-dialog';
-import { DialogOverlay } from './ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogOverlay,
+} from '@radix-ui/react-dialog';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 
