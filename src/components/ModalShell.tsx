@@ -47,7 +47,7 @@ export default function ModalShell({
             </button>
           </div>
 
-          <div className="pb-7 pt-2 flex flex-col justify-center items-center">
+          <div className="pb-7  flex flex-col justify-center items-center">
             {children}
           </div>
         </div>
