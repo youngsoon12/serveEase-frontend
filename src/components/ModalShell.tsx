@@ -11,24 +11,33 @@ import { X } from 'lucide-react';
 
 interface ModalShellProps {
   title: string;
-  dismissible: boolean;
+  size?: 'sm' | 'default';
+  dismissible?: boolean;
   children: React.ReactNode;
 }
 
 export default function ModalShell({
   title,
-  dismissible = true,
+  size = 'default',
+  dismissible = false,
   children,
 }: ModalShellProps) {
   const router = useRouter();
+
+  const SIZE = {
+    sm: 'w-[clamp(16rem,85vw,28rem)]',
+    default: 'w-[clamp(20rem,92vw,40rem)]',
+  } as const;
 
   return (
     <Dialog open onOpenChange={() => dismissible && router.back()}>
       <DialogOverlay className="fixed inset-0 bg-black/60 backdrop-blur-[1px] z-50" />
       <DialogContent className="fixed inset-0 grid place-items-center p-4 z-50">
-        <div className="w-[clamp(20rem,92vw,40rem)] rounded-2xl bg-white shadow-xl max-h-[90vh] overflow-y-auto">
+        <div
+          className={`${SIZE[size]} rounded-2xl bg-white shadow-xl max-h-[90vh] overflow-y-auto`}
+        >
           <div className="sticky top-0 bg-white/95 px-6 py-1 flex justify-between items-center">
-            <DialogTitle className="text-2xl p-4">{title}</DialogTitle>
+            <DialogTitle className="text-[23px] p-6">{title}</DialogTitle>
             <button
               aria-label="닫기"
               onClick={() => router.back()}
@@ -38,7 +47,7 @@ export default function ModalShell({
             </button>
           </div>
 
-          <div className="pb-6 pt-2 flex flex-col justify-center items-center">
+          <div className="pb-7 pt-2 flex flex-col justify-center items-center">
             {children}
           </div>
         </div>
