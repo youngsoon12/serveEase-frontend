@@ -3,6 +3,7 @@
 import { Trash2, Plus, Minus } from 'lucide-react';
 import MenuButton from '@/components/MenuButton';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 interface PosMenuPageProps {
   params: { tableId: string };
@@ -96,7 +97,7 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
 
         {/* 주문 내역 - 스크롤 영역 */}
         <div className="flex-1">
-          <div className="h-[450px] overflow-y-auto">
+          <div className="h-[450px] overflow-y-auto scrollbar-hide">
             <div className="p-4 space-y-3">
               {ORDER_ITEMS.map((item) => (
                 <div
@@ -138,8 +139,10 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
             <span>주문</span>
           </Button>
 
-          <Button className="w-full bg-slate-600 h-12">
-            <span className="font-semibold">{'10,000'}원 결제</span>
+          <Button asChild className="w-full bg-slate-600 h-12">
+            <Link href={`/pos/tables/${tableId}/orders`}>
+              <span className="font-semibold">{'10,000'}원 결제</span>
+            </Link>
           </Button>
         </div>
       </div>
