@@ -18,7 +18,7 @@ export default function Header({ storeName = '매장명' }: HeaderProps) {
   return (
     <header className="h-20 bg-header text-white">
       <div className="mx-auto  h-full flex items-center justify-between px-16">
-        <Link href={'/'} aria-label="메인 홈으로 이동">
+        <Link href={'/pos'} aria-label="메인 홈으로 이동">
           <Logo />
         </Link>
         <div className="flex items-center gap-5">
