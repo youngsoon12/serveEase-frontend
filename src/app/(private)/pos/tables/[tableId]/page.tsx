@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import ConfirmModal from '@/components/ConfirmModal';
+import BackButton from '@/components/BackButton';
 
 // 임시 데이터 - 카테고리
 const categories = ['즐겨찾는 메뉴', '한식', '분식', '양식'];
@@ -57,7 +58,7 @@ export default function PosMenuPage() {
   return (
     <div className="flex h-[89vh] bg-default">
       {/* 왼쪽 메뉴 영역 */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ">
         {/* 카테고리 탭 */}
         <div className="bg-white border-b">
           <div className="flex space-x-1 p-2">
@@ -88,6 +89,9 @@ export default function PosMenuPage() {
               />
             ))}
           </div>
+        </div>
+        <div className="pb-7 pl-4">
+          <BackButton buttonStyle={'w-14'} iconStyle={'size-6'} />
         </div>
       </div>
 
