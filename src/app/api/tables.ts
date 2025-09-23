@@ -1,4 +1,6 @@
-export type TablesPage = {
+import { instance } from '@/lib/axios';
+
+export type TablesResponse = {
   content: {
     id: number;
     restaurantTableNumber: number;
@@ -13,12 +15,14 @@ export type TablesPage = {
   empty: boolean;
 };
 
-export async function getTables({ page, size = 12 }): Promise<TablesPage> {
-  const { data } = instance.get('/api/tales', {
-    params: {
-      page,
-      size,
-    },
+export const PAGE_SIZE = 12;
+
+export async function getTables(
+  page: number,
+  size = PAGE_SIZE,
+): Promise<TablesResponse> {
+  const { data } = await instance.get('/tables', {
+    params: { page, size },
   });
   return data;
 }
