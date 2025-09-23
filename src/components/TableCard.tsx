@@ -7,7 +7,7 @@ import {
   CardFooter,
 } from './ui/card';
 
-interface TableCardProps {
+export interface TableCardProps {
   tableNumber: number;
   price?: number;
   status: 'EMPTY' | 'ORDERED' | 'SERVED';
