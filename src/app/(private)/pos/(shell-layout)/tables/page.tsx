@@ -1,54 +1,17 @@
 'use client';
 
-import TableCard, { TableCardProps } from '@/components/TableCard';
-import { getTables, PAGE_SIZE, TablesResponse } from '@/app/api/tables';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import TableCard from '@/components/TableCard';
+import useTables from '@/hooks/useTables';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function TablesPage() {
-  // 현재 URL에서 페이지 번호 읽기
+  const router = useRouter();
+
   const sp = useSearchParams();
   const page = Math.max(0, Number(sp.get('page') ?? 0));
 
-  const router = useRouter();
-
-  // 데이터 및 에러 상태
-  const [data, setData] = useState<TablesResponse | null>(null);
-  const [cards, setCards] = useState<TableCardProps[]>([]);
-  const [noticeText, setNoticeText] = useState<string | null>(null);
-
-  useEffect(() => {
-    getTables(page, PAGE_SIZE)
-      .then((res) => {
-        setData(res);
-        setCards(
-          res.content.map((item) => ({
-            tableNumber: item.restaurantTableNumber,
-            status:
-              item.status === 'EMPTY'
-                ? 'EMPTY'
-                : item.status === 'SERVED'
-                ? 'SERVED'
-                : 'ORDERED',
-            href: `/pos/tables/${item.restaurantTableNumber}`,
-          })),
-        );
-
-        console.log('[API] tables raw:', res);
-        console.log('[MAP] cards:', cards);
-      })
-      .catch((err) => {
-        const title = err?.response?.data?.title as string | undefined;
-        setNoticeText(title ?? '요청을 처리하지 못했습니다.');
-
-        console.error(
-          '[tables:error]',
-          err?.response?.status,
-          err?.response?.data,
-        );
-      });
-  }, [page]);
+  const { data, cards, noticeText } = useTables(page);
 
   const pageNumber = data?.number ?? page;
 
@@ -78,7 +41,7 @@ export default function TablesPage() {
       )}
 
       {data?.empty && (
-        <div className="text-sm text-muted-foreground my-4">
+        <div className="text-lg text-muted-foreground my-4">
           등록된 테이블이 없습니다.
         </div>
       )}
