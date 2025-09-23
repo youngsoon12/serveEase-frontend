@@ -10,9 +10,13 @@ export default function TableLayout({
 }) {
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-end ">
         <Link href={'/pos/tables/setup'}>
-          <Settings size={24} strokeWidth={1.5} />
+          <Settings
+            size={24}
+            strokeWidth={1.5}
+            className="hover:text-gray-800  text-gray-500 transition-colors"
+          />
         </Link>
       </div>
       <main>{children}</main>

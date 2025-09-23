@@ -9,8 +9,8 @@ import {
 
 interface TableCardProps {
   tableNumber: number;
-  price: number;
-  status: 'using' | 'empty';
+  price?: number;
+  status: 'EMPTY' | 'ORDERED' | 'SERVED';
   href: string;
   menuItems?: string[];
 }
@@ -22,6 +22,12 @@ export default function TableCard({
   href,
   menuItems,
 }: TableCardProps) {
+  const BADGE_TABLE: Record<'EMPTY' | 'ORDERED' | 'SERVED', string> = {
+    EMPTY: 'bg-gray-300 text-gray-800',
+    ORDERED: 'bg-amber-500 ',
+    SERVED: 'bg-green-600',
+  };
+
   return (
     <Link href={href}>
       <Card className="h-38 relative w-[clamp(2rem,20vw,12rem)]">
@@ -29,9 +35,7 @@ export default function TableCard({
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl">{tableNumber}</CardTitle>
             <span
-              className={`px-2 py-1 rounded text-xs ${
-                status === 'empty' ? 'bg-gray-300' : 'bg-green text-white'
-              }`}
+              className={`px-2 py-1 rounded text-[10px] text-white ${BADGE_TABLE[status]}`}
             >
               {status}
             </span>
@@ -51,10 +55,10 @@ export default function TableCard({
           )}
         </CardContent>
 
-        {status === 'using' && (
+        {status !== 'EMPTY' && (
           <CardFooter className="absolute bottom-4 right-5 p-0">
             <p className="truncate font-semibold text-lg">
-              {price.toLocaleString()}
+              {price?.toLocaleString()}
             </p>
           </CardFooter>
         )}

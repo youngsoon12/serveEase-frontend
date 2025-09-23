@@ -4,10 +4,10 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 import MenuButton from '@/components/MenuButton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-
-interface PosMenuPageProps {
-  params: { tableId: string };
-}
+import { useState } from 'react';
+import { useParams } from 'next/navigation';
+import ConfirmModal from '@/components/ConfirmModal';
+import BackButton from '@/components/BackButton';
 
 // 임시 데이터 - 카테고리
 const categories = ['즐겨찾는 메뉴', '한식', '분식', '양식'];
@@ -33,13 +33,32 @@ const ORDER_ITEMS = [
   { id: 8, name: '돈까스', price: 13000, quantity: 1 },
 ];
 
-export default function PosMenuPage({ params }: PosMenuPageProps) {
-  const { tableId } = params;
+type ModalType = 'trash' | 'cancel';
+
+const MODAL = {
+  trash: {
+    title: '담아둔 메뉴를 모두 삭제할까요?',
+    description: '주문 내역에 담아둔 항목이 모두 지워집니다.',
+    confirmText: '전체 삭제',
+  },
+  cancel: {
+    title: '주문을 취소하시겠습니까?',
+    description: '기존 주문 내역이 모두 취소됩니다.',
+    confirmText: '주문 취소',
+  },
+} as const;
+
+export default function PosMenuPage() {
+  const { tableId } = useParams<{ tableId: string }>();
+  const [modal, setModal] = useState<ModalType | null>(null);
+
+  const open = (type: ModalType) => setModal(type);
+  const close = () => setModal(null);
 
   return (
     <div className="flex h-[89vh] bg-default">
       {/* 왼쪽 메뉴 영역 */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ">
         {/* 카테고리 탭 */}
         <div className="bg-white border-b">
           <div className="flex space-x-1 p-2">
@@ -71,6 +90,9 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
             ))}
           </div>
         </div>
+        <div className="pb-7 pl-4">
+          <BackButton buttonStyle={'w-14'} iconStyle={'size-6'} />
+        </div>
       </div>
 
       {/* 오른쪽 주문 영역 */}
@@ -90,14 +112,20 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
                 type="checkbox"
                 className="h-5 w-5 cursor-pointer rounded-md border border-gray-300 bg-gray-300"
               />
-              <Trash2 className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
+              <Button
+                className="w-7 h-7 text-gray-400 cursor-pointer hover:text-gray-600"
+                variant={'ghost'}
+                onClick={() => open('trash')}
+              >
+                <Trash2 />
+              </Button>
             </div>
           </div>
         </div>
 
         {/* 주문 내역 - 스크롤 영역 */}
         <div className="flex-1">
-          <div className="h-[450px] overflow-y-auto scrollbar-hide">
+          <div className="h-[400px] overflow-y-auto scrollbar-hide">
             <div className="p-4 space-y-3">
               {ORDER_ITEMS.map((item) => (
                 <div
@@ -132,6 +160,18 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
 
         {/* 하단 고정 버튼 영역 */}
         <div className="p-4 border-t space-y-3 flex-shrink-0">
+          <div className="flex justify-end">
+            <div className="w-28">
+              <Button
+                variant={'link'}
+                className="w-full justify-end underline text-sm hover:text-gray-900 text-gray-400 pr-2"
+                onClick={() => open('cancel')}
+              >
+                <span>주문 취소</span>
+              </Button>
+            </div>
+          </div>
+
           <Button variant={'default'} className="w-full">
             <span className="bg-white text-blue-500 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               {'1'}
@@ -146,6 +186,16 @@ export default function PosMenuPage({ params }: PosMenuPageProps) {
           </Button>
         </div>
       </div>
+      {modal && (
+        <ConfirmModal
+          open={true}
+          onOpenChange={(o) => !o && close()}
+          {...MODAL[modal]}
+          onConfirm={() => {
+            close();
+          }}
+        />
+      )}
     </div>
   );
 }
