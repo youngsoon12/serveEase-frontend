@@ -48,7 +48,9 @@ export default function TablesPage() {
 
       {showPager && (
         <button
-          className="rounded px-3 py-1 disabled:opacity-50 mr-8 cursor-pointer"
+          type="button"
+          aria-label="이전 페이지"
+          className="rounded px-3 py-1 disabled:opacity-50 mr-8 cursor-pointer disabled:cursor-not-allowed"
           onClick={goPrev}
           disabled={isFirst}
         >
@@ -80,7 +82,9 @@ export default function TablesPage() {
 
       {showPager && (
         <button
-          className="rounded px-3 py-1 ml-8 disabled:opacity-50 cursor-pointer"
+          type="button"
+          aria-label="다음 페이지"
+          className="rounded px-3 py-1 ml-8 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           onClick={goNext}
           disabled={isLast}
         >
