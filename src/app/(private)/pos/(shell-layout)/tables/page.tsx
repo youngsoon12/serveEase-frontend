@@ -19,12 +19,8 @@ export default function TablesPage() {
   const [noticeText, setNoticeText] = useState<string | null>(null);
 
   useEffect(() => {
-    let aborted = false;
-
     getTables(page, PAGE_SIZE)
       .then((res) => {
-        if (aborted) return;
-
         setData(res);
         setCards(
           res.content.map((item) => ({
@@ -43,8 +39,6 @@ export default function TablesPage() {
         console.log('[MAP] cards:', cards);
       })
       .catch((err) => {
-        if (aborted) return;
-
         const title = err?.response?.data?.title as string | undefined;
         setNoticeText(title ?? '요청을 처리하지 못했습니다.');
 
@@ -54,17 +48,12 @@ export default function TablesPage() {
           err?.response?.data,
         );
       });
-
-    return () => {
-      aborted = true;
-    };
   }, [page]);
 
   const pageNumber = data?.number ?? page;
-  const totalPages = data?.totalPages ?? 1;
 
-  const isFirst = pageNumber <= 0;
-  const isLast = pageNumber >= totalPages - 1;
+  const isFirst = data?.first ?? true;
+  const isLast = data?.last ?? true;
 
   const showPager = (data?.totalPages ?? 0) > 1;
 
@@ -85,6 +74,12 @@ export default function TablesPage() {
       {noticeText && (
         <div className="mb-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-md text-red-800">
           {noticeText}
+        </div>
+      )}
+
+      {data?.empty && (
+        <div className="text-sm text-muted-foreground my-4">
+          등록된 테이블이 없습니다.
         </div>
       )}
 
