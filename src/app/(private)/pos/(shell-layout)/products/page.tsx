@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import useProducts from '@/hooks/useProducts';
 
-import { Search, X } from 'lucide-react';
+import { Search, X, Settings } from 'lucide-react';
 import Button from '@/components/Button';
 
 export default function Page() {
@@ -64,7 +64,12 @@ export default function Page() {
             <tr>
               <th className="px-4 py-2 text-left">상품명</th>
               <th className="px-4 py-2 text-center">가격</th>
-              <th className="px-4 py-2 text-center">카테고리</th>
+              <th className="px-4 py-2 text-center">
+                <div className="flex items-center justify-center gap-1">
+                  <span>카테고리</span>
+                  <Settings className="w-4 h-4 text-gray-700 cursor-pointer hover:text-gray-700" />
+                </div>
+              </th>
               <th className="px-4 py-2 text-center">상태</th>
             </tr>
           </thead>

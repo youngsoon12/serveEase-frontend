@@ -40,11 +40,7 @@ export default function NewProductModal() {
             className="!max-w-full w-full h-12 mb-1"
           />
 
-          <span className="text-green-600 text-sm cursor-pointer hover:underline mt-3">
-            새 카테고리 추가
-          </span>
-
-          <div className="flex items-center justify-between h-10">
+          <div className="flex items-center justify-between h-10 mt-3">
             <Label htmlFor="isActive" className="text-gray-700">
               판매 여부
             </Label>
