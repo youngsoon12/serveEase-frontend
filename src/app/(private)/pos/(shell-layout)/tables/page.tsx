@@ -1,95 +1,62 @@
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import TableCard from '@/components/TableCard';
-
-interface TableCardProps {
-  tableNumber: number;
-  price?: number;
-  status: 'EMPTY' | 'ORDERED' | 'SERVED';
-  href: string;
-  menuItems?: string[];
-}
-
-// 임시 데이터
-const mockTableCards: TableCardProps[] = [
-  {
-    tableNumber: 1,
-    status: 'EMPTY',
-    href: '/pos/tables/1',
-  },
-  {
-    tableNumber: 2,
-    price: 25000,
-    status: 'ORDERED',
-    href: '/pos/tables/2',
-    menuItems: ['김치찌개', '삼겹살 2인분'],
-  },
-  {
-    tableNumber: 3,
-    price: 18000,
-    status: 'SERVED',
-    href: '/pos/tables/3',
-    menuItems: ['된장찌개', '맥주'],
-  },
-  {
-    tableNumber: 4,
-    status: 'EMPTY',
-    href: '/pos/tables/4',
-  },
-  {
-    tableNumber: 5,
-    price: 45000,
-    status: 'ORDERED',
-    href: '/pos/tables/5',
-    menuItems: ['소고기 불고기', '막국수', '콜라'],
-  },
-  {
-    tableNumber: 6,
-    status: 'EMPTY',
-    href: '/pos/tables/6',
-  },
-  {
-    tableNumber: 7,
-    price: 12000,
-    status: 'SERVED',
-    href: '/pos/tables/7',
-    menuItems: ['비빔밥'],
-  },
-  {
-    tableNumber: 8,
-    status: 'EMPTY',
-    href: '/pos/tables/8',
-  },
-  {
-    tableNumber: 9,
-    price: 45000,
-    status: 'ORDERED',
-    href: '/pos/tables/9',
-    menuItems: ['소고기 불고기', '막국수', '콜라'],
-  },
-  {
-    tableNumber: 10,
-    status: 'EMPTY',
-    href: '/pos/tables/10',
-  },
-  {
-    tableNumber: 11,
-    price: 12000,
-    status: 'SERVED',
-    href: '/pos/tables/11',
-    menuItems: ['비빔밥'],
-  },
-  {
-    tableNumber: 12,
-    status: 'EMPTY',
-    href: '/pos/tables/12',
-  },
-];
+import useTables from '@/hooks/useTables';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function TablesPage() {
-  const filled = [...mockTableCards];
+  const router = useRouter();
+
+  const sp = useSearchParams();
+  const page = Math.max(0, Number(sp.get('page') ?? 0));
+
+  const { data, cards, noticeText } = useTables(page);
+
+  const pageNumber = data?.number ?? page;
+
+  const isFirst = data?.first ?? true;
+  const isLast = data?.last ?? true;
+
+  const showPager = (data?.totalPages ?? 0) > 1;
+
+  const goPrev = () => {
+    if (isFirst) return;
+    router.push(`?page=${pageNumber - 1}`);
+  };
+
+  const goNext = () => {
+    if (isLast) return;
+    router.push(`?page=${pageNumber + 1}`);
+  };
 
   return (
     <div className="mx-auto flex items-center justify-center h-full ">
       <h1 className="sr-only">테이블 목록</h1>
+
+      {noticeText && (
+        <div className="mb-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-md text-red-800">
+          {noticeText}
+        </div>
+      )}
+
+      {data?.empty && (
+        <div className="text-lg text-muted-foreground my-4">
+          등록된 테이블이 없습니다.
+        </div>
+      )}
+
+      {showPager && (
+        <button
+          type="button"
+          aria-label="이전 페이지"
+          className="rounded px-3 py-1 disabled:opacity-50 mr-8 cursor-pointer disabled:cursor-not-allowed"
+          onClick={goPrev}
+          disabled={isFirst}
+        >
+          <ChevronLeft />
+        </button>
+      )}
 
       <ul
         className="h-[90%]
@@ -102,7 +69,7 @@ export default function TablesPage() {
         role="list"
         aria-label="테이블 목록"
       >
-        {filled.map((t) => (
+        {cards.map((t) => (
           <li key={t.tableNumber} className="flex">
             <div className="w-full">
               <div className="aspect-[4/3]">
@@ -112,6 +79,18 @@ export default function TablesPage() {
           </li>
         ))}
       </ul>
+
+      {showPager && (
+        <button
+          type="button"
+          aria-label="다음 페이지"
+          className="rounded px-3 py-1 ml-8 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          onClick={goNext}
+          disabled={isLast}
+        >
+          <ChevronRight />
+        </button>
+      )}
     </div>
   );
 }
