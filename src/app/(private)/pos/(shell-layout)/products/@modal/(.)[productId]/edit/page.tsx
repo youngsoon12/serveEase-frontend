@@ -1,36 +1,92 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { X } from 'lucide-react';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+
+import { useCategories } from '@/hooks/useCategories';
+import { useUpdateProduct } from '@/hooks/useProducts';
+
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function EditProductModal() {
   const router = useRouter();
   const params = useParams<{ productId: string }>();
   const sp = useSearchParams();
 
-  // URL 쿼리에서 초기값 읽기 (실서비스에선 id로 재조회 권장)
   const initial = useMemo(
     () => ({
       name: sp.get('name') ?? '',
       price: sp.get('price') ?? '',
-      category: sp.get('category') ?? '',
-      status: sp.get('status') ?? '판매중',
+      categoryName: sp.get('category') ?? '',
+      // 'available'이 '판매중' | '품절'로 들어오는 페이지 구조에 맞춤
+      available: (sp.get('available') ?? '판매중') === '판매중',
     }),
     [sp],
   );
 
-  const [name, setName] = useState(initial.name);
-  const [price, setPrice] = useState(initial.price);
-  const [category, setCategory] = useState(initial.category);
-  const [isActive, setIsActive] = useState(initial.status === '판매중');
+  const [form, setForm] = useState<{
+    name: string;
+    price: string;
+    categoryId: number | null;
+    available: boolean;
+  }>({
+    name: initial.name,
+    price: initial.price,
+    categoryId: null,
+    available: initial.available,
+  });
 
-  const onSave = async () => {
-    // TODO: await api.put(`/products/${params.productId}`, { name, price: +price, category, status: isActive ? '판매중' : '품절' })
-    router.back();
+  const { data: categories, isLoading: catLoading } = useCategories();
+  const { mutate: updateProduct, isPending: saving } = useUpdateProduct();
+
+  useEffect(() => {
+    if (!categories || !initial.categoryName) return;
+    const found = categories.find(
+      (c) => c.name.trim() === initial.categoryName.trim(),
+    );
+    if (found) setForm((prev) => ({ ...prev, categoryId: found.id }));
+  }, [categories, initial.categoryName]);
+
+  const onSave = () => {
+    const id = Number(params.productId);
+    if (!Number.isFinite(id)) {
+      toast.error('잘못된 상품 ID 입니다.');
+      return;
+    }
+    if (!form.name.trim()) {
+      toast.error('상품명을 입력하세요.');
+      return;
+    }
+    const nPrice = Number(form.price);
+    if (!Number.isFinite(nPrice) || nPrice < 0) {
+      toast.error('가격을 올바르게 입력하세요.');
+      return;
+    }
+    if (!form.categoryId) {
+      toast.error('카테고리를 선택하세요.');
+      return;
+    }
+
+    updateProduct({
+      id,
+      product: {
+        name: form.name,
+        price: nPrice,
+        categoryId: form.categoryId,
+        available: form.available,
+      },
+    });
   };
 
   return (
@@ -50,54 +106,80 @@ export default function EditProductModal() {
             type="text"
             label="상품명"
             className="!max-w-full w-full h-12"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={form.name}
+            onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
           />
+
           <Input
             type="text"
             label="가격"
             className="!max-w-full w-full h-12"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-          <Input
-            type="text"
-            label="카테고리"
-            className="!max-w-full w-full h-12"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={form.price}
+            onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))}
           />
 
-          <span className="text-green-600 text-sm cursor-pointer hover:underline mt-3">
-            새 카테고리 추가
-          </span>
+          {/* 카테고리 Select */}
+          <div className="grid w-full items-center mt-3 gap-2">
+            <Label>카테고리</Label>
+            <Select
+              value={
+                form.categoryId !== null ? String(form.categoryId) : undefined
+              }
+              onValueChange={(v) =>
+                setForm((p) => ({ ...p, categoryId: Number(v) }))
+              }
+              disabled={catLoading}
+            >
+              <SelectTrigger className="!h-12 w-full">
+                <SelectValue
+                  placeholder={
+                    catLoading ? '불러오는 중…' : '카테고리를 선택하세요'
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {categories?.map((c) => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          {/* 판매 여부 (border 없이, 우측 토글) */}
+          {/* 판매 여부 토글 */}
           <div className="flex items-center justify-between h-10">
-            <Label htmlFor="isActive" className="text-gray-700">
+            <Label htmlFor="available" className="text-gray-700">
               판매 여부
             </Label>
             <button
-              id="isActive"
-              onClick={() => setIsActive(!isActive)}
+              id="available"
+              type="button"
+              aria-pressed={form.available}
+              onClick={() =>
+                setForm((p) => ({ ...p, available: !p.available }))
+              }
               className={`relative w-12 h-7 flex items-center rounded-full transition-colors duration-300 ${
-                isActive ? 'bg-green-500' : 'bg-gray-300'
+                form.available ? 'bg-green-500' : 'bg-gray-300'
               }`}
-              aria-pressed={isActive}
             >
               <div
                 className={`w-6 h-6 rounded-full bg-white shadow-md transform transition-transform duration-300 ${
-                  isActive ? 'translate-x-5' : 'translate-x-1'
+                  form.available ? 'translate-x-5' : 'translate-x-1'
                 }`}
               />
             </button>
           </div>
         </div>
 
-        {/* 저장 */}
         <div className="mt-6">
-          <Button variant="default" className="w-full h-12" onClick={onSave}>
-            저장
+          <Button
+            variant="default"
+            className="w-full h-12"
+            onClick={onSave}
+            disabled={saving}
+          >
+            {saving ? '수정 중…' : '수정'}
           </Button>
         </div>
       </div>
