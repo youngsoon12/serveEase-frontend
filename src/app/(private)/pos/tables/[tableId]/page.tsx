@@ -4,34 +4,13 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 import MenuButton from '@/components/MenuButton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import ConfirmModal from '@/components/ConfirmModal';
 import BackButton from '@/components/BackButton';
-
-// 임시 데이터 - 카테고리
-const categories = ['즐겨찾는 메뉴', '한식', '분식', '양식'];
-
-// 임시 데이터 - 메뉴 버튼
-const MENU_ITEMS = Array.from({ length: 15 }, (_, i) => ({
-  id: i + 1,
-  name: '돈까스',
-  price: 13000,
-  status: (i + 1) % 7 === 0 ? 'sold-out' : 'available',
-  category: '즐겨찾는 메뉴',
-}));
-
-// 임시 데이터 - 주문 내역
-const ORDER_ITEMS = [
-  { id: 1, name: '돈까스', price: 13000, quantity: 1 },
-  { id: 2, name: '돈까스', price: 13000, quantity: 1 },
-  { id: 3, name: '돈까스', price: 13000, quantity: 1 },
-  { id: 4, name: '돈까스', price: 13000, quantity: 1 },
-  { id: 5, name: '돈까스', price: 13000, quantity: 1 },
-  { id: 6, name: '돈까스', price: 13000, quantity: 1 },
-  { id: 7, name: '돈까스', price: 13000, quantity: 1 },
-  { id: 8, name: '돈까스', price: 13000, quantity: 1 },
-];
+import CategoryTab from '@/components/CategoryTab';
+import useMenus from '@/hooks/useMenus';
+import useOrderCart from '@/hooks/useOrderCart';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -55,39 +34,60 @@ export default function PosMenuPage() {
   const open = (type: ModalType) => setModal(type);
   const close = () => setModal(null);
 
+  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>(
+    'all',
+  );
+
+  const { data, isFetching, isError } = useMenus();
+
+  const filteredMenus = useMemo(() => {
+    if (!data) return [];
+    if (selectedCategory === 'all') return data;
+
+    return data.filter((m) => m.category === selectedCategory);
+  }, [data, selectedCategory]);
+
+  const cart = useOrderCart();
+
   return (
     <div className="flex h-[89vh] bg-default">
       {/* 왼쪽 메뉴 영역 */}
       <div className="flex-1 flex flex-col ">
         {/* 카테고리 탭 */}
         <div className="bg-white border-b">
-          <div className="flex space-x-1 p-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={
-                  'px-6 py-3 font-medium border-b-2 transition-colors '
-                }
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+          <CategoryTab
+            selected={selectedCategory}
+            onChange={setSelectedCategory}
+          />
         </div>
 
         {/* 메뉴 그리드 영역 */}
         <div className="flex-1 p-5 overflow-y-auto">
           <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 h-fit">
-            {MENU_ITEMS.map((item) => (
+            {isFetching && !data && null}
+            {isError && !data && null}
+
+            {filteredMenus.map((item) => (
               <MenuButton
                 key={item.id}
                 name={item.name}
                 price={item.price}
-                status={item.status as 'available' | 'sold-out'}
-                category={item.category}
-                onClick={() => null}
+                status={item.available ? 'available' : 'sold-out'}
+                onClick={() =>
+                  cart.addItem({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                  })
+                }
               />
             ))}
+
+            {!isFetching && filteredMenus.length === 0 && (
+              <div className="col-span-full text-gray-400">
+                해당 카테고리에 메뉴가 없습니다.
+              </div>
+            )}
           </div>
         </div>
         <div className="pb-7 pl-4">
@@ -127,9 +127,9 @@ export default function PosMenuPage() {
         <div className="flex-1">
           <div className="h-[400px] overflow-y-auto scrollbar-hide">
             <div className="p-4 space-y-3">
-              {ORDER_ITEMS.map((item) => (
+              {cart.cartItems.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.menuId}
                   className="flex items-center justify-between bg-gray-50 p-4 rounded"
                 >
                   <div className="flex-1 pl-1">
@@ -141,19 +141,34 @@ export default function PosMenuPage() {
                     </p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <button className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300">
+                    <button
+                      className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300"
+                      onClick={() => cart.decreaseQuantity(item.menuId)}
+                    >
                       <Minus className="w-3 h-3" />
                     </button>
                     <span className="w-8 text-center">{item.quantity}</span>
-                    <button className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300">
+                    <button
+                      className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300"
+                      onClick={() => cart.increaseQuantity(item.menuId)}
+                    >
                       <Plus className="w-3 h-3" />
                     </button>
-                    <button className="text-red-500 hover:text-red-700 ml-2 text-sm cursor-pointer">
+                    <button
+                      className="text-red-500 hover:text-red-700 ml-2 text-sm cursor-pointer"
+                      onClick={() => cart.removeItem(item.menuId)}
+                    >
                       삭제
                     </button>
                   </div>
                 </div>
               ))}
+
+              {cart.cartItems.length === 0 && (
+                <div className="text-gray-400 text-sm">
+                  담긴 주문이 없습니다.
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -174,14 +189,16 @@ export default function PosMenuPage() {
 
           <Button variant={'default'} className="w-full">
             <span className="bg-white text-blue-500 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-              {'1'}
+              {cart.totalCount}
             </span>
             <span>주문</span>
           </Button>
 
           <Button asChild className="w-full bg-slate-600 h-12">
             <Link href={`/pos/tables/${tableId}/orders`}>
-              <span className="font-semibold">{'10,000'}원 결제</span>
+              <span className="font-semibold">
+                {cart.totalPrice.toLocaleString()}원 결제
+              </span>
             </Link>
           </Button>
         </div>
@@ -191,8 +208,13 @@ export default function PosMenuPage() {
           open={true}
           onOpenChange={(o) => !o && close()}
           {...MODAL[modal]}
-          onConfirm={() => {
-            close();
+          onConfirm={async () => {
+            if (modal === 'trash') {
+              cart.clearCart();
+            } else if (modal === 'cancel') {
+              // cancelOrder API 호출
+              close();
+            }
           }}
         />
       )}
