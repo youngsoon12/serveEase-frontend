@@ -1,6 +1,9 @@
 'use client';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useLogin from '@/hooks/useLogin';
+
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import Input from '@/components/Input';
@@ -8,9 +11,12 @@ import Button from '@/components/Button';
 
 export default function Home() {
   const [userInfo, setUserInfo] = useState({
-    id: '',
-    pwd: '',
+    loginId: '',
+    password: '',
   });
+
+  const router = useRouter();
+  const { mutate, isPending, error } = useLogin();
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -18,6 +24,18 @@ export default function Home() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleLoginClick = () => {
+    mutate(userInfo, {
+      onSuccess: (res) => {
+        localStorage.setItem('accessToken', res.token);
+        router.push('/pos');
+      },
+      onError: () => {
+        alert('로그인에 실패했습니다.');
+      },
+    });
   };
 
   return (
@@ -53,14 +71,14 @@ export default function Home() {
               type="text"
               placeholder="아이디를 입력하세요"
               className="h-12"
-              name="id"
+              name="loginId"
               onChange={handleUserInfoChange}
             />
             <Input
               type="password"
               placeholder="비밀번호를 입력하세요"
               className="h-12"
-              name="pwd"
+              name="password"
               onChange={handleUserInfoChange}
             />
             <div className="w-full max-w-sm flex justify-end">
@@ -76,6 +94,7 @@ export default function Home() {
             <Button
               variant="default"
               className="w-full max-w-sm h-12 mt-2 mx-auto"
+              onClick={handleLoginClick}
             >
               로그인
             </Button>
