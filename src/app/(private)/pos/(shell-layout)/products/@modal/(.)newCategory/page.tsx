@@ -5,6 +5,7 @@ import { X, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCreateCategory, useCategories } from '@/hooks/useCategories';
 import Input from '@/components/Input';
+import { Label } from '@/components/ui/label';
 import Button from '@/components/Button';
 
 export default function NewCategoryModal() {
@@ -48,7 +49,7 @@ export default function NewCategoryModal() {
         </div>
         {/* 카테고리 조회 */}
         <div className="mt-4">
-          <p className="text-sm text-gray-500 mb-2">카테고리 목록</p>
+          <Label className="text-sm mb-2">카테고리 목록</Label>
           <div className="border rounded-lg divide-y max-h-60 overflow-y-auto">
             {isLoading ? (
               <div className="p-4 text-sm text-gray-400">불러오는 중…</div>
