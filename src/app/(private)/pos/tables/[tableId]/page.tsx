@@ -44,7 +44,7 @@ export default function PosMenuPage() {
     if (!data) return [];
     if (selectedCategory === 'all') return data;
 
-    return data.filter((m) => m.category === selectedCategory);
+    return data.filter((menu) => menu.category === selectedCategory);
   }, [data, selectedCategory]);
 
   const cart = useOrderCart();

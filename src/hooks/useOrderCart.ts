@@ -19,10 +19,12 @@ export default function useOrderCart() {
       // 이미 있으면 수량만 +1
       if (foundIndex >= 0) {
         const updated = [...prevItems];
+
         updated[foundIndex] = {
           ...updated[foundIndex],
           quantity: updated[foundIndex].quantity + 1,
         };
+
         return updated;
       }
 
