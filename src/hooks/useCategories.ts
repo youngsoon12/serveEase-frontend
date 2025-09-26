@@ -5,7 +5,7 @@ export default function useCategories() {
   const query = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: getCategories,
-    staleTime: 5 * 50 * 1000,
+    staleTime: 60 * 5 * 1000,
   });
   return query;
 }
