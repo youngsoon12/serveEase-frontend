@@ -2,14 +2,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
-import useProducts from '@/hooks/useProducts';
-
-import { Search, X, Settings } from 'lucide-react';
+import { useProducts, useDeleteProduct } from '@/hooks/useProducts';
+import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
 
 export default function Page() {
   const { rows, isLoading, error, noticeText } = useProducts();
+  const { mutate: deleteProduct } = useDeleteProduct();
   const [searchName, setSearchName] = useState('');
   const router = useRouter();
 
@@ -89,6 +88,17 @@ export default function Page() {
                 </td>
                 <td className="px-4 py-4 text-center">{p.category}</td>
                 <td className="px-4 py-4 text-center">{p.available}</td>
+                <td className="px-2 text-center">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // 행 클릭 이벤트 막기
+                      deleteProduct(p.id);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

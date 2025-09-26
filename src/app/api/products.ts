@@ -26,3 +26,7 @@ export async function postProduct(
   const { data } = await instance.post('/menus', product);
   return data;
 }
+
+export async function deleteProduct(productId: number) {
+  const { data } = await instance.delete(`/menus/${productId}`);
+}

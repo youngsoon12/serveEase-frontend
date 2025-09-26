@@ -3,12 +3,13 @@ import {
   postProduct,
   ProductsResponse,
   CreateProductInput,
+  deleteProduct,
 } from '@/app/api/products';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-export default function useProducts() {
+export function useProducts() {
   const query = useQuery<ProductsResponse[]>({
     queryKey: ['products'],
     queryFn: getProducts,
@@ -52,6 +53,20 @@ export function useCreateProduct() {
       const msg =
         err instanceof Error ? err.message : '알 수 없는 오류가 발생했어요.';
       toast.error(`상품 추가에 실패했습니다. ${msg}`);
+    },
+  });
+}
+
+export function useDeleteProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteProduct(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['products'] });
+      toast.success('상품을 삭제했습니다.');
+    },
+    onError: () => {
+      toast.error('상품 삭제에 실패했습니다.');
     },
   });
 }
