@@ -67,7 +67,9 @@ export default function Page() {
               <th className="px-4 py-2 text-center">
                 <div className="flex items-center justify-center gap-1">
                   <span>카테고리</span>
-                  <Settings className="w-4 h-4 text-gray-700 cursor-pointer hover:text-gray-700" />
+                  <Link href="/pos/products/newCategory" scroll={false}>
+                    <Settings className="w-4 h-4 text-gray-700 cursor-pointer hover:text-gray-700" />
+                  </Link>
                 </div>
               </th>
               <th className="px-4 py-2 text-center">상태</th>
