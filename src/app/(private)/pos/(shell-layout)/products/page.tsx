@@ -2,37 +2,30 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, X } from 'lucide-react';
+import { useProducts, useDeleteProduct } from '@/hooks/useProducts';
+import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
 
-const mockProducts = [
-  { id: 1, name: '돈까스', price: 13000, category: '분식', status: '판매중' },
-  {
-    id: 2,
-    name: '치즈 돈까스치즈 돈까스치즈 돈까스치즈 돈까스',
-    price: 14500,
-    category: '분식',
-    status: '품절',
-  },
-];
-
 export default function Page() {
+  const { rows, isLoading, error, noticeText } = useProducts();
+  const { mutate: deleteProduct } = useDeleteProduct();
   const [searchName, setSearchName] = useState('');
   const router = useRouter();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setSearchName(e.target.value);
 
-  const handleOpenEditClick = (p: (typeof mockProducts)[number]) => {
+  const handleOpenEditClick = (p: (typeof rows)[number]) => {
     const q = new URLSearchParams({
       name: p.name,
       price: String(p.price),
       category: p.category,
-      status: p.status,
+      available: p.available,
     }).toString();
     router.push(`/pos/products/${p.id}/edit?${q}`, { scroll: false });
   };
-
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error) return <div>{noticeText}</div>;
   return (
     <div className="min-w-[500px] mx-auto w-full md:w-[50%] lg:w-[70%] max-w-[1200px] px-4">
       <h1 className="font-bold my-5 text-4xl md:text-5xl">상품 관리</h1>
@@ -69,13 +62,20 @@ export default function Page() {
             <tr>
               <th className="px-4 py-2 text-left">상품명</th>
               <th className="px-4 py-2 text-center">가격</th>
-              <th className="px-4 py-2 text-center">카테고리</th>
+              <th className="px-4 py-2 text-center">
+                <div className="flex items-center justify-center gap-1">
+                  <span>카테고리</span>
+                  <Link href="/pos/products/newCategory" scroll={false}>
+                    <Settings className="w-4 h-4 text-gray-700 cursor-pointer hover:text-gray-700" />
+                  </Link>
+                </div>
+              </th>
               <th className="px-4 py-2 text-center">상태</th>
             </tr>
           </thead>
 
           <tbody>
-            {mockProducts.map((p) => (
+            {rows?.map((p) => (
               <tr
                 key={p.id}
                 className="bg-white cursor-pointer hover:bg-gray-50"
@@ -86,7 +86,18 @@ export default function Page() {
                   {p.price.toLocaleString()}
                 </td>
                 <td className="px-4 py-4 text-center">{p.category}</td>
-                <td className="px-4 py-4 text-center">{p.status}</td>
+                <td className="px-4 py-4 text-center">{p.available}</td>
+                <td className="px-2 text-center">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // 행 클릭 이벤트 막기
+                      deleteProduct(p.id);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
