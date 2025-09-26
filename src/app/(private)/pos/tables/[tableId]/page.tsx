@@ -8,9 +8,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import ConfirmModal from '@/components/ConfirmModal';
 import BackButton from '@/components/BackButton';
-
-// 임시 데이터 - 카테고리
-const categories = ['즐겨찾는 메뉴', '한식', '분식', '양식'];
+import CategoryTab from '@/components/CategoryTab';
 
 // 임시 데이터 - 메뉴 버튼
 const MENU_ITEMS = Array.from({ length: 15 }, (_, i) => ({
@@ -55,24 +53,20 @@ export default function PosMenuPage() {
   const open = (type: ModalType) => setModal(type);
   const close = () => setModal(null);
 
+  const [selectedCategory, setSelectedCategory] = useState<number | 'all'>(
+    'all',
+  );
+
   return (
     <div className="flex h-[89vh] bg-default">
       {/* 왼쪽 메뉴 영역 */}
       <div className="flex-1 flex flex-col ">
         {/* 카테고리 탭 */}
         <div className="bg-white border-b">
-          <div className="flex space-x-1 p-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={
-                  'px-6 py-3 font-medium border-b-2 transition-colors '
-                }
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+          <CategoryTab
+            selected={selectedCategory}
+            onChange={setSelectedCategory}
+          />
         </div>
 
         {/* 메뉴 그리드 영역 */}
