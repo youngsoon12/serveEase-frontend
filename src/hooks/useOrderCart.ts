@@ -46,7 +46,7 @@ export default function useOrderCart() {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.menuId === menuId
-          ? { ...item, quantity: item.quantity - 1 }
+          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
           : item,
       ),
     );
