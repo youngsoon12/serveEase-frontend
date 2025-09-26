@@ -6,6 +6,7 @@ export default function useCategories() {
     queryKey: ['categories'],
     queryFn: getCategories,
     staleTime: 60 * 5 * 1000,
+    refetchOnWindowFocus: false,
   });
   return query;
 }
