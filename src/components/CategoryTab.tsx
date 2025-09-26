@@ -1,4 +1,4 @@
-import useCategories from '@/hooks/useCategories';
+import { useCategories } from '@/hooks/useCategories';
 import TabButton from '@/components/TabButton';
 
 interface CategoryTabProps {
