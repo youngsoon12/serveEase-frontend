@@ -109,7 +109,7 @@ export default function NewProductModal() {
             </Select>
           </div>
 
-          <div className="flex items-center justify-between h-10 mt-3">
+          <div className="flex items-center justify-between h-10">
             <Label htmlFor="isActive" className="text-gray-700">
               판매 여부
             </Label>

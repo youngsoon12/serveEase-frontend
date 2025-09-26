@@ -148,7 +148,7 @@ export default function EditProductModal() {
           </div>
 
           {/* 판매 여부 토글 */}
-          <div className="flex items-center justify-between h-8">
+          <div className="flex items-center justify-between h-10">
             <Label htmlFor="available" className="text-gray-700">
               판매 여부
             </Label>
