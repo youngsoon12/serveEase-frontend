@@ -4,20 +4,12 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 import MenuButton from '@/components/MenuButton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import ConfirmModal from '@/components/ConfirmModal';
 import BackButton from '@/components/BackButton';
 import CategoryTab from '@/components/CategoryTab';
-
-// 임시 데이터 - 메뉴 버튼
-const MENU_ITEMS = Array.from({ length: 15 }, (_, i) => ({
-  id: i + 1,
-  name: '돈까스',
-  price: 13000,
-  status: (i + 1) % 7 === 0 ? 'sold-out' : 'available',
-  category: '즐겨찾는 메뉴',
-}));
+import useMenus from '@/hooks/useMenus';
 
 // 임시 데이터 - 주문 내역
 const ORDER_ITEMS = [
@@ -59,6 +51,15 @@ export default function PosMenuPage() {
 
   console.log(selectedCategory);
 
+  const { data, isFetching, isError } = useMenus();
+
+  const filteredMenus = useMemo(() => {
+    if (!data) return [];
+    if (selectedCategory === 'all') return data;
+
+    return data.filter((m) => m.category === selectedCategory);
+  }, [data, selectedCategory]);
+
   return (
     <div className="flex h-[89vh] bg-default">
       {/* 왼쪽 메뉴 영역 */}
@@ -74,16 +75,25 @@ export default function PosMenuPage() {
         {/* 메뉴 그리드 영역 */}
         <div className="flex-1 p-5 overflow-y-auto">
           <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 h-fit">
-            {MENU_ITEMS.map((item) => (
+            {isFetching && !data && null}
+            {isError && !data && null}
+
+            {filteredMenus.map((item) => (
               <MenuButton
                 key={item.id}
                 name={item.name}
                 price={item.price}
-                status={item.status as 'available' | 'sold-out'}
+                status={item.available ? 'available' : 'sold-out'}
                 category={item.category}
-                onClick={() => null}
+                onClick={() => console.log(item.category)}
               />
             ))}
+
+            {!isFetching && filteredMenus.length === 0 && (
+              <div className="col-span-full text-sm text-gray-400">
+                해당 카테고리에 메뉴가 없습니다.
+              </div>
+            )}
           </div>
         </div>
         <div className="pb-7 pl-4">
