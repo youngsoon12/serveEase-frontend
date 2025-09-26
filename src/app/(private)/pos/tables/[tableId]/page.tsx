@@ -53,9 +53,11 @@ export default function PosMenuPage() {
   const open = (type: ModalType) => setModal(type);
   const close = () => setModal(null);
 
-  const [selectedCategory, setSelectedCategory] = useState<number | 'all'>(
+  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>(
     'all',
   );
+
+  console.log(selectedCategory);
 
   return (
     <div className="flex h-[89vh] bg-default">

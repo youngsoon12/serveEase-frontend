@@ -1,8 +1,9 @@
 import useCategories from '@/hooks/useCategories';
+import TabButton from '@/components/TabButton';
 
 interface CategoryTabProps {
-  selected: number | 'all';
-  onChange: (v: number | 'all') => void;
+  selected: string | 'all';
+  onChange: (v: string | 'all') => void;
 }
 
 export default function CategoryTab({ selected, onChange }: CategoryTabProps) {
@@ -14,42 +15,19 @@ export default function CategoryTab({ selected, onChange }: CategoryTabProps) {
 
   return (
     <div className="flex gap-1 p-2">
-      <Tab
+      <TabButton
         label="전체"
         active={selected === 'all'}
         onClick={() => onChange('all')}
       />
       {data.map((c) => (
-        <Tab
+        <TabButton
           key={c.id}
           label={c.name}
-          active={selected === c.id}
-          onClick={() => onChange(c.id)}
+          active={selected === c.name}
+          onClick={() => onChange(c.name)}
         />
       ))}
     </div>
-  );
-}
-
-function Tab({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-6 py-3 font-medium border-b-2 transition-colors ${
-        active
-          ? 'border-blue-500 text-blue-600'
-          : 'border-transparent text-gray-600 hover:text-gray-900'
-      }`}
-    >
-      {label}
-    </button>
   );
 }
