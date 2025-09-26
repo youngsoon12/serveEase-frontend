@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Label } from '@/components/ui/label';
-import useCategories from '@/hooks/useCategories';
+import { useCategories } from '@/hooks/useCategories';
 
 import {
   Select,
