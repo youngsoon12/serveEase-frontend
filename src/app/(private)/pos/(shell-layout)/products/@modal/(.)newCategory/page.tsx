@@ -12,16 +12,11 @@ export default function NewCategoryModal() {
   const [name, setName] = useState('');
 
   const { data: categories, isLoading } = useCategories();
-  const { mutate: createCategory, isPending: creating } = useCreateCategory();
-
-  const handleAdd = () => {
-    if (!name.trim()) return;
-    createCategory(name.trim(), { onSuccess: () => setName('') });
-  };
+  const { mutate: createCategory, isPending } = useCreateCategory();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white w-[420px] rounded-lg shadow-lg p-6">
+      <div className="bg-white w-[400px] rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">카테고리 추가</h2>
           <button onClick={() => router.back()}>
@@ -29,29 +24,31 @@ export default function NewCategoryModal() {
           </button>
         </div>
 
-        {/* 추가 인풋 */}
-        <div className="flex gap-2">
-          <Input
-            type="text"
-            label="카테고리명"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="flex-1 h-12"
-          />
-          <Button
-            variant="default"
-            className="h-12 whitespace-nowrap px-4"
-            onClick={handleAdd}
-            disabled={creating}
-          >
-            저장
-          </Button>
-        </div>
+        <div className="flex flex-row justify-center gap-4 ">
+          <div className="w-full ">
+            <Input
+              type="text"
+              label="카테고리명"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="!max-w-full w-full h-12"
+            />
+          </div>
 
-        {/* ↓ 목록(스크롤) */}
+          <div className="mt-8">
+            <Button
+              variant="default"
+              className="h-12 px-5 "
+              onClick={() => createCategory(name)}
+              disabled={isPending}
+            >
+              저장
+            </Button>
+          </div>
+        </div>
+        {/* 카테고리 조회 */}
         <div className="mt-4">
           <p className="text-sm text-gray-500 mb-2">카테고리 목록</p>
-
           <div className="border rounded-lg divide-y max-h-60 overflow-y-auto">
             {isLoading ? (
               <div className="p-4 text-sm text-gray-400">불러오는 중…</div>
