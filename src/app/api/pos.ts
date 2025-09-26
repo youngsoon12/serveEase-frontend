@@ -6,6 +6,6 @@ export type CategoriesResponse = {
 };
 
 export async function getCategories(): Promise<CategoriesResponse[]> {
-  const { data } = await instance.get('/categories');
+  const { data } = await instance.get<CategoriesResponse[]>('/categories');
   return data;
 }
