@@ -14,7 +14,6 @@ export default function Page() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setSearchName(e.target.value);
-  console.log(rows);
 
   const handleOpenEditClick = (p: (typeof rows)[number]) => {
     const q = new URLSearchParams({

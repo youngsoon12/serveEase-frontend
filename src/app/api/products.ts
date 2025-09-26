@@ -30,3 +30,11 @@ export async function postProduct(
 export async function deleteProduct(productId: number) {
   const { data } = await instance.delete(`/menus/${productId}`);
 }
+
+export async function putProduct(
+  productId: number,
+  product: CreateProductInput,
+): Promise<ProductsResponse> {
+  const { data } = await instance.put(`/menus/${productId}`, product);
+  return data;
+}
