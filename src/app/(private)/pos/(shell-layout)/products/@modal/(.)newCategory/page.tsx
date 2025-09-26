@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import { X, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useCreateCategory, useCategories } from '@/hooks/useCategories';
+import {
+  useCreateCategory,
+  useCategories,
+  useDeleteCategory,
+} from '@/hooks/useCategories';
 import Input from '@/components/Input';
 import { Label } from '@/components/ui/label';
 import Button from '@/components/Button';
@@ -14,6 +18,7 @@ export default function NewCategoryModal() {
 
   const { data: categories, isLoading } = useCategories();
   const { mutate: createCategory, isPending } = useCreateCategory();
+  const { mutate: deleteCategory, isPending: deleting } = useDeleteCategory();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -47,6 +52,7 @@ export default function NewCategoryModal() {
             </Button>
           </div>
         </div>
+
         {/* 카테고리 조회 */}
         <div className="mt-4">
           <Label className="text-sm mb-2">카테고리 목록</Label>
@@ -66,11 +72,11 @@ export default function NewCategoryModal() {
                   <span className="truncate">{c.name}</span>
                   <button
                     className="inline-flex items-center gap-1 text-red-500 hover:text-red-600 disabled:opacity-50"
-                    // onClick={() => deleteCategory(c.id)}
-                    // disabled={deleting}
+                    onClick={() => deleteCategory(c.id)}
+                    disabled={deleting}
                     aria-label={`${c.name} 삭제`}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4 cursor-pointer" />
                     삭제
                   </button>
                 </div>

@@ -7,8 +7,11 @@ export async function getCategories(): Promise<Category[]> {
   return data;
 }
 
-// 카테고리 생성
 export async function postCategory(name: string): Promise<Category> {
   const { data } = await instance.post('/categories', { name });
   return data;
+}
+
+export async function deleteCategory(categoryId: number): Promise<void> {
+  await instance.delete(`/categories/${categoryId}`);
 }
