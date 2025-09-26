@@ -84,13 +84,12 @@ export default function PosMenuPage() {
                 name={item.name}
                 price={item.price}
                 status={item.available ? 'available' : 'sold-out'}
-                category={item.category}
                 onClick={() => console.log(item.category)}
               />
             ))}
 
             {!isFetching && filteredMenus.length === 0 && (
-              <div className="col-span-full text-sm text-gray-400">
+              <div className="col-span-full text-gray-400">
                 해당 카테고리에 메뉴가 없습니다.
               </div>
             )}
