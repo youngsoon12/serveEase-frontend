@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import useLogin from '@/hooks/useLogin';
 
 import Link from 'next/link';
@@ -33,7 +34,7 @@ export default function Home() {
         router.push('/pos');
       },
       onError: () => {
-        alert('로그인에 실패했습니다.');
+        toast.error('로그인에 실패했습니다.');
       },
     });
   };
