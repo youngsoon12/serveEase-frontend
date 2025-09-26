@@ -4,7 +4,6 @@ interface MenuButtonProps {
   name: string;
   price: number;
   status: 'available' | 'sold-out';
-  category: string;
   onClick: () => void;
 }
 
@@ -12,7 +11,6 @@ export default function MenuButton({
   name,
   price,
   status,
-  category,
   onClick,
 }: MenuButtonProps) {
   const isOutOfStock = status === 'sold-out';
@@ -20,7 +18,7 @@ export default function MenuButton({
   return (
     <Button
       variant="outline"
-      className={`h-32 w-[clamp(14rem, 20vw, 48px)] flex flex-col justify-between p-4 relative  ${
+      className={`h-32 w-[clamp(14rem, 22vw, 48rem)] flex flex-col justify-between p-4 relative  ${
         isOutOfStock ? 'bg-gray-100 text-gray-500  hover:text-gray-500  ' : ''
       }`}
       onClick={onClick}

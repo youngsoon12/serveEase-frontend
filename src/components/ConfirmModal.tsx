@@ -31,13 +31,22 @@ export default function ConfirmModal({
   onConfirm,
 }: ConfirmModalProps) {
   const handleConfirm = async () => {
-    await onConfirm(); // 이후 API 연결
-    onOpenChange(false); // 명시적으로 닫기
+    await onConfirm();
+    onOpenChange(false);
   };
 
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent className="sm:max-w-[420px]">
+      <AlertDialogContent
+        className="sm:max-w-[420px]"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            handleConfirm();
+          }
+        }}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle className="text-center">{title}</AlertDialogTitle>
           {description && (
@@ -57,6 +66,7 @@ export default function ConfirmModal({
           <AlertDialogAction
             onClick={handleConfirm}
             className="sm:w-28 bg-red-600 hover:bg-red-700"
+            autoFocus
           >
             {confirmText}
           </AlertDialogAction>
