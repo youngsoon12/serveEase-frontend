@@ -5,7 +5,8 @@ export default function useMenus() {
   const query = useQuery<MenuItem[]>({
     queryKey: ['menus'],
     queryFn: getMenus,
-    staleTime: 60_000,
+    staleTime: 60 * 5 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   return query;

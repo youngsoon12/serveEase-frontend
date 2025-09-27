@@ -1,12 +1,13 @@
 import { getTables, PAGE_SIZE, TablesResponse } from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 export default function useTables(page: number) {
   const query = useQuery<TablesResponse>({
     queryKey: ['tables', page],
     queryFn: () => getTables(page, PAGE_SIZE),
     staleTime: 1000 * 60,
+    placeholderData: keepPreviousData,
   });
 
   const cards: TableCardProps[] =

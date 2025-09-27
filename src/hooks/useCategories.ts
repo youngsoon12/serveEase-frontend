@@ -12,7 +12,8 @@ export function useCategories() {
   return useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: getCategories,
-    staleTime: 60_000,
+    staleTime: 60 * 5 * 1000,
+    refetchOnWindowFocus: false,
   });
 }
 

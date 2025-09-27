@@ -11,6 +11,7 @@ import BackButton from '@/components/BackButton';
 import CategoryTab from '@/components/CategoryTab';
 import useMenus from '@/hooks/useMenus';
 import useOrderCart from '@/hooks/useOrderCart';
+import { useCreateOrder } from '@/hooks/useOrder';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -44,10 +45,33 @@ export default function PosMenuPage() {
     if (!data) return [];
     if (selectedCategory === 'all') return data;
 
-    return data.filter((m) => m.category === selectedCategory);
+    return data.filter((menu) => menu.category === selectedCategory);
   }, [data, selectedCategory]);
 
   const cart = useOrderCart();
+
+  const createOrder = useCreateOrder();
+
+  function handleOrderClick() {
+    const tableNumber = Number(tableId);
+
+    if (!tableNumber || Number.isNaN(tableNumber)) return;
+    if (cart.cartItems.length === 0) return;
+
+    const payload = {
+      restaurantTableNumber: tableNumber,
+      orderItems: cart.cartItems.map((item) => ({
+        menuId: item.menuId,
+        quantity: item.quantity,
+      })),
+    };
+
+    createOrder.mutate(payload, {
+      onSuccess: () => {
+        cart.clearCart();
+      },
+    });
+  }
 
   return (
     <div className="flex h-[89vh] bg-default">
@@ -187,11 +211,17 @@ export default function PosMenuPage() {
             </div>
           </div>
 
-          <Button variant={'default'} className="w-full">
+          <Button
+            variant={'default'}
+            className="w-full"
+            onClick={handleOrderClick}
+            disabled={createOrder.isPending || cart.cartItems.length === 0}
+          >
             <span className="bg-white text-blue-500 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               {cart.totalCount}
             </span>
             <span>주문</span>
+            <span>{createOrder.isPending ? '처리 중...' : ''}</span>
           </Button>
 
           <Button asChild className="w-full bg-slate-600 h-12">

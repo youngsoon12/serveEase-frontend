@@ -1,4 +1,4 @@
-import useCategories from '@/hooks/useCategories';
+import { useCategories } from '@/hooks/useCategories';
 import TabButton from '@/components/TabButton';
 
 interface CategoryTabProps {
@@ -20,12 +20,12 @@ export default function CategoryTab({ selected, onChange }: CategoryTabProps) {
         active={selected === 'all'}
         onClick={() => onChange('all')}
       />
-      {data.map((c) => (
+      {data.map((tab) => (
         <TabButton
-          key={c.id}
-          label={c.name}
-          active={selected === c.name}
-          onClick={() => onChange(c.name)}
+          key={tab.id}
+          label={tab.name}
+          active={selected === tab.name}
+          onClick={() => onChange(tab.name)}
         />
       ))}
     </div>
