@@ -1,11 +1,11 @@
 import { instance } from '@/lib/axios';
 
-export type CreateOrderRequest = {
+export type OrderRequest = {
   restaurantTableNumber: number;
   orderItems: { menuId: number; quantity: number }[];
 };
 
-export type CreateOrderResponse = {
+export type OrderResponse = {
   id: number;
   restaurantTableId: number;
   status: string;
@@ -21,7 +21,12 @@ export type CreateOrderResponse = {
   paid: boolean;
 };
 
-export async function createOrder(payload: CreateOrderRequest) {
-  const { data } = await instance.post<CreateOrderResponse>('/orders', payload);
+export async function getOrder(orderId: number) {
+  const { data } = await instance.get<OrderResponse>(`/orders/${orderId}`);
+  return data;
+}
+
+export async function createOrder(payload: OrderRequest) {
+  const { data } = await instance.post<OrderResponse>('/orders', payload);
   return data;
 }
