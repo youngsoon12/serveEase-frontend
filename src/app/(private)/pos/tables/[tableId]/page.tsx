@@ -221,7 +221,7 @@ export default function PosMenuPage() {
               {cart.totalCount}
             </span>
             <span>주문</span>
-            <span>{createOrder.isPending ? '주문 처리 중...' : ''}</span>
+            <span>{createOrder.isPending ? '처리 중...' : ''}</span>
           </Button>
 
           <Button asChild className="w-full bg-slate-600 h-12">
