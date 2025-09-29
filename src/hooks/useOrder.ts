@@ -18,12 +18,12 @@ export function useOrder(orderId?: number) {
   });
 }
 
-export function useCreateOrder() {
+export function useCreateOrder(tableId: number) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation<OrderResponse, AxiosError<ApiErrorBody>, OrderRequest>({
-    mutationFn: (payload) => createOrder(payload),
+    mutationFn: (payload) => createOrder(tableId, payload),
     onSuccess: (order) => {
       toast.success('주문이 접수되었습니다.');
       console.log(order);
