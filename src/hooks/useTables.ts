@@ -19,11 +19,14 @@ export default function useTables(page: number) {
   const cards: TableCardProps[] =
     query.data?.content.map((item) => {
       const status = toUIStatus(item.displayStatus);
+      const href = item.activeOrder?.orderId
+        ? `/pos/tables/${item.restaurantTableNumber}?orderId=${item.activeOrder.orderId}`
+        : `/pos/tables/${item.restaurantTableNumber}`;
 
       return {
         tableNumber: item.restaurantTableNumber,
         status,
-        href: `/pos/tables/${item.restaurantTableNumber}`,
+        href,
         price: item.activeOrder?.totalPrice,
         menuItems:
           item.activeOrder?.orderItems?.map((o) => o.menuName).slice(0, 2) ??
