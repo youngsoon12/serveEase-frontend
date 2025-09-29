@@ -11,7 +11,7 @@ import BackButton from '@/components/BackButton';
 import CategoryTab from '@/components/CategoryTab';
 import useMenus from '@/hooks/useMenus';
 import useOrderCart from '@/hooks/useOrderCart';
-import { useCreateOrder, useOrder } from '@/hooks/useOrder';
+import { useAddOrder, useCreateOrder, useOrder } from '@/hooks/useOrder';
 import ExistingOrderList from '@/components/ExistingOrderList';
 
 type ModalType = 'trash' | 'cancel';
@@ -55,8 +55,21 @@ export default function PosMenuPage() {
   // 주문 계산
   const cart = useOrderCart();
 
-  // 주문 생성
+  // 기존 주문 내역
+  const param = useSearchParams();
+  const orderIdParam = param.get('orderId');
+
+  const orderId = orderIdParam ? Number(orderIdParam) : undefined;
+
+  const {
+    data: order,
+    isFetching: orderIsFetching,
+    isError: orderIsError,
+  } = useOrder(orderId);
+
+  // 주문 생성 / 재주문
   const createOrder = useCreateOrder(Number(tableId));
+  const addOrder = useAddOrder(Number(orderId));
 
   function handleOrderClick() {
     const tableNumber = Number(tableId);
@@ -72,26 +85,20 @@ export default function PosMenuPage() {
       })),
     };
 
-    createOrder.mutate(payload, {
-      onSuccess: () => {
-        cart.clearCart();
-      },
-    });
+    if (!orderId) {
+      createOrder.mutate(payload, {
+        onSuccess: () => {
+          cart.clearCart();
+        },
+      });
+    } else {
+      addOrder.mutate(payload, {
+        onSuccess: () => {
+          cart.clearCart();
+        },
+      });
+    }
   }
-
-  // 기존 주문 내역
-  const param = useSearchParams();
-  const orderIdParam = param.get('orderId');
-
-  const orderId = orderIdParam ? Number(orderIdParam) : undefined;
-
-  const {
-    data: order,
-    isFetching: orderIsFetching,
-    isError: orderIsError,
-  } = useOrder(orderId);
-
-  console.log(order);
 
   return (
     <div className="flex h-[89vh] bg-default">
@@ -248,7 +255,11 @@ export default function PosMenuPage() {
             variant={'default'}
             className="w-full"
             onClick={handleOrderClick}
-            disabled={createOrder.isPending || cart.cartItems.length === 0}
+            disabled={
+              createOrder.isPending ||
+              addOrder.isPending ||
+              cart.cartItems.length === 0
+            }
           >
             <span className="bg-white text-blue-500 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               {cart.totalCount}
