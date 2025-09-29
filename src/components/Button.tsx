@@ -13,6 +13,7 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export default function Button({
@@ -22,6 +23,7 @@ export default function Button({
   onClick,
   disabled,
   className,
+  ...props
 }: ButtonProps) {
   return (
     <UIButton
@@ -30,6 +32,7 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       className={className}
+      {...props}
     >
       {children}
     </UIButton>
