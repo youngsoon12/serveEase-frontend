@@ -5,13 +5,13 @@ import MenuButton from '@/components/MenuButton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import ConfirmModal from '@/components/ConfirmModal';
 import BackButton from '@/components/BackButton';
 import CategoryTab from '@/components/CategoryTab';
 import useMenus from '@/hooks/useMenus';
 import useOrderCart from '@/hooks/useOrderCart';
-import { useCreateOrder } from '@/hooks/useOrder';
+import { useCreateOrder, useOrder } from '@/hooks/useOrder';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -30,6 +30,8 @@ const MODAL = {
 
 export default function PosMenuPage() {
   const { tableId } = useParams<{ tableId: string }>();
+
+  // 휴지통/주문 취소 컨펌 모달
   const [modal, setModal] = useState<ModalType | null>(null);
 
   const open = (type: ModalType) => setModal(type);
@@ -39,6 +41,7 @@ export default function PosMenuPage() {
     'all',
   );
 
+  // 메뉴
   const { data, isFetching, isError } = useMenus();
 
   const filteredMenus = useMemo(() => {
@@ -48,8 +51,10 @@ export default function PosMenuPage() {
     return data.filter((menu) => menu.category === selectedCategory);
   }, [data, selectedCategory]);
 
+  // 주문 계산
   const cart = useOrderCart();
 
+  // 주문 생성
   const createOrder = useCreateOrder();
 
   function handleOrderClick() {
@@ -72,6 +77,20 @@ export default function PosMenuPage() {
       },
     });
   }
+
+  // 기존 주문 내역
+  const param = useSearchParams();
+  const orderIdParam = param.get('orderId');
+
+  const orderId = orderIdParam ? Number(orderIdParam) : undefined;
+
+  const {
+    data: order,
+    isFetching: orderIsFetching,
+    isError: orderIsError,
+  } = useOrder(orderId);
+
+  console.log(orderId);
 
   return (
     <div className="flex h-[89vh] bg-default">
