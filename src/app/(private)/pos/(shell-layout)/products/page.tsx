@@ -25,7 +25,10 @@ export default function Page() {
     router.push(`/pos/products/${p.id}/edit?${q}`, { scroll: false });
   };
   if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>{noticeText}</div>;
+  if (error) {
+    console.log(error);
+  }
+  return <div>{noticeText}</div>;
   return (
     <div className="min-w-[500px] mx-auto w-full md:w-[50%] lg:w-[70%] max-w-[1200px] px-4">
       <h1 className="font-bold my-5 text-4xl md:text-5xl">상품 관리</h1>

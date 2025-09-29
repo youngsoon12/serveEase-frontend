@@ -1,22 +1,58 @@
 'use client';
 import React from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
+
+import { toast } from 'sonner';
+
 import Button from '@/components/Button';
+import useSignup from '@/hooks/useSignup';
 
 const signupCategory = [
-  { type: 'text', placeholder: '아이디' },
-  { type: 'password', placeholder: '비밀번호' },
+  { type: 'text', placeholder: '아이디', name: 'loginId' },
+  { type: 'password', placeholder: '비밀번호', name: 'password' },
+  { type: 'text', placeholder: '사용자명', name: 'username' },
   {
     type: 'text',
     placeholder: '핸드폰( -는 빼고 입력해주세요 )',
     inputMode: 'numeric',
     maxLength: 11,
+    name: 'phoneNumber',
   },
-  { type: 'text', placeholder: '매장명' },
-  { type: 'number', placeholder: '매장 테이블 수', min: 0 },
+  { type: 'text', placeholder: '매장명', name: 'storeName' },
+  { type: 'number', placeholder: '매장 테이블 수', min: 0, name: 'tableCount' },
 ];
 
 const singnup = () => {
+  const [signupInfo, setSignupInfo] = useState({
+    loginId: '',
+    password: '',
+    phoneNumber: '',
+    username: '',
+    storeName: '',
+    tableCount: 0,
+  });
+
+  const { mutate: signupFn, isPending } = useSignup();
+  console.log(signupInfo);
+  const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSignupInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmitClick = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    signupFn(signupInfo, {
+      onSuccess: (res) => {
+        toast.success('회원가입 성공!');
+        console.log('서버 응답:', res);
+      },
+      onError: (err) => {
+        toast.error(`회원가입 실패: ${err.message}`);
+      },
+    });
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
@@ -24,7 +60,7 @@ const singnup = () => {
           <h2 className="text-2xl font-bold text-center">회원가입</h2>
         </div>
         {/* 회원가입 폼 */}
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmitClick}>
           {signupCategory.map((field, idx) => (
             <div key={idx}>
               <input
@@ -43,6 +79,8 @@ const singnup = () => {
                       }
                     : undefined
                 }
+                onChange={handleInfoChange}
+                name={field.name}
               />
             </div>
           ))}

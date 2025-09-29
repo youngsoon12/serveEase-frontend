@@ -68,37 +68,46 @@ export default function Home() {
             <h1 className="text-black text-[40px] font-bold text-center mt-5 mb-5">
               SERVE NOW
             </h1>
-            <Input
-              type="text"
-              placeholder="아이디를 입력하세요"
-              className="h-12"
-              name="loginId"
-              onChange={handleUserInfoChange}
-            />
-            <Input
-              type="password"
-              placeholder="비밀번호를 입력하세요"
-              className="h-12"
-              name="password"
-              onChange={handleUserInfoChange}
-            />
-            <div className="w-full max-w-sm flex justify-end">
-              <Link href="/signup" className="self-end px-0 mt-2">
-                <Button
-                  variant="link"
-                  className="px-0 mt-2 text-[#BBBBBB] hover:text-black transition-colors"
-                >
-                  회원가입
-                </Button>
-              </Link>
-            </div>
-            <Button
-              variant="default"
-              className="w-full max-w-sm h-12 mt-2 mx-auto"
-              onClick={handleLoginClick}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLoginClick();
+              }}
+              className="flex flex-col w-full max-w-sm"
             >
-              로그인
-            </Button>
+              <Input
+                type="text"
+                placeholder="아이디를 입력하세요"
+                className="h-12"
+                name="loginId"
+                onChange={handleUserInfoChange}
+              />
+              <Input
+                type="password"
+                placeholder="비밀번호를 입력하세요"
+                className="h-12"
+                name="password"
+                onChange={handleUserInfoChange}
+              />
+              <div className="w-full max-w-sm flex justify-end">
+                <Link href="/signup" className="self-end px-0 mt-2">
+                  <Button
+                    variant="link"
+                    type="button"
+                    className="px-0 mt-2 text-[#BBBBBB] hover:text-black transition-colors"
+                  >
+                    회원가입
+                  </Button>
+                </Link>
+              </div>
+              <Button
+                type="submit"
+                variant="default"
+                className="w-full max-w-sm h-12 mt-2 mx-auto"
+              >
+                로그인
+              </Button>
+            </form>
           </div>
         </div>
       </div>
