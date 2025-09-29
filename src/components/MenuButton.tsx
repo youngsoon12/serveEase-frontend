@@ -29,8 +29,19 @@ export default function MenuButton({
           품절
         </span>
       )}
+
       <div className="text-left w-full">
-        <h3 className="font-semibold text-lg">{name}</h3>
+        <h3
+          className="font-semibold text-lg leading-tight break-words whitespace-normal"
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {name}
+        </h3>
       </div>
 
       <div className="text-right w-full">
