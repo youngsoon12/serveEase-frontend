@@ -10,17 +10,26 @@ export default function useTables(page: number) {
     placeholderData: keepPreviousData,
   });
 
+  const toUIStatus = (s: string): 'EMPTY' | 'ORDERED' | 'SERVED' => {
+    if (s === 'EMPTY') return 'EMPTY';
+    if (s === 'SERVED') return 'SERVED';
+    return 'ORDERED';
+  };
+
   const cards: TableCardProps[] =
-    query.data?.content.map((item) => ({
-      tableNumber: item.restaurantTableNumber,
-      status:
-        item.status === 'EMPTY'
-          ? 'EMPTY'
-          : item.status === 'SERVED'
-          ? 'SERVED'
-          : 'ORDERED',
-      href: `/pos/tables/${item.restaurantTableNumber}`,
-    })) ?? [];
+    query.data?.content.map((item) => {
+      const status = toUIStatus(item.displayStatus);
+
+      return {
+        tableNumber: item.restaurantTableNumber,
+        status,
+        href: `/pos/tables/${item.restaurantTableNumber}`,
+        price: item.activeOrder?.totalPrice,
+        menuItems:
+          item.activeOrder?.orderItems?.map((o) => o.menuName).slice(0, 2) ??
+          [],
+      };
+    }) ?? [];
 
   return {
     data: query.data,
