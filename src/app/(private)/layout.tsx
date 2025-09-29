@@ -12,19 +12,26 @@ export default function PrivateLayout({
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
-  const [ready, setReady] = useState(false); // FOUC 방지용
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const gotoLogin = (msg: string) => {
+      if (typeof window !== 'undefined') {
+        alert(msg); // 임시 알림
+      }
+      const next = encodeURIComponent(
+        `${pathname}${sp?.toString() ? `?${sp}` : ''}`,
+      );
+      router.replace(`/?next=${next}`);
+    };
+
     const token =
       typeof window !== 'undefined'
         ? localStorage.getItem('accessToken')
         : null;
 
     if (!token) {
-      const next = encodeURIComponent(
-        `${pathname}${sp?.toString() ? `?${sp}` : ''}`,
-      );
-      router.replace(`/?next=${next}`);
+      gotoLogin('로그인이 필요합니다.');
       return;
     }
 
@@ -33,21 +40,18 @@ export default function PrivateLayout({
       if (payloadB64) {
         const payload = JSON.parse(atob(payloadB64));
         if (payload.exp && Date.now() >= payload.exp * 1000) {
-          // 만료 시 토큰 삭제 + 리다이렉트
           localStorage.removeItem('accessToken');
-          const next = encodeURIComponent(
-            `${pathname}${sp?.toString() ? `?${sp}` : ''}`,
-          );
-          router.replace(`/?next=${next}`);
+          gotoLogin('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
           return;
         }
+      } else {
+        localStorage.removeItem('accessToken');
+        gotoLogin('인증 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+        return;
       }
     } catch {
       localStorage.removeItem('accessToken');
-      const next = encodeURIComponent(
-        `${pathname}${sp?.toString() ? `?${sp}` : ''}`,
-      );
-      router.replace(`/?next=${next}`);
+      gotoLogin('인증 정보가 손상되었습니다. 다시 로그인해주세요.');
       return;
     }
 
