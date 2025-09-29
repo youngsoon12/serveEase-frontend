@@ -1,13 +1,28 @@
-import { OrderResponse, OrderRequest, createOrder } from '@/app/api/order';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  OrderResponse,
+  OrderRequest,
+  createOrder,
+  getOrder,
+} from '@/app/api/order';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import type { AxiosError } from 'axios';
+import { ApiErrorBody } from '@/lib/error';
+
+export function useOrder(orderId?: number) {
+  return useQuery<OrderResponse>({
+    queryKey: ['order', orderId],
+    queryFn: () => getOrder(orderId as number),
+    staleTime: 60 * 5 * 1000,
+  });
+}
 
 export function useCreateOrder() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  return useMutation<OrderResponse, unknown, OrderRequest>({
+  return useMutation<OrderResponse, AxiosError<ApiErrorBody>, OrderRequest>({
     mutationFn: (payload) => createOrder(payload),
     onSuccess: (order) => {
       toast.success('주문이 접수되었습니다.');
@@ -16,9 +31,11 @@ export function useCreateOrder() {
       router.push('/pos/tables');
       queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
-    onError: (error) => {
+    onError: (err) => {
       toast.error('주문 처리에 실패했습니다.');
-      console.log(error);
+
+      console.error('status:', err?.response?.status);
+      console.error('data:', err?.response?.data);
     },
   });
 }
