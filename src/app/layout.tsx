@@ -18,7 +18,13 @@ export default function RootLayout({
       <body className="antialiased">
         <Providers>
           {children}
-          <Toaster richColors position="bottom-center" />
+          <Toaster
+            richColors
+            position="bottom-center"
+            toastOptions={{
+              duration: 2000,
+            }}
+          />
         </Providers>
       </body>
     </html>

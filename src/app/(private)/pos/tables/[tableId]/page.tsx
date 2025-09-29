@@ -5,13 +5,19 @@ import MenuButton from '@/components/MenuButton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import ConfirmModal from '@/components/ConfirmModal';
 import BackButton from '@/components/BackButton';
 import CategoryTab from '@/components/CategoryTab';
 import useMenus from '@/hooks/useMenus';
 import useOrderCart from '@/hooks/useOrderCart';
-import { useCreateOrder } from '@/hooks/useOrder';
+import {
+  useAddOrder,
+  useCancelOrder,
+  useCreateOrder,
+  useOrder,
+} from '@/hooks/useOrder';
+import ExistingOrderList from '@/components/ExistingOrderList';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -30,6 +36,8 @@ const MODAL = {
 
 export default function PosMenuPage() {
   const { tableId } = useParams<{ tableId: string }>();
+
+  // 휴지통/주문 취소 컨펌 모달
   const [modal, setModal] = useState<ModalType | null>(null);
 
   const open = (type: ModalType) => setModal(type);
@@ -39,6 +47,7 @@ export default function PosMenuPage() {
     'all',
   );
 
+  // 메뉴
   const { data, isFetching, isError } = useMenus();
 
   const filteredMenus = useMemo(() => {
@@ -48,9 +57,24 @@ export default function PosMenuPage() {
     return data.filter((menu) => menu.category === selectedCategory);
   }, [data, selectedCategory]);
 
+  // 주문 계산
   const cart = useOrderCart();
 
-  const createOrder = useCreateOrder();
+  // 기존 주문 내역
+  const param = useSearchParams();
+  const orderIdParam = param.get('orderId');
+
+  const orderId = orderIdParam ? Number(orderIdParam) : undefined;
+
+  const {
+    data: order,
+    isFetching: orderIsFetching,
+    isError: orderIsError,
+  } = useOrder(orderId);
+
+  // 주문 생성 / 재주문
+  const createOrder = useCreateOrder(Number(tableId));
+  const addOrder = useAddOrder(Number(orderId));
 
   function handleOrderClick() {
     const tableNumber = Number(tableId);
@@ -66,12 +90,23 @@ export default function PosMenuPage() {
       })),
     };
 
-    createOrder.mutate(payload, {
-      onSuccess: () => {
-        cart.clearCart();
-      },
-    });
+    if (!orderId) {
+      createOrder.mutate(payload, {
+        onSuccess: () => {
+          cart.clearCart();
+        },
+      });
+    } else {
+      addOrder.mutate(payload, {
+        onSuccess: () => {
+          cart.clearCart();
+        },
+      });
+    }
   }
+
+  // 주문 취소
+  const cancelOrder = useCancelOrder(Number(orderId));
 
   return (
     <div className="flex h-[89vh] bg-default">
@@ -151,6 +186,19 @@ export default function PosMenuPage() {
         <div className="flex-1">
           <div className="h-[400px] overflow-y-auto scrollbar-hide">
             <div className="p-4 space-y-3">
+              {order && !orderIsFetching && !orderIsError && (
+                <>
+                  <ExistingOrderList
+                    items={order.orderItems}
+                    totalPrice={order.totalPrice}
+                  />
+
+                  {cart.cartItems.length > 0 && (
+                    <div className="border-t my-3" />
+                  )}
+                </>
+              )}
+
               {cart.cartItems.map((item) => (
                 <div
                   key={item.menuId}
@@ -215,7 +263,11 @@ export default function PosMenuPage() {
             variant={'default'}
             className="w-full"
             onClick={handleOrderClick}
-            disabled={createOrder.isPending || cart.cartItems.length === 0}
+            disabled={
+              createOrder.isPending ||
+              addOrder.isPending ||
+              cart.cartItems.length === 0
+            }
           >
             <span className="bg-white text-blue-500 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               {cart.totalCount}
@@ -242,8 +294,11 @@ export default function PosMenuPage() {
             if (modal === 'trash') {
               cart.clearCart();
             } else if (modal === 'cancel') {
-              // cancelOrder API 호출
-              close();
+              cancelOrder.mutate(undefined, {
+                onSuccess: () => {
+                  cart.clearCart();
+                },
+              });
             }
           }}
         />

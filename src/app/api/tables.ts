@@ -1,10 +1,20 @@
 import { instance } from '@/lib/axios';
+import { getStoreId } from './store';
 
 export type TablesResponse = {
   content: {
     id: number;
     restaurantTableNumber: number;
-    status: string;
+    displayStatus: string;
+    activeOrder?: {
+      orderId: number;
+      totalPrice: number;
+      orderItems: {
+        menuName: string;
+        quantity: number;
+        price: number;
+      }[];
+    } | null;
   }[];
   number: number;
   totalPages: number;
@@ -21,7 +31,9 @@ export async function getTables(
   page: number,
   size = PAGE_SIZE,
 ): Promise<TablesResponse> {
-  const { data } = await instance.get('/tables', {
+  const storeId = getStoreId();
+
+  const { data } = await instance.get(`/stores/${storeId}/tables`, {
     params: { page, size },
   });
   return data;

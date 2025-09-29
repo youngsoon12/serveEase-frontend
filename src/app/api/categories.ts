@@ -1,9 +1,12 @@
 import { instance } from '@/lib/axios';
+import { getStoreId } from './store';
 
 export type Category = { id: number; name: string };
 
 export async function getCategories(): Promise<Category[]> {
-  const { data } = await instance.get('/categories');
+  const storeId = getStoreId();
+
+  const { data } = await instance.get(`/stores/${storeId}/categories`);
   return data;
 }
 
