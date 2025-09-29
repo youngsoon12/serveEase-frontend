@@ -12,6 +12,7 @@ import CategoryTab from '@/components/CategoryTab';
 import useMenus from '@/hooks/useMenus';
 import useOrderCart from '@/hooks/useOrderCart';
 import { useCreateOrder, useOrder } from '@/hooks/useOrder';
+import ExistingOrderList from '@/components/ExistingOrderList';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -55,7 +56,7 @@ export default function PosMenuPage() {
   const cart = useOrderCart();
 
   // 주문 생성
-  const createOrder = useCreateOrder();
+  const createOrder = useCreateOrder(Number(tableId));
 
   function handleOrderClick() {
     const tableNumber = Number(tableId);
@@ -90,7 +91,7 @@ export default function PosMenuPage() {
     isError: orderIsError,
   } = useOrder(orderId);
 
-  console.log(orderId);
+  console.log(order);
 
   return (
     <div className="flex h-[89vh] bg-default">
@@ -170,6 +171,19 @@ export default function PosMenuPage() {
         <div className="flex-1">
           <div className="h-[400px] overflow-y-auto scrollbar-hide">
             <div className="p-4 space-y-3">
+              {order && !orderIsFetching && !orderIsError && (
+                <>
+                  <ExistingOrderList
+                    items={order.orderItems}
+                    totalPrice={order.totalPrice}
+                  />
+
+                  {cart.cartItems.length > 0 && (
+                    <div className="border-t my-3" />
+                  )}
+                </>
+              )}
+
               {cart.cartItems.map((item) => (
                 <div
                   key={item.menuId}
