@@ -38,3 +38,13 @@ export async function createOrder(tableId: number, payload: OrderRequest) {
   );
   return data;
 }
+
+export async function addOrder(orderId: number, payload: OrderRequest) {
+  const body = payload.orderItems;
+
+  const { data } = await instance.post<OrderResponse>(
+    `/stores/${storeId}/orders/${orderId}/items`,
+    body,
+  );
+  return data;
+}
