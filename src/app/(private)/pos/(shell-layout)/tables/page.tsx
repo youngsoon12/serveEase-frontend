@@ -13,6 +13,13 @@ export default function TablesPage() {
 
   const { data, cards, noticeText } = useTables(page);
 
+  console.table(
+    data?.content.map((x) => ({
+      num: x.restaurantTableNumber,
+      status: x.displayStatus,
+    })),
+  );
+
   const pageNumber = data?.number ?? page;
 
   const isFirst = data?.first ?? true;
