@@ -48,3 +48,10 @@ export async function addOrder(orderId: number, payload: OrderRequest) {
   );
   return data;
 }
+
+export async function cancelOrder(orderId: number) {
+  const { data } = await instance.patch<OrderResponse>(
+    `/stores/${storeId}/orders/${orderId}/cancel`,
+  );
+  return data;
+}
