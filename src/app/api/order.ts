@@ -22,16 +22,18 @@ export type OrderResponse = {
   paid: boolean;
 };
 
+const storeId = getStoreId();
+
 export async function getOrder(orderId: number) {
-  const { data } = await instance.get<OrderResponse>(`/orders/${orderId}`);
+  const { data } = await instance.get<OrderResponse>(
+    `/stores/${storeId}/orders/${orderId}`,
+  );
   return data;
 }
 
-export async function createOrder(payload: OrderRequest) {
-  const storeId = getStoreId();
-
+export async function createOrder(tableId: number, payload: OrderRequest) {
   const { data } = await instance.post<OrderResponse>(
-    `/stores/${storeId}/orders`,
+    `/stores/${storeId}/tables/${tableId}/orders`,
     payload,
   );
   return data;

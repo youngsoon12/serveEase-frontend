@@ -1,4 +1,5 @@
 import { instance } from '@/lib/axios';
+import { getStoreId } from './store';
 
 export type MenuItem = {
   id: number;
@@ -9,6 +10,8 @@ export type MenuItem = {
 };
 
 export async function getMenus(): Promise<MenuItem[]> {
-  const { data } = await instance.get<MenuItem[]>('/menus');
+  const storeId = getStoreId();
+
+  const { data } = await instance.get<MenuItem[]>(`/stores/${storeId}/menus`);
   return data;
 }
