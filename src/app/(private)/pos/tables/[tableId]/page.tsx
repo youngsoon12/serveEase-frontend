@@ -11,7 +11,12 @@ import BackButton from '@/components/BackButton';
 import CategoryTab from '@/components/CategoryTab';
 import useMenus from '@/hooks/useMenus';
 import useOrderCart from '@/hooks/useOrderCart';
-import { useAddOrder, useCreateOrder, useOrder } from '@/hooks/useOrder';
+import {
+  useAddOrder,
+  useCancelOrder,
+  useCreateOrder,
+  useOrder,
+} from '@/hooks/useOrder';
 import ExistingOrderList from '@/components/ExistingOrderList';
 
 type ModalType = 'trash' | 'cancel';
@@ -99,6 +104,9 @@ export default function PosMenuPage() {
       });
     }
   }
+
+  // 주문 취소
+  const cancelOrder = useCancelOrder(Number(orderId));
 
   return (
     <div className="flex h-[89vh] bg-default">
@@ -286,8 +294,11 @@ export default function PosMenuPage() {
             if (modal === 'trash') {
               cart.clearCart();
             } else if (modal === 'cancel') {
-              // cancelOrder API 호출
-              close();
+              cancelOrder.mutate(undefined, {
+                onSuccess: () => {
+                  cart.clearCart();
+                },
+              });
             }
           }}
         />
