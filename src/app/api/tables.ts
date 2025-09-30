@@ -25,16 +25,28 @@ export type TablesResponse = {
   empty: boolean;
 };
 
+export type UpdateTablesRequest = {
+  newTotalCount: number;
+};
+
 export const PAGE_SIZE = 12;
+
+const storeId = getStoreId();
 
 export async function getTables(
   page: number,
   size = PAGE_SIZE,
 ): Promise<TablesResponse> {
-  const storeId = getStoreId();
-
   const { data } = await instance.get(`/stores/${storeId}/tables`, {
     params: { page, size },
   });
+  return data;
+}
+
+export async function updateTables(newTotalCount: number) {
+  const { data } = await instance.put(`/stores/${storeId}/tables/bulk-update`, {
+    newTotalCount,
+  });
+
   return data;
 }
