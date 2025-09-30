@@ -1,7 +1,7 @@
+import { OrderResponse } from '@/app/api/order';
 import {
   getTables,
   PAGE_SIZE,
-  TableItem,
   TablesResponse,
   updateTableCount,
   updateTableState,
@@ -80,19 +80,18 @@ export function useUpdateTableCount() {
 export function useUpdateTableStatus() {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    TableItem,
-    AxiosError,
-    { tableId: number; status: string }
-  >({
-    mutationFn: ({ tableId, status }) => updateTableState(tableId, status),
-    onSuccess: () => {
-      toast.success('테이블 상태가 정상적으로 수정되었습니다.');
+  return useMutation<OrderResponse, AxiosError, { orderId: number }>({
+    mutationFn: ({ orderId }) => updateTableState(orderId),
+    onSuccess: (updated) => {
+      toast.success('서빙 완료 처리되었습니다.');
+
+      queryClient.setQueryData(['order', updated.id], updated);
+      queryClient.invalidateQueries({ queryKey: ['order', updated.id] });
 
       queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
     onError: (err) => {
-      toast.error('테이블 상태 수정에 실패했습니다.');
+      toast.error('서빙 처리에 실패했습니다.');
 
       console.error('status:', err?.response?.status);
       console.error('data:', err?.response?.data);
