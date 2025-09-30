@@ -16,7 +16,6 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
 
 type NewProduct = {
   name: string;
@@ -35,7 +34,7 @@ export default function NewProductModal() {
     available: true,
   });
   const { data: categories, isLoading } = useCategories();
-  const { mutate: createProduct, isPending } = useCreateProduct();
+  const { mutate: createProduct } = useCreateProduct();
 
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

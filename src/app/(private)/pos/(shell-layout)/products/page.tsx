@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useProducts, useDeleteProduct } from '@/hooks/useProducts';
@@ -9,11 +9,11 @@ import Button from '@/components/Button';
 export default function Page() {
   const { mutate: deleteProduct } = useDeleteProduct();
   const { rows, isLoading, error, noticeText } = useProducts();
-  const [searchName, setSearchName] = useState('');
+  // const [searchName, setSearchName] = useState('');
   const router = useRouter();
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setSearchName(e.target.value);
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  //   setSearchName(e.target.value);
 
   const handleOpenEditClick = (p: (typeof rows)[number]) => {
     const q = new URLSearchParams({
@@ -37,7 +37,7 @@ export default function Page() {
             type="text"
             className="w-full outline-0"
             placeholder="검색어를 입력해주세요."
-            onChange={handleSearchChange}
+            // onChange={handleSearchChange}
           />
           <X />
         </div>
