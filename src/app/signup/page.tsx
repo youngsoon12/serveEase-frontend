@@ -33,8 +33,7 @@ const Singnup = () => {
     tableCount: 0,
   });
 
-  const { mutate: signupFn, isPending } = useSignup();
-  console.log(signupInfo);
+  const { mutate: signupFn } = useSignup();
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignupInfo((prev) => ({ ...prev, [name]: value }));
