@@ -72,6 +72,8 @@ export default function PosMenuPage() {
     isError: orderIsError,
   } = useOrder(orderId);
 
+  console.log(order);
+
   // 주문 생성 / 재주문
   const createOrder = useCreateOrder(Number(tableId));
   const addOrder = useAddOrder(Number(orderId));
@@ -188,10 +190,7 @@ export default function PosMenuPage() {
             <div className="p-4 space-y-3">
               {order && !orderIsFetching && !orderIsError && (
                 <>
-                  <ExistingOrderList
-                    items={order.orderItems}
-                    totalPrice={order.totalPrice}
-                  />
+                  <ExistingOrderList items={order.orderItems} />
 
                   {cart.cartItems.length > 0 && (
                     <div className="border-t my-3" />
