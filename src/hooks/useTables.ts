@@ -1,8 +1,21 @@
-import { getTables, PAGE_SIZE, TablesResponse } from '@/app/api/tables';
+import {
+  getTables,
+  PAGE_SIZE,
+  TablesResponse,
+  updateTables,
+} from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
-export default function useTables(page: number) {
+export function useTables(page: number) {
   const query = useQuery<TablesResponse>({
     queryKey: ['tables', page],
     queryFn: () => getTables(page, PAGE_SIZE),
@@ -39,4 +52,25 @@ export default function useTables(page: number) {
     cards,
     noticeText: query.error ? '요청을 처리하지 못했습니다.' : null,
   };
+}
+
+export function useUpdateTables() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation<void, AxiosError, number>({
+    mutationFn: (newTotalCount: number) => updateTables(newTotalCount),
+    onSuccess: () => {
+      toast.error('테이블 개수가 정상적으로 수정되었습니다.');
+
+      router.push('/pos/tables');
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
+    },
+    onError: (err) => {
+      toast.error('테이블 개수 수정에 실패했습니다.');
+
+      console.error('status:', err?.response?.status);
+      console.error('data:', err?.response?.data);
+    },
+  });
 }
