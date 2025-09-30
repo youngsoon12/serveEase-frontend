@@ -1,8 +1,10 @@
 import {
   getTables,
   PAGE_SIZE,
+  TableItem,
   TablesResponse,
   updateTableCount,
+  updateTableState,
 } from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
 import {
@@ -61,13 +63,36 @@ export function useUpdateTableCount() {
   return useMutation<void, AxiosError, number>({
     mutationFn: (newTotalCount: number) => updateTableCount(newTotalCount),
     onSuccess: () => {
-      toast.error('테이블 개수가 정상적으로 수정되었습니다.');
+      toast.success('테이블 개수가 정상적으로 수정되었습니다.');
 
       router.push('/pos/tables');
       queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
     onError: (err) => {
       toast.error('테이블 개수 수정에 실패했습니다.');
+
+      console.error('status:', err?.response?.status);
+      console.error('data:', err?.response?.data);
+    },
+  });
+}
+
+export function useUpdateTableStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    TableItem,
+    AxiosError,
+    { tableId: number; status: string }
+  >({
+    mutationFn: ({ tableId, status }) => updateTableState(tableId, status),
+    onSuccess: () => {
+      toast.success('테이블 상태가 정상적으로 수정되었습니다.');
+
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
+    },
+    onError: (err) => {
+      toast.error('테이블 상태 수정에 실패했습니다.');
 
       console.error('status:', err?.response?.status);
       console.error('data:', err?.response?.data);
