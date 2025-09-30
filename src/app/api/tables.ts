@@ -43,7 +43,7 @@ export async function getTables(
   return data;
 }
 
-export async function updateTables(newTotalCount: number) {
+export async function updateTableCount(newTotalCount: number) {
   const { data } = await instance.put(`/stores/${storeId}/tables/bulk-update`, {
     newTotalCount,
   });

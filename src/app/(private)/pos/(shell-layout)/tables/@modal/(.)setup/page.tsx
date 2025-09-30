@@ -3,7 +3,7 @@
 import ModalShell from '@/components/ModalShell';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useUpdateTables } from '@/hooks/useTables';
+import { useUpdateTableCount } from '@/hooks/useTables';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,7 +11,7 @@ export default function TableSetupModal() {
   const [value, setValue] = useState('');
   const newTotalCount = Number(value);
 
-  const { mutate, isPending } = useUpdateTables();
+  const { mutate, isPending } = useUpdateTableCount();
 
   return (
     <>

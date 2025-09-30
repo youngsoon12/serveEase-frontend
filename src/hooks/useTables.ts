@@ -2,7 +2,7 @@ import {
   getTables,
   PAGE_SIZE,
   TablesResponse,
-  updateTables,
+  updateTableCount,
 } from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
 import {
@@ -54,12 +54,12 @@ export function useTables(page: number) {
   };
 }
 
-export function useUpdateTables() {
+export function useUpdateTableCount() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation<void, AxiosError, number>({
-    mutationFn: (newTotalCount: number) => updateTables(newTotalCount),
+    mutationFn: (newTotalCount: number) => updateTableCount(newTotalCount),
     onSuccess: () => {
       toast.error('테이블 개수가 정상적으로 수정되었습니다.');
 
