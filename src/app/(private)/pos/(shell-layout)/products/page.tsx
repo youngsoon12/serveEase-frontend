@@ -7,14 +7,8 @@ import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
 
 export default function Page() {
-  const [storeId, setStoreId] = useState<number | null>(null);
-  useEffect(() => {
-    const raw = localStorage.getItem('storeId');
-    if (raw) setStoreId(Number(raw));
-  }, []);
-
   const { mutate: deleteProduct } = useDeleteProduct();
-  const { rows, isLoading, error, noticeText } = useProducts(storeId);
+  const { rows, isLoading, error, noticeText } = useProducts();
   const [searchName, setSearchName] = useState('');
   const router = useRouter();
 

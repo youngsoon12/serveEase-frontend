@@ -1,4 +1,5 @@
 import { instance } from '@/lib/axios';
+import { getStoreId } from './store';
 
 export type ProductsResponse = {
   id: number;
@@ -15,11 +16,10 @@ export type CreateProductInput = {
   available: boolean;
 };
 
-export async function getProducts(
-  storeId: number | null,
-): Promise<ProductsResponse[]> {
+export async function getProducts(): Promise<ProductsResponse[]> {
+  const storeId = getStoreId();
   const { data } = await instance.get<ProductsResponse[]>(
-    `stores/${storeId}/menus`,
+    `/stores/${storeId}/menus`,
   );
   return data;
 }
@@ -27,18 +27,24 @@ export async function getProducts(
 export async function postProduct(
   product: CreateProductInput,
 ): Promise<ProductsResponse> {
-  const { data } = await instance.post('/menus', product);
+  const storeId = getStoreId();
+  const { data } = await instance.post(`/stores/${storeId}/menus`, product);
   return data;
 }
 
-export async function deleteProduct(productId: number) {
-  const { data } = await instance.delete(`/menus/${productId}`);
+export async function deleteProduct(menuId: number) {
+  const storeId = getStoreId();
+  const { data } = await instance.delete(`/stores/${storeId}/menus/${menuId}`);
 }
 
 export async function putProduct(
-  productId: number,
+  menuId: number,
   product: CreateProductInput,
 ): Promise<ProductsResponse> {
-  const { data } = await instance.put(`/menus/${productId}`, product);
+  const storeId = getStoreId();
+  const { data } = await instance.put(
+    `/stores/${storeId}/menus/${menuId}`,
+    product,
+  );
   return data;
 }

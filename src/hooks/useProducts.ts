@@ -10,11 +10,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-export function useProducts(storeId: number | null) {
+export function useProducts() {
   const query = useQuery<ProductsResponse[]>({
-    queryKey: ['products', storeId],
-    queryFn: () => getProducts(storeId),
-    enabled: storeId != null,
+    queryKey: ['products'],
+    queryFn: () => getProducts(),
     staleTime: 1000 * 60,
   });
 
