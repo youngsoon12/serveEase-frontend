@@ -18,6 +18,7 @@ import {
   useOrder,
 } from '@/hooks/useOrder';
 import ExistingOrderList from '@/components/ExistingOrderList';
+import { useUpdateTableStatus } from '@/hooks/useTables';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -117,6 +118,11 @@ export default function PosMenuPage() {
     SERVED: 'bg-green-600 text-white',
   };
 
+  // 테이블 상태 변경
+  const updateTableStatus = useUpdateTableStatus();
+
+  const currentStatus = order?.status;
+
   return (
     <div className="flex h-[89vh] bg-default">
       {/* 왼쪽 메뉴 영역 */}
@@ -180,10 +186,21 @@ export default function PosMenuPage() {
             </div>
 
             <div className="flex gap-6  items-center">
-              <input
-                type="checkbox"
-                className="h-5 w-5 cursor-pointer rounded-md border border-gray-300 bg-gray-300"
-              />
+              {/* 테이블 상태 변경 체크박스 */}
+              {orderId !== undefined && currentStatus !== undefined && (
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 cursor-pointer rounded-md border border-gray-300 bg-gray-300"
+                  checked={currentStatus === 'SERVED'}
+                  disabled={updateTableStatus.isPending}
+                  onChange={() => {
+                    if (currentStatus === 'ORDERED') {
+                      updateTableStatus.mutate({ orderId: Number(orderId) });
+                    }
+                  }}
+                />
+              )}
+
               <Button
                 className="w-7 h-7 text-gray-400 cursor-pointer hover:text-gray-600"
                 variant={'ghost'}
