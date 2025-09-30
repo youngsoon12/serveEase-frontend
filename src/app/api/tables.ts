@@ -1,5 +1,6 @@
 import { instance } from '@/lib/axios';
 import { getStoreId } from './store';
+import { OrderResponse } from './order';
 
 export type TablesResponse = {
   content: {
@@ -25,8 +26,6 @@ export type TablesResponse = {
   empty: boolean;
 };
 
-export type TableItem = TablesResponse['content'][number];
-
 export const PAGE_SIZE = 12;
 
 const storeId = getStoreId();
@@ -50,12 +49,12 @@ export async function updateTableCount(newTotalCount: number) {
 }
 
 export async function updateTableState(
-  tableId: number,
-  status: string,
-): Promise<TableItem> {
-  const { data } = await instance.put(`/stores/${storeId}/tables/${tableId}`, {
-    status,
-  });
+  orderId: number,
+): Promise<OrderResponse> {
+  const { data } = await instance.patch(
+    `/stores/${storeId}/orders/${orderId}/serve`,
+    {},
+  );
 
   return data;
 }
