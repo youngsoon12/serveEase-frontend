@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import TableCard from '@/components/TableCard';
-import useTables from '@/hooks/useTables';
+import {useTables} from '@/hooks/useTables';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function TablesPage() {

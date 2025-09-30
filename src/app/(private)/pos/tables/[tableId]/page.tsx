@@ -18,6 +18,7 @@ import {
   useOrder,
 } from '@/hooks/useOrder';
 import ExistingOrderList from '@/components/ExistingOrderList';
+import { useUpdateTableStatus } from '@/hooks/useTables';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -72,6 +73,8 @@ export default function PosMenuPage() {
     isError: orderIsError,
   } = useOrder(orderId);
 
+  console.log(order);
+
   // 주문 생성 / 재주문
   const createOrder = useCreateOrder(Number(tableId));
   const addOrder = useAddOrder(Number(orderId));
@@ -107,6 +110,18 @@ export default function PosMenuPage() {
 
   // 주문 취소
   const cancelOrder = useCancelOrder(Number(orderId));
+
+  // 테이블 상태
+  const STATUS_COLORS: Record<'EMPTY' | 'ORDERED' | 'SERVED', string> = {
+    EMPTY: 'bg-gray-300 text-gray-800',
+    ORDERED: 'bg-amber-500 text-white',
+    SERVED: 'bg-green-600 text-white',
+  };
+
+  // 테이블 상태 변경
+  const updateTableStatus = useUpdateTableStatus();
+
+  const currentStatus = order?.status;
 
   return (
     <div className="flex h-[89vh] bg-default">
@@ -161,16 +176,31 @@ export default function PosMenuPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <span className="text-lg font-semibold">{tableId}번 테이블</span>
-              <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
-                RECEIVED
+              <span
+                className={`text-xs px-2 py-1 rounded ${
+                  STATUS_COLORS[order?.status as keyof typeof STATUS_COLORS]
+                }`}
+              >
+                {order?.status}
               </span>
             </div>
 
             <div className="flex gap-6  items-center">
-              <input
-                type="checkbox"
-                className="h-5 w-5 cursor-pointer rounded-md border border-gray-300 bg-gray-300"
-              />
+              {/* 테이블 상태 변경 체크박스 */}
+              {orderId !== undefined && currentStatus !== undefined && (
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 cursor-pointer rounded-md border border-gray-300 bg-gray-300"
+                  checked={currentStatus === 'SERVED'}
+                  disabled={updateTableStatus.isPending}
+                  onChange={() => {
+                    if (currentStatus === 'ORDERED') {
+                      updateTableStatus.mutate({ orderId: Number(orderId) });
+                    }
+                  }}
+                />
+              )}
+
               <Button
                 className="w-7 h-7 text-gray-400 cursor-pointer hover:text-gray-600"
                 variant={'ghost'}
@@ -188,10 +218,7 @@ export default function PosMenuPage() {
             <div className="p-4 space-y-3">
               {order && !orderIsFetching && !orderIsError && (
                 <>
-                  <ExistingOrderList
-                    items={order.orderItems}
-                    totalPrice={order.totalPrice}
-                  />
+                  <ExistingOrderList items={order.orderItems} />
 
                   {cart.cartItems.length > 0 && (
                     <div className="border-t my-3" />

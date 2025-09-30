@@ -1,10 +1,21 @@
 'use client';
 
-import Input from '@/components/Input';
 import ModalShell from '@/components/ModalShell';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useUpdateTableCount } from '@/hooks/useTables';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function TableSetupModal() {
+  const router = useRouter();
+
+  const [value, setValue] = useState('');
+  const newTotalCount = Number(value);
+
+  const { mutate, isPending } = useUpdateTableCount();
+
   return (
     <>
       <ModalShell title={'테이블 설정'} size="sm">
@@ -17,8 +28,36 @@ export default function TableSetupModal() {
           </div>
           <div className="flex justify-center">
             <div className="flex flex-col gap-4  w-72">
-              <Input type={'text'} className="w-full h-11" />
-              <Button className="w-full h-11">저장</Button>
+              <Input
+                type="number"
+                className="w-full h-11"
+                min={0}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                disabled={isPending}
+              />
+              <Button
+                className="w-full h-11"
+                disabled={isPending}
+                onClick={() => {
+                  if (
+                    !Number.isFinite(newTotalCount) ||
+                    !Number.isInteger(newTotalCount) ||
+                    newTotalCount < 0
+                  ) {
+                    toast.error('0 이상의 정수를 입력하세요.');
+                    return;
+                  }
+
+                  mutate(newTotalCount, {
+                    onSuccess: () => {
+                      router.back();
+                    },
+                  });
+                }}
+              >
+                {isPending ? '저장 중...' : '저장'}
+              </Button>
             </div>
           </div>
         </div>

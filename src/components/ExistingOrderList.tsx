@@ -2,10 +2,8 @@ import { OrderResponse } from '@/app/api/order';
 
 export default function ExistingOrderList({
   items,
-  totalPrice,
 }: {
   items: OrderResponse['orderItems'];
-  totalPrice: number;
 }) {
   if (!items.length) return null;
 
@@ -20,7 +18,7 @@ export default function ExistingOrderList({
             {item.menuName} x {item.quantity}
           </p>
           <span className=" text-gray-500 select-none">
-            {totalPrice.toLocaleString()}
+            {item.itemPrice.toLocaleString()}
           </span>
         </div>
       ))}

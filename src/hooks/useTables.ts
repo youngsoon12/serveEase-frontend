@@ -1,8 +1,23 @@
-import { getTables, PAGE_SIZE, TablesResponse } from '@/app/api/tables';
+import { OrderResponse } from '@/app/api/order';
+import {
+  getTables,
+  PAGE_SIZE,
+  TablesResponse,
+  updateTableCount,
+  updateTableState,
+} from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
-export default function useTables(page: number) {
+export function useTables(page: number) {
   const query = useQuery<TablesResponse>({
     queryKey: ['tables', page],
     queryFn: () => getTables(page, PAGE_SIZE),
@@ -39,4 +54,47 @@ export default function useTables(page: number) {
     cards,
     noticeText: query.error ? '요청을 처리하지 못했습니다.' : null,
   };
+}
+
+export function useUpdateTableCount() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation<void, AxiosError, number>({
+    mutationFn: (newTotalCount: number) => updateTableCount(newTotalCount),
+    onSuccess: () => {
+      toast.success('테이블 개수가 정상적으로 수정되었습니다.');
+
+      router.push('/pos/tables');
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
+    },
+    onError: (err) => {
+      toast.error('테이블 개수 수정에 실패했습니다.');
+
+      console.error('status:', err?.response?.status);
+      console.error('data:', err?.response?.data);
+    },
+  });
+}
+
+export function useUpdateTableStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation<OrderResponse, AxiosError, { orderId: number }>({
+    mutationFn: ({ orderId }) => updateTableState(orderId),
+    onSuccess: (updated) => {
+      toast.success('서빙 완료 처리되었습니다.');
+
+      queryClient.setQueryData(['order', updated.id], updated);
+      queryClient.invalidateQueries({ queryKey: ['order', updated.id] });
+
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
+    },
+    onError: (err) => {
+      toast.error('서빙 처리에 실패했습니다.');
+
+      console.error('status:', err?.response?.status);
+      console.error('data:', err?.response?.data);
+    },
+  });
 }
