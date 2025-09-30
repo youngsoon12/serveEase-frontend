@@ -110,6 +110,11 @@ export default function PosMenuPage() {
   // 주문 취소
   const cancelOrder = useCancelOrder(Number(orderId));
 
+  const STATUS_COLORS: Record<'EMPTY' | 'ORDERED' | 'SERVED', string> = {
+    EMPTY: 'bg-gray-300 text-gray-800',
+    ORDERED: 'bg-amber-500 text-white',
+    SERVED: 'bg-green-600 text-white',
+  };
   return (
     <div className="flex h-[89vh] bg-default">
       {/* 왼쪽 메뉴 영역 */}
@@ -163,8 +168,13 @@ export default function PosMenuPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <span className="text-lg font-semibold">{tableId}번 테이블</span>
-              <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
-                RECEIVED
+              <span
+                className={`text-xs px-2 py-1 rounded ${
+                  STATUS_COLORS[order?.status as keyof typeof STATUS_COLORS] ||
+                  ''
+                }`}
+              >
+                {order?.status}
               </span>
             </div>
 
