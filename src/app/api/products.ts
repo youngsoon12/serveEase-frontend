@@ -15,8 +15,12 @@ export type CreateProductInput = {
   available: boolean;
 };
 
-export async function getProducts(): Promise<ProductsResponse[]> {
-  const { data } = await instance.get<ProductsResponse[]>('/menus');
+export async function getProducts(
+  storeId: number | null,
+): Promise<ProductsResponse[]> {
+  const { data } = await instance.get<ProductsResponse[]>(
+    `stores/${storeId}/menus`,
+  );
   return data;
 }
 
