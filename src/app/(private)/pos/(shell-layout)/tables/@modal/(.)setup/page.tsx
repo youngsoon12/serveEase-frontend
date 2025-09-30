@@ -4,10 +4,13 @@ import ModalShell from '@/components/ModalShell';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useUpdateTableCount } from '@/hooks/useTables';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function TableSetupModal() {
+  const router = useRouter();
+
   const [value, setValue] = useState('');
   const newTotalCount = Number(value);
 
@@ -46,7 +49,11 @@ export default function TableSetupModal() {
                     return;
                   }
 
-                  mutate(newTotalCount);
+                  mutate(newTotalCount, {
+                    onSuccess: () => {
+                      router.back();
+                    },
+                  });
                 }}
               >
                 {isPending ? '저장 중...' : '저장'}
