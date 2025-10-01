@@ -1,16 +1,19 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useProducts, useDeleteProduct } from '@/hooks/useProducts';
 import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
+import NewProductModal from './@modal/(.)new/page';
 
 export default function Page() {
   const { mutate: deleteProduct } = useDeleteProduct();
   const { rows, isLoading, error, noticeText } = useProducts();
   const [searchName, setSearchName] = useState('');
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const openNew = searchParams.get('open') === 'new';
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setSearchName(e.target.value);
@@ -24,8 +27,10 @@ export default function Page() {
     }).toString();
     router.push(`/pos/products/${p.id}/edit?${q}`, { scroll: false });
   };
+
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>{noticeText}</div>;
+
   return (
     <div className="min-w-[500px] mx-auto w-full md:w-[50%] lg:w-[70%] max-w-[1200px] px-4">
       <h1 className="font-bold my-5 text-4xl md:text-5xl">상품 관리</h1>
@@ -102,6 +107,7 @@ export default function Page() {
             ))}
           </tbody>
         </table>
+        {openNew && <NewProductModal />}
       </div>
     </div>
   );
