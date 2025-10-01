@@ -17,6 +17,7 @@ export function useOrder(orderId?: number) {
     queryKey: ['order', orderId],
     queryFn: () => getOrder(orderId as number),
     staleTime: 60 * 5 * 1000,
+    enabled: !!orderId,
   });
 }
 
