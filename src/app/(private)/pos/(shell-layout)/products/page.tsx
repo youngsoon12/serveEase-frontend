@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useProducts, useDeleteProduct } from '@/hooks/useProducts';
@@ -7,8 +7,8 @@ import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
 
 export default function Page() {
-  const { rows, isLoading, error, noticeText } = useProducts();
   const { mutate: deleteProduct } = useDeleteProduct();
+  const { rows, isLoading, error, noticeText } = useProducts();
   const [searchName, setSearchName] = useState('');
   const router = useRouter();
 
@@ -25,10 +25,7 @@ export default function Page() {
     router.push(`/pos/products/${p.id}/edit?${q}`, { scroll: false });
   };
   if (isLoading) return <div>로딩 중...</div>;
-  if (error) {
-    console.log(error);
-  }
-  return <div>{noticeText}</div>;
+  if (error) return <div>{noticeText}</div>;
   return (
     <div className="min-w-[500px] mx-auto w-full md:w-[50%] lg:w-[70%] max-w-[1200px] px-4">
       <h1 className="font-bold my-5 text-4xl md:text-5xl">상품 관리</h1>

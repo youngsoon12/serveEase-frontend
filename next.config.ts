@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://3.39.230.117:8080/api/:path*',
+        destination: 'https://api.servenow.site/api/:path*',
       },
     ];
   },

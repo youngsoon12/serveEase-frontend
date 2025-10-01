@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 export function useProducts() {
   const query = useQuery<ProductsResponse[]>({
     queryKey: ['products'],
-    queryFn: getProducts,
+    queryFn: () => getProducts(),
     staleTime: 1000 * 60,
   });
 
