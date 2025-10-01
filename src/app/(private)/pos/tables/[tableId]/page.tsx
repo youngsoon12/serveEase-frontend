@@ -73,8 +73,6 @@ export default function PosMenuPage() {
     isError: orderIsError,
   } = useOrder(orderId);
 
-  console.log(order);
-
   // 주문 생성 / 재주문
   const createOrder = useCreateOrder(Number(tableId));
   const addOrder = useAddOrder(Number(orderId));
@@ -304,9 +302,12 @@ export default function PosMenuPage() {
           </Button>
 
           <Button asChild className="w-full bg-slate-600 h-12">
-            <Link href={`/pos/tables/${tableId}/orders`}>
+            <Link href={`/pos/tables/${tableId}/orders?orderId=${orderId}`}>
               <span className="font-semibold">
-                {cart.totalPrice.toLocaleString()}원 결제
+                {order?.totalPrice
+                  ? (order?.totalPrice + cart.totalPrice).toLocaleString()
+                  : cart.totalPrice.toLocaleString()}
+                원 결제
               </span>
             </Link>
           </Button>
