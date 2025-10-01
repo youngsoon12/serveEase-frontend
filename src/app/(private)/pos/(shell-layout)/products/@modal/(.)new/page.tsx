@@ -16,7 +16,6 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
 
 type NewProduct = {
   name: string;
