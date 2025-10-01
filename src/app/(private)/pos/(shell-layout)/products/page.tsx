@@ -7,6 +7,7 @@ import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
 import NewProductModal from './@modal/(.)new/page';
 import NewCategoryModal from './@modal/(.)newCategory/page';
+import EditProductModal from './@modal/(.)[productId]/edit/page';
 
 export default function Page() {
   const { mutate: deleteProduct } = useDeleteProduct();
@@ -14,8 +15,8 @@ export default function Page() {
   const [searchName, setSearchName] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
-  const open = searchParams.get('open');
-
+  const sp = useSearchParams();
+  const open = sp.get('open');
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setSearchName(e.target.value);
 
