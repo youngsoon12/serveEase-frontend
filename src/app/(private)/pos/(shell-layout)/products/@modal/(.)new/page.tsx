@@ -16,7 +16,6 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
 
 type NewProduct = {
   name: string;
@@ -58,7 +57,7 @@ export default function NewProductModal() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">상품 추가</h2>
           <button onClick={() => router.back()}>
-            <X className="w-6 h-6 text-gray-500 hover:text-black" />
+            <X className="w-6 h-6 text-gray-500 hover:text-black cursor-pointer" />
           </button>
         </div>
 
