@@ -35,8 +35,8 @@ export default function TableSetup({ onSuccess }: TableSetupProps) {
   };
   return (
     <div>
-      <div>
-        <p className="text-lg">테이블 개수</p>
+      <div className="w-72 mx-auto">
+        <p className="text-lg text-left">테이블 개수</p>
         <p className="text-xs text-text-error">
           모든 테이블이 빈 상태일 때 수정 가능합니다.
         </p>
