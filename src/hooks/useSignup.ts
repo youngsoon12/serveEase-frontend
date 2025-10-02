@@ -28,16 +28,10 @@ export default function useSignup() {
       if (isAxiosError<ValidationError>(err) && err.response) {
         const data = err.response.data;
         const errors = data?.errors ?? [];
-        console.log(errors);
         const first =
           ORDER.map((f) => errors.find((e) => e.field === f)).find(
             (e): e is FieldError => !!e,
           ) || errors[0];
-        const a = ORDER.map((f) => errors.find((e) => e.field === f));
-        const b = a.find((e): e is FieldError => !!e);
-        const c = a.find((e) => !!e);
-        console.log(a);
-        console.log(b);
 
         const msg = first?.message || data?.title || '회원가입 실패';
         toast.error(msg);
