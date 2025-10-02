@@ -55,14 +55,14 @@ export default function Page() {
           </Button>
         </Link>
       </div>
-
-      <div className="mt-5 overflow-x-auto md:overflow-visible">
+      <div className="mt-5 max-h-100 overflow-y-auto">
         <table className="w-full table-fixed border-separate border-spacing-y-3">
           <colgroup>
             <col className="w-[40%]" />
             <col className="w-[20%]" />
             <col className="w-[20%]" />
-            <col className="w-[20%]" />
+            <col className="w-[15%]" />
+            <col className="w-[5%] " />
           </colgroup>
 
           <thead>
@@ -109,9 +109,9 @@ export default function Page() {
             ))}
           </tbody>
         </table>
-        {open === 'new' && <NewProductModal />}
-        {open === 'newCategory' && <NewCategoryModal />}
       </div>
+      {open === 'new' && <NewProductModal />}
+      {open === 'newCategory' && <NewCategoryModal />}
     </div>
   );
 }
