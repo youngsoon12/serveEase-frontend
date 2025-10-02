@@ -29,8 +29,8 @@ export function useCreateCategory() {
       toast.success('카테고리 추가에 성공하였습니다.');
       router.back();
     },
-    onError: (message) => {
-      toast.error(`${message} 카테고리 추가에 실패하였습니다.`);
+    onError: () => {
+      toast.error(`카테고리 추가에 실패하였습니다.`);
     },
   });
 }

@@ -48,7 +48,7 @@ const singnup = () => {
         router.push('/');
       },
       onError: (err) => {
-        toast.error(`회원가입 실패: ${err.message}`);
+        toast.error(`회원가입에 실패하였습니다`);
       },
     });
   };

@@ -50,10 +50,8 @@ export function useCreateProduct() {
       router.back();
     },
 
-    onError: (err: unknown) => {
-      const msg =
-        err instanceof Error ? err.message : '알 수 없는 오류가 발생했어요.';
-      toast.error(`상품 추가에 실패했습니다. ${msg}`);
+    onError: () => {
+      toast.error(`상품 추가에 실패했습니다.`);
     },
   });
 }
@@ -72,10 +70,8 @@ export function useUpdateProduct() {
       toast.success('상품이 수정되었습니다.');
       router.back();
     },
-    onError: (err: unknown) => {
-      const msg =
-        err instanceof Error ? err.message : '알 수 없는 오류가 발생했어요.';
-      toast.error(`상품 수정에 실패했습니다. ${msg}`);
+    onError: () => {
+      toast.error(`상품 수정에 실패했습니다.`);
     },
   });
 }
