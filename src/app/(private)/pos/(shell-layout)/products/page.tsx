@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useDeferredValue, useMemo } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useProducts, useDeleteProduct } from '@/hooks/useProducts';
@@ -7,12 +7,19 @@ import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
 import NewProductModal from './@modal/(.)new/page';
 import NewCategoryModal from './@modal/(.)newCategory/page';
+import { productSearchFilters } from '@/lib/productSearchFilters';
 
 export default function Page() {
   const { mutate: deleteProduct } = useDeleteProduct();
   const { rows, isLoading, error, noticeText } = useProducts();
   const [searchName, setSearchName] = useState('');
-  const searchParams = useSearchParams();
+  const deferredQuery = useDeferredValue(searchName);
+  const filteredRows = useMemo(
+    () => productSearchFilters(rows, deferredQuery),
+    [rows, deferredQuery],
+  );
+  console.log(rows);
+  console.log(filteredRows);
   const router = useRouter();
   const sp = useSearchParams();
   const open = sp.get('open');
@@ -43,6 +50,7 @@ export default function Page() {
             type="text"
             className="w-full outline-0"
             placeholder="검색어를 입력해주세요."
+            value={searchName}
             onChange={handleSearchChange}
           />
           <X />
@@ -96,7 +104,7 @@ export default function Page() {
               <col className="w-[5%]" />
             </colgroup>
             <tbody>
-              {rows?.map((p) => (
+              {filteredRows?.map((p) => (
                 <tr
                   key={p.id}
                   className="bg-white cursor-pointer hover:bg-gray-50"
