@@ -7,7 +7,6 @@ import { Search, X, Settings, Trash2 } from 'lucide-react';
 import Button from '@/components/Button';
 import NewProductModal from './@modal/(.)new/page';
 import NewCategoryModal from './@modal/(.)newCategory/page';
-import EditProductModal from './@modal/(.)[productId]/edit/page';
 
 export default function Page() {
   const { mutate: deleteProduct } = useDeleteProduct();
@@ -55,17 +54,17 @@ export default function Page() {
           </Button>
         </Link>
       </div>
-      <div className="mt-5 max-h-100 overflow-y-auto">
+      <div className="mt-5 overflow-x-auto">
+        {/* 헤더(고정) */}
         <table className="w-full table-fixed border-separate border-spacing-y-3">
           <colgroup>
             <col className="w-[40%]" />
             <col className="w-[20%]" />
             <col className="w-[20%]" />
             <col className="w-[15%]" />
-            <col className="w-[5%] " />
+            <col className="w-[5%]" />
           </colgroup>
-
-          <thead>
+          <thead className="bg-[#f5f5f5]">
             <tr>
               <th className="px-4 py-2 text-left">상품명</th>
               <th className="px-4 py-2 text-center">가격</th>
@@ -73,42 +72,58 @@ export default function Page() {
                 <div className="flex items-center justify-center gap-1">
                   <span>카테고리</span>
                   <Link href="/pos/products/newCategory" scroll={false}>
-                    <Settings className="w-4 h-4 text-gray-700 cursor-pointer hover:text-gray-700" />
+                    <Settings className="w-4 h-4 text-gray-700 hover:text-gray-700" />
                   </Link>
                 </div>
               </th>
               <th className="px-4 py-2 text-center">상태</th>
+              <th className="px-4 py-2 text-center"></th>
             </tr>
           </thead>
-
-          <tbody>
-            {rows?.map((p) => (
-              <tr
-                key={p.id}
-                className="bg-white cursor-pointer hover:bg-gray-50"
-                onClick={() => handleOpenEditClick(p)}
-              >
-                <td className="px-4 py-4 truncate">{p.name}</td>
-                <td className="px-4 py-4 text-center">
-                  {p.price.toLocaleString()}
-                </td>
-                <td className="px-4 py-4 text-center">{p.category}</td>
-                <td className="px-4 py-4 text-center">{p.available}</td>
-                <td className="px-2 text-center">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // 행 클릭 이벤트 막기
-                      deleteProduct(p.id);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
         </table>
+
+        {/* 바디 */}
+        <div
+          className="max-h-[60vh] overflow-y-auto"
+          style={{ scrollbarGutter: 'stable' }}
+        >
+          <table className="w-full table-fixed border-separate border-spacing-y-3">
+            <colgroup>
+              <col className="w-[40%]" />
+              <col className="w-[20%]" />
+              <col className="w-[20%]" />
+              <col className="w-[15%]" />
+              <col className="w-[5%]" />
+            </colgroup>
+            <tbody>
+              {rows?.map((p) => (
+                <tr
+                  key={p.id}
+                  className="bg-white cursor-pointer hover:bg-gray-50"
+                  onClick={() => handleOpenEditClick(p)}
+                >
+                  <td className="px-4 py-4 truncate">{p.name}</td>
+                  <td className="px-4 py-4 text-center">
+                    {p.price.toLocaleString()}
+                  </td>
+                  <td className="px-4 py-4 text-center">{p.category}</td>
+                  <td className="px-4 py-4 text-center">{p.available}</td>
+                  <td className="px-4 py-2 text-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteProduct(p.id);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <Trash2 className="w-5 h-5 mt-1" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       {open === 'new' && <NewProductModal />}
       {open === 'newCategory' && <NewCategoryModal />}
