@@ -35,8 +35,8 @@ export function useTables(page: number) {
     query.data?.content.map((item) => {
       const status = toUIStatus(item.displayStatus);
       const href = item.activeOrder?.orderId
-        ? `/pos/tables/${item.restaurantTableNumber}?orderId=${item.activeOrder.orderId}`
-        : `/pos/tables/${item.restaurantTableNumber}`;
+        ? `/pos/tables/${item.id}?orderId=${item.activeOrder.orderId}&no=${item.restaurantTableNumber}`
+        : `/pos/tables/${item.id}?no=${item.restaurantTableNumber}`;
 
       return {
         tableNumber: item.restaurantTableNumber,
