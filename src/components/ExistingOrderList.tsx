@@ -18,7 +18,7 @@ export default function ExistingOrderList({
             {item.menuName} x {item.quantity}
           </p>
           <span className=" text-gray-500 select-none">
-            {item.itemPrice.toLocaleString()}
+            {item.totalItemPrice.toLocaleString()}
           </span>
         </div>
       ))}
