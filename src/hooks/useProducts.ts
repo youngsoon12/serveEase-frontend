@@ -8,6 +8,7 @@ import {
 } from '@/app/api/products';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 export function useProducts() {
@@ -84,8 +85,14 @@ export function useDeleteProduct() {
       qc.invalidateQueries({ queryKey: ['products'] });
       toast.success('상품을 삭제했습니다.');
     },
-    onError: () => {
-      toast.error('상품 삭제에 실패했습니다.');
+    onError: (err) => {
+      const axiosErr = err as AxiosError<{ title?: string; detail?: string }>;
+      if (axiosErr.response) {
+        const data = axiosErr.response.data;
+        toast.error(data?.title ?? '상품 삭제 실패');
+      } else {
+        toast.error('네트워크 오류가 발생했습니다.');
+      }
     },
   });
 }

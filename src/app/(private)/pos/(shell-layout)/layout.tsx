@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="bg-default flex flex-col min-h-screen">
       <Header storeName={'/'} />
 
-      <main className="w-[80%]  mx-auto  pt-8  flex-1 overflow-auto">
+      <main className="w-[80%]  mx-auto  pt-8  flex-1 overflow-auto scrollbar-hide">
         <BackButton buttonStyle={'w-14'} iconStyle={'size-5'} />
         <div className="flex items-center gap-4 mb-6 ">
           <div className="flex-1 h-[calc(100vh-200px)] ">{children}</div>
