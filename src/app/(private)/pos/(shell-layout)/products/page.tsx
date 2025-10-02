@@ -35,7 +35,7 @@ export default function Page() {
 
   return (
     <div className="min-w-[500px] mx-auto w-full md:w-[50%] lg:w-[70%] max-w-[1200px] px-4">
-      <h1 className="font-bold my-5 text-4xl md:text-5xl">상품 관리</h1>
+      <h1 className="font-bold my-5 text-3xl md:text-4xl">상품 관리</h1>
 
       <div className="flex items-center gap-6">
         <div className="flex items-center w-full h-14 rounded-full border border-gray-300 bg-white px-4 gap-4">
