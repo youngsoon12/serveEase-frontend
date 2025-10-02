@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { isAxiosError, AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { postSignUp, SignupRequest, SignupResponse } from '@/app/api/signup';
 import { toast } from 'sonner';
