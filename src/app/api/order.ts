@@ -18,6 +18,7 @@ export type OrderResponse = {
     menuName: string;
     quantity: number;
     itemPrice: number;
+    totalItemPrice: number;
   }[];
   paid: boolean;
 };

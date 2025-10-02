@@ -33,7 +33,7 @@ export default function OrderCheckModal() {
                     {item.menuName} × {item.quantity}
                   </span>
                   <span className="text-gray-500">
-                    {item.itemPrice.toLocaleString()}원
+                    {item.totalItemPrice.toLocaleString()}원
                   </span>
                 </div>
               ))}
