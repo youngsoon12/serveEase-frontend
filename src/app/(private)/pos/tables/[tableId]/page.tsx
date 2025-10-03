@@ -49,14 +49,18 @@ export default function PosMenuPage() {
   );
 
   // 메뉴
-  const { data, isFetching, isError } = useMenus();
+  const {
+    data: menu,
+    isFetching: menuIsFetching,
+    isError: menuIsError,
+  } = useMenus();
 
   const filteredMenus = useMemo(() => {
-    if (!data) return [];
-    if (selectedCategory === 'all') return data;
+    if (!menu) return [];
+    if (selectedCategory === 'all') return menu;
 
-    return data.filter((menu) => menu.category === selectedCategory);
-  }, [data, selectedCategory]);
+    return menu.filter((menu) => menu.category === selectedCategory);
+  }, [menu, selectedCategory]);
 
   // 주문 계산
   const cart = useOrderCart();
@@ -74,12 +78,13 @@ export default function PosMenuPage() {
   } = useOrder(orderId);
 
   // 주문 생성 / 재주문
+  const tableNumberParam = param.get('no');
+  const tableNumber = Number(tableNumberParam);
+
   const createOrder = useCreateOrder(Number(tableId));
   const addOrder = useAddOrder(Number(orderId));
 
   function handleOrderClick() {
-    const tableNumber = Number(tableId);
-
     if (!tableNumber || Number.isNaN(tableNumber)) return;
     if (cart.cartItems.length === 0) return;
 
@@ -136,8 +141,8 @@ export default function PosMenuPage() {
         {/* 메뉴 그리드 영역 */}
         <div className="flex-1 p-5 overflow-y-auto">
           <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 h-fit">
-            {isFetching && !data && null}
-            {isError && !data && null}
+            {menuIsFetching && !menu && null}
+            {menuIsError && !menu && null}
 
             {filteredMenus.map((item) => (
               <MenuButton
@@ -155,7 +160,7 @@ export default function PosMenuPage() {
               />
             ))}
 
-            {!isFetching && filteredMenus.length === 0 && (
+            {!menuIsFetching && filteredMenus.length === 0 && (
               <div className="col-span-full text-gray-400">
                 해당 카테고리에 메뉴가 없습니다.
               </div>
@@ -173,7 +178,9 @@ export default function PosMenuPage() {
         <div className="p-[18px] border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <span className="text-lg font-semibold">{tableId}번 테이블</span>
+              <span className="text-lg font-semibold">
+                {tableNumber}번 테이블
+              </span>
               <span
                 className={`text-xs px-2 py-1 rounded ${
                   STATUS_COLORS[order?.status as keyof typeof STATUS_COLORS]
