@@ -53,7 +53,7 @@ export default function Page() {
             value={searchName}
             onChange={handleSearchChange}
           />
-          <X />
+          <X className="cursor-pointer" onClick={() => setSearchName('')} />
         </div>
 
         <Link href="/pos/products/new" scroll={false}>
