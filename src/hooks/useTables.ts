@@ -1,4 +1,3 @@
-import { OrderResponse } from '@/app/api/order';
 import {
   getTables,
   PAGE_SIZE,
@@ -6,6 +5,7 @@ import {
   updateTableState,
 } from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
+import { OrderResponse } from '@/types/order';
 import { TablesResponse } from '@/types/table';
 import {
   keepPreviousData,

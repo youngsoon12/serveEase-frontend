@@ -1,7 +1,7 @@
 import { instance } from '@/lib/axios';
 import { getStoreId } from './store';
-import { OrderResponse } from './order';
 import { TablesResponse } from '@/types/table';
+import { OrderResponse } from '@/types/order';
 
 export const PAGE_SIZE = 12;
 
