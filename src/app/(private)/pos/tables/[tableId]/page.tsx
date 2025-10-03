@@ -49,14 +49,18 @@ export default function PosMenuPage() {
   );
 
   // 메뉴
-  const { data, isFetching, isError } = useMenus();
+  const {
+    data: menu,
+    isFetching: menuIsFetching,
+    isError: menuIsError,
+  } = useMenus();
 
   const filteredMenus = useMemo(() => {
-    if (!data) return [];
-    if (selectedCategory === 'all') return data;
+    if (!menu) return [];
+    if (selectedCategory === 'all') return menu;
 
-    return data.filter((menu) => menu.category === selectedCategory);
-  }, [data, selectedCategory]);
+    return menu.filter((menu) => menu.category === selectedCategory);
+  }, [menu, selectedCategory]);
 
   // 주문 계산
   const cart = useOrderCart();
@@ -136,8 +140,8 @@ export default function PosMenuPage() {
         {/* 메뉴 그리드 영역 */}
         <div className="flex-1 p-5 overflow-y-auto">
           <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 h-fit">
-            {isFetching && !data && null}
-            {isError && !data && null}
+            {menuIsFetching && !menu && null}
+            {menuIsError && !menu && null}
 
             {filteredMenus.map((item) => (
               <MenuButton
@@ -155,7 +159,7 @@ export default function PosMenuPage() {
               />
             ))}
 
-            {!isFetching && filteredMenus.length === 0 && (
+            {!menuIsFetching && filteredMenus.length === 0 && (
               <div className="col-span-full text-gray-400">
                 해당 카테고리에 메뉴가 없습니다.
               </div>
