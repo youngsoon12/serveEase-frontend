@@ -1,16 +1,10 @@
-import {
-  OrderResponse,
-  OrderRequest,
-  createOrder,
-  getOrder,
-  addOrder,
-  cancelOrder,
-} from '@/app/api/order';
+import { createOrder, getOrder, addOrder, cancelOrder } from '@/app/api/order';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
 import { ApiErrorBody } from '@/lib/error';
+import { OrderRequest, OrderResponse } from '@/types/order';
 
 export function useOrder(orderId?: number) {
   return useQuery<OrderResponse>({

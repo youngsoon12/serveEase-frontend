@@ -1,4 +1,4 @@
-import { OrderResponse } from '@/app/api/order';
+import { OrderResponse } from '@/types/order';
 
 export default function ExistingOrderList({
   items,
