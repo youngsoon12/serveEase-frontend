@@ -1,4 +1,4 @@
-export default function ShellLoading() {
+export default function Loading() {
   return (
     <div className="flex flex-col items-center justify-center h-full p-8">
       <div
