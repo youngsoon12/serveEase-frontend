@@ -15,12 +15,12 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center py-44">
+    <div className="flex flex-col items-center justify-center h-screen text-center ">
       <AlertTriangle
         className="w-14 h-14 text-red-500 mb-6"
         aria-label="경고"
       />
-      <h2 className="text-xl font-bold mb-4">문제가 발생했습니다.</h2>
+      <h2 className="text-2xl font-bold mb-4">문제가 발생했습니다.</h2>
       <p className="text-gray-600 mb-6">
         서비스 이용에 불편을 드려 죄송합니다. <br /> 잠시 후 다시 시도해 주세요.
       </p>
