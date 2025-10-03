@@ -74,12 +74,13 @@ export default function PosMenuPage() {
   } = useOrder(orderId);
 
   // 주문 생성 / 재주문
+  const tableNumberParam = param.get('no');
+  const tableNumber = Number(tableNumberParam);
+
   const createOrder = useCreateOrder(Number(tableId));
   const addOrder = useAddOrder(Number(orderId));
 
   function handleOrderClick() {
-    const tableNumber = Number(tableId);
-
     if (!tableNumber || Number.isNaN(tableNumber)) return;
     if (cart.cartItems.length === 0) return;
 
@@ -173,7 +174,9 @@ export default function PosMenuPage() {
         <div className="p-[18px] border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <span className="text-lg font-semibold">{tableId}번 테이블</span>
+              <span className="text-lg font-semibold">
+                {tableNumber}번 테이블
+              </span>
               <span
                 className={`text-xs px-2 py-1 rounded ${
                   STATUS_COLORS[order?.status as keyof typeof STATUS_COLORS]
