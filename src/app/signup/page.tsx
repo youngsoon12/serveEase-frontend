@@ -2,8 +2,7 @@
 import React from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
-
-import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 import Button from '@/components/Button';
 import useSignup from '@/hooks/useSignup';
@@ -32,8 +31,8 @@ const Singnup = () => {
     storeName: '',
     tableCount: 0,
   });
-
-  const { mutate: signupFn } = useSignup();
+  const router = useRouter();
+  const { mutate: signupFn, isPending } = useSignup();
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignupInfo((prev) => ({ ...prev, [name]: value }));
@@ -41,15 +40,7 @@ const Singnup = () => {
 
   const handleSubmitClick = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signupFn(signupInfo, {
-      onSuccess: (res) => {
-        toast.success('회원가입 성공!');
-        console.log('서버 응답:', res);
-      },
-      onError: (err) => {
-        toast.error(`회원가입 실패: ${err.message}`);
-      },
-    });
+    signupFn(signupInfo);
   };
 
   return (

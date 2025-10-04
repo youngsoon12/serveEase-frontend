@@ -1,12 +1,12 @@
-import { OrderResponse } from '@/app/api/order';
 import {
   getTables,
   PAGE_SIZE,
-  TablesResponse,
   updateTableCount,
   updateTableState,
 } from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
+import { OrderResponse } from '@/types/order';
+import { TablesResponse } from '@/types/table';
 import {
   keepPreviousData,
   useMutation,
@@ -35,8 +35,8 @@ export function useTables(page: number) {
     query.data?.content.map((item) => {
       const status = toUIStatus(item.displayStatus);
       const href = item.activeOrder?.orderId
-        ? `/pos/tables/${item.restaurantTableNumber}?orderId=${item.activeOrder.orderId}`
-        : `/pos/tables/${item.restaurantTableNumber}`;
+        ? `/pos/tables/${item.id}?orderId=${item.activeOrder.orderId}&no=${item.restaurantTableNumber}`
+        : `/pos/tables/${item.id}?no=${item.restaurantTableNumber}`;
 
       return {
         tableNumber: item.restaurantTableNumber,

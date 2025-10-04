@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export default function EditProductModal() {
+export default function EditProductModal({ id }: { id: string }) {
   const router = useRouter();
   const params = useParams<{ productId: string }>();
   const sp = useSearchParams();
@@ -29,7 +29,6 @@ export default function EditProductModal() {
       name: sp.get('name') ?? '',
       price: sp.get('price') ?? '',
       categoryName: sp.get('category') ?? '',
-      // 'available'이 '판매중' | '품절'로 들어오는 페이지 구조에 맞춤
       available: (sp.get('available') ?? '판매중') === '판매중',
     }),
     [sp],
