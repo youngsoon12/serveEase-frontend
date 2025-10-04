@@ -1,14 +1,10 @@
 // app/(private)/layout.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
-export default function PrivateLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function PrivateInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -17,7 +13,7 @@ export default function PrivateLayout({
   useEffect(() => {
     const gotoLogin = (msg: string) => {
       if (typeof window !== 'undefined') {
-        alert(msg); // 임시 알림
+        alert(msg);
       }
       const next = encodeURIComponent(
         `${pathname}${sp?.toString() ? `?${sp}` : ''}`,
@@ -67,4 +63,22 @@ export default function PrivateLayout({
   }
 
   return <>{children}</>;
+}
+
+export default function PrivateLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center text-gray-500">
+          인증 확인 중…
+        </div>
+      }
+    >
+      <PrivateInner>{children}</PrivateInner>
+    </Suspense>
+  );
 }
