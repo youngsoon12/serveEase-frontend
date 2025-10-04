@@ -34,7 +34,7 @@ export async function postProduct(
 
 export async function deleteProduct(menuId: number) {
   const storeId = getStoreId();
-  const { data } = await instance.delete(`/stores/${storeId}/menus/${menuId}`);
+  await instance.delete(`/stores/${storeId}/menus/${menuId}`);
 }
 
 export async function putProduct(
