@@ -19,6 +19,7 @@ export async function postLogin(
 
   if (data.stores?.length > 0) {
     localStorage.setItem('storeId', String(data.stores[0].storeId));
+    localStorage.setItem('storeName', String(data.stores[0].storeName));
   }
 
   return data;

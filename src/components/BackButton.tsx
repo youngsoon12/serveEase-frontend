@@ -23,6 +23,11 @@ export default function BackButton({
       return;
     }
 
+    if (currentPath === '/pos') {
+      router.push('/');
+      return;
+    }
+
     const pathSegments = currentPath.split('/'); // ['', 'pos', 'tables']
     const parentSegments = pathSegments.slice(0, -1); // ['', 'pos']
     const parentPath = parentSegments.join('/'); // /pos
