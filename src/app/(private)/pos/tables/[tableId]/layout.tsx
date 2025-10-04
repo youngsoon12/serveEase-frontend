@@ -10,7 +10,7 @@ export default function PosMenuLayout({
   return (
     <>
       <div className="bg-default flex flex-col min-h-screen">
-        <Header storeName={'/'} />
+        <Header />
         <main>{children}</main>
         {modal}
       </div>

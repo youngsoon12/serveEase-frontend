@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-default flex flex-col min-h-screen">
-      <Header storeName={'/'} />
+      <Header />
 
       <main className="w-[80%]  mx-auto  pt-8  flex-1 overflow-auto scrollbar-hide">
         <BackButton buttonStyle={'w-14'} iconStyle={'size-5'} />
