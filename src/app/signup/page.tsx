@@ -22,7 +22,7 @@ const signupCategory = [
   { type: 'number', placeholder: '매장 테이블 수', min: 0, name: 'tableCount' },
 ];
 
-const singnup = () => {
+const Singnup = () => {
   const [signupInfo, setSignupInfo] = useState({
     loginId: '',
     password: '',
@@ -91,4 +91,4 @@ const singnup = () => {
   );
 };
 
-export default singnup;
+export default Singnup;
