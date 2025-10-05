@@ -11,6 +11,7 @@ export async function GET(request: Request) {
   // 리다이렉트 tableId
   const tableId = searchParams.get('tableId');
 
+  // 리다이렉트 페이지 경로
   const targetPage = `/pos/tables/${tableId}/orders`;
 
   const targetSearchParams = new URLSearchParams({
@@ -18,7 +19,7 @@ export async function GET(request: Request) {
 
     paymentFailed: 'true',
     code: errorCode || 'UNKNOWN_ERROR',
-    message: errorMessage || '결제 중 알 수 없는 오류 발생',
+    message: errorMessage || '결제 중 오류 발생',
   });
 
   const redirectUrl = new URL(
