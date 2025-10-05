@@ -16,13 +16,13 @@ const origin = window.location.origin;
 export default function OrderCheck() {
   // 주문 내역
   const param = useSearchParams();
-  const orderIdParam = param.get('orderId');
 
+  const orderIdParam = param.get('orderId');
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
 
   const { data } = useOrder(orderId);
 
-  console.log(data);
+  const tableId = data?.restaurantTableId;
 
   // 토스페이먼츠 결제 api
   const [paymentInstance, setPaymentInstance] =
@@ -69,10 +69,10 @@ export default function OrderCheck() {
         currency: 'KRW',
         value: data.totalPrice,
       },
-      orderId: 'ord_25mb3kz5_ab12cd', // 결제용 orderId 필요(영문 대소문자, 숫자, 특수문자(-, _) 만 허용,6자 ~ 64자)
+      orderId: 'ord_25mb3kz5_ab12cd', // 결제용 orderId
       orderName: orderName,
       successUrl: `${origin}/pos/payment/success`,
-      failUrl: `${origin}/pos/payment/fail`,
+      failUrl: `${origin}/api/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,
     });
   };
 
