@@ -4,8 +4,8 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 import MenuButton from '@/components/MenuButton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { useParams, usePathname, useSearchParams } from 'next/navigation';
 import ConfirmModal from '@/components/ConfirmModal';
 import BackButton from '@/components/BackButton';
 import CategoryTab from '@/components/CategoryTab';
@@ -19,6 +19,8 @@ import {
 } from '@/hooks/useOrder';
 import ExistingOrderList from '@/components/ExistingOrderList';
 import { useUpdateTableStatus } from '@/hooks/useTables';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -36,6 +38,43 @@ const MODAL = {
 } as const;
 
 export default function PosMenuPage() {
+  // 토스페이먼츠 실패 - 에러 토스트
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+
+  const shownRef = useRef(false);
+
+  const paymentFailed = params.get('paymentFailed');
+  const errorCode = params.get('code');
+  const errorMessage = params.get('message');
+
+  useEffect(() => {
+    if (shownRef.current) return;
+    if (paymentFailed !== 'true') return;
+
+    shownRef.current = true;
+
+    toast.error(
+      `[결제 실패] 코드: ${errorCode ?? 'UNKNOWN_ERROR'}, 메시지: ${
+        errorMessage ?? '결제 중 오류가 발생했어요.'
+      }`,
+    );
+
+    console.error(
+      `[결제 실패] 코드: ${errorCode ?? 'UNKNOWN_ERROR'}, 메시지: ${
+        errorMessage ?? '-'
+      }`,
+    );
+
+    const newParams = new URLSearchParams(params.toString());
+    newParams.delete('paymentFailed');
+    newParams.delete('code');
+    newParams.delete('message');
+
+    router.replace(`${pathname}?${newParams.toString()}`);
+  }, [paymentFailed, errorCode, errorMessage, router, pathname, params]);
+
   const { tableId } = useParams<{ tableId: string }>();
 
   // 휴지통/주문 취소 컨펌 모달
