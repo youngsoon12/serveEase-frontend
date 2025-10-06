@@ -130,6 +130,7 @@ export function useDeleteProduct() {
     },
     onError: (err) => {
       if (isAxiosError<ValidationError>(err) && err.response) {
+        console.log(err);
         const data = err.response.data;
         toast.error(data?.title ?? '상품 삭제 실패');
       } else {

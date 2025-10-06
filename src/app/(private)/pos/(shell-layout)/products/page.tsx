@@ -8,6 +8,7 @@ import Button from '@/components/Button';
 import NewProductModal from './@modal/(.)new/page';
 import NewCategoryModal from './@modal/(.)newCategory/page';
 import { productSearchFilters } from '@/lib/productSearchFilters';
+import Loading from '../loading';
 
 export default function Page() {
   const { mutate: deleteProduct } = useDeleteProduct();
@@ -18,8 +19,6 @@ export default function Page() {
     () => productSearchFilters(rows, deferredQuery),
     [rows, deferredQuery],
   );
-  console.log(rows);
-  console.log(filteredRows);
   const router = useRouter();
   const sp = useSearchParams();
   const open = sp.get('open');
@@ -36,7 +35,12 @@ export default function Page() {
     router.push(`/pos/products/${p.id}/edit?${q}`, { scroll: false });
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   if (error) return <div>{noticeText}</div>;
 
   return (
