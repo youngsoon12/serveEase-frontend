@@ -11,7 +11,11 @@ import { useEffect, useState } from 'react';
 
 const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY!;
 
-const origin = window.location.origin;
+// 임시 orderID 생성 함수
+const makePgOrderId = (base: number | string) =>
+  `SN-${base}-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 8)}`;
 
 export default function OrderCheck() {
   // 주문 내역
@@ -63,13 +67,16 @@ export default function OrderCheck() {
 
     console.log(orderName); // 콤비네이션 피자 외 3건
 
+    const pgOrderId = makePgOrderId(orderId);
+    const origin = window.location.origin;
+
     await paymentInstance.requestPayment({
       method: 'CARD',
       amount: {
         currency: 'KRW',
         value: data.totalPrice,
       },
-      orderId: 'ord_25mb3kz5_ab12cd', // 결제용 orderId
+      orderId: pgOrderId, // 결제용 orderId
       orderName: orderName,
       successUrl: `${origin}/pos/payment/success`,
       failUrl: `${origin}/api/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,
