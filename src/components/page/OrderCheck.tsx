@@ -79,7 +79,7 @@ export default function OrderCheck() {
       orderId: pgOrderId, // 결제용 orderId
       orderName: orderName,
       successUrl: `${origin}/pos/payment/success`,
-      failUrl: `${origin}/api/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,
+      failUrl: `${origin}/pos/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,
     });
   };
 
