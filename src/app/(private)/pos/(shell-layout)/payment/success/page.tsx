@@ -23,13 +23,16 @@ export default function PaymentSuccessPage() {
   const [paymentLocal, setPaymentLocal] =
     useState<PaymentConfirmResponse | null>(null);
 
+  // 결제 중복 호출 확인용
   const calledRef = useRef(false);
 
   useEffect(() => {
     const ready = !!(paymentKey && orderId && amount != null);
-    console.log('[PAY] params ready:', { paymentKey, orderId, amount, ready });
 
+    // 이미 호출했거나, 필수 파라미터가 없으면 중단
     if (calledRef.current || !ready) return;
+
+    // 결제 중복 방지 설정
     calledRef.current = true;
 
     (async () => {
