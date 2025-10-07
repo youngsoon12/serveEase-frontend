@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useConfirmPayment } from '@/hooks/usePayment';
-import type { PaymentResponse as TossPaymentResponse } from '@/app/api/payments';
+import type { PaymentConfirmResponse } from '@/types/payment';
 
 export default function PaymentSuccessPage() {
   const params = useSearchParams();
@@ -20,9 +20,8 @@ export default function PaymentSuccessPage() {
 
   const { mutateAsync, isError } = useConfirmPayment();
 
-  const [paymentLocal, setPaymentLocal] = useState<TossPaymentResponse | null>(
-    null,
-  );
+  const [paymentLocal, setPaymentLocal] =
+    useState<PaymentConfirmResponse | null>(null);
 
   const calledRef = useRef(false);
 

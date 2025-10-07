@@ -1,22 +1,8 @@
 import { instance } from '@/lib/axios';
-
-export type PaymentConfirmRequest = {
-  paymentKey: string;
-  orderId: string;
-  amount: number;
-};
-
-export type PaymentResponse = {
-  orderId: string;
-  method: string;
-  cardCompany: string;
-  maskedCardNumber: string;
-  approvalNumber: string;
-  approvedAt: string;
-};
+import { PaymentConfirmRequest, PaymentConfirmResponse } from '@/types/payment';
 
 export async function confirmPayment(body: PaymentConfirmRequest) {
-  const { data } = await instance.post<PaymentResponse>(
+  const { data } = await instance.post<PaymentConfirmResponse>(
     '/payments/confirm',
     body,
   );
