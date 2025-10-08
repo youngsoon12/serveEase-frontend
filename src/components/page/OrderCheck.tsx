@@ -4,6 +4,7 @@ import { useOrder } from '@/hooks/useOrder';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import useTossPayments from '@/hooks/payment/useTossPayments';
+import { useState } from 'react';
 
 export default function OrderCheck() {
   // 주문 내역
@@ -12,30 +13,49 @@ export default function OrderCheck() {
   const orderIdParam = param.get('orderId');
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
 
-  const { data } = useOrder(orderId);
+  const { data, isFetching, isError } = useOrder(orderId);
 
   const tableId = data?.restaurantTableId;
   const paymentOrderId = data?.orderId;
 
   // 토스페이먼츠 결제 api
+  const [isPaymentPending, setIsPaymentPending] = useState(false);
+
   const { requestPayment } = useTossPayments(
     data?.id ? String(data.id) : undefined,
   );
-
-  console.log(data);
-  console.log(paymentOrderId);
 
   // 결제창 띄우기
   const handlePayClick = async () => {
     if (!orderId || !data || !orderIdParam || !paymentOrderId) return;
 
-    await requestPayment({
-      paymentOrderId,
-      orderIdParam: orderIdParam,
-      tableId: tableId,
-      orderData: data,
-    });
+    setIsPaymentPending(true);
+
+    try {
+      await requestPayment({
+        paymentOrderId,
+        orderIdParam: orderIdParam,
+        tableId: tableId,
+        orderData: data,
+      });
+    } finally {
+      setIsPaymentPending(false);
+    }
   };
+
+  if (isFetching) {
+    return (
+      <p role="status" aria-live="polite" className="py-8 text-gray-500">
+        주문 내역 불러오는 중…
+      </p>
+    );
+  } else if (isError) {
+    return (
+      <p role="alert" className="py-8 text-red-600">
+        주문 내역을 불러올 수 없습니다.
+      </p>
+    );
+  }
 
   return (
     <div className="flex flex-col w-[21rem] max-w-full">
@@ -68,8 +88,12 @@ export default function OrderCheck() {
               <span>총 결제 금액</span>
               <span>{data?.totalPrice.toLocaleString()}원</span>
             </div>
-            <Button className="w-full h-12" onClick={handlePayClick}>
-              결제하기
+            <Button
+              className="w-full h-12"
+              onClick={handlePayClick}
+              disabled={isPaymentPending || isFetching || !data}
+            >
+              {isPaymentPending ? '결제 진행 중…' : '결제하기'}
             </Button>
           </div>
         </>
