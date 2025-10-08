@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useConfirmPayment } from '@/hooks/usePayment';
+import { useConfirmPayment } from '@/hooks/payment/usePayment';
 import type { PaymentConfirmResponse } from '@/types/payment';
 
 export default function PaymentSuccessPage() {

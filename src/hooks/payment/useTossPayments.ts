@@ -5,7 +5,7 @@ import {
   TossPaymentsPayment,
 } from '@tosspayments/tosspayments-sdk';
 import { useEffect, useState } from 'react';
-import { createOrderName, makePgOrderId } from './paymentUtils';
+import { createOrderName, makePgOrderId } from '../../lib/paymentUtils';
 
 export interface OrderDataForPayment {
   totalPrice: number;

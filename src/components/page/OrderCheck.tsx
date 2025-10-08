@@ -3,7 +3,7 @@
 import { useOrder } from '@/hooks/useOrder';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import useTossPayments from '@/hooks/useTossPayments';
+import useTossPayments from '@/hooks/payment/useTossPayments';
 
 export default function OrderCheck() {
   // 주문 내역

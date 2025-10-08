@@ -19,7 +19,7 @@ import {
 } from '@/hooks/useOrder';
 import ExistingOrderList from '@/components/ExistingOrderList';
 import { useUpdateTableStatus } from '@/hooks/useTables';
-import usePaymentFail from '@/hooks/usePaymentFail';
+import usePaymentFail from '@/hooks/payment/usePaymentFail';
 
 type ModalType = 'trash' | 'cancel';
 
