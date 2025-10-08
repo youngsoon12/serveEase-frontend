@@ -5,7 +5,7 @@ import {
   TossPaymentsPayment,
 } from '@tosspayments/tosspayments-sdk';
 import { useEffect, useState } from 'react';
-import { createOrderName, makePgOrderId } from '../../lib/paymentUtils';
+import { createOrderName } from '../../lib/paymentUtils';
 import { toast } from 'sonner';
 
 export interface OrderDataForPayment {
@@ -15,7 +15,7 @@ export interface OrderDataForPayment {
 }
 
 export interface PaymentParams {
-  orderId: number;
+  paymentOrderId: string;
   orderIdParam: string;
   tableId?: number;
   orderData: OrderDataForPayment;
@@ -48,12 +48,15 @@ export default function useTossPayments(customerKey?: string) {
   }, [customerKey]);
 
   const requestPayment = async ({
-    orderId,
+    paymentOrderId,
     orderIdParam,
     tableId,
     orderData,
   }: PaymentParams) => {
-    if (!orderId || !orderData || !paymentInstance) return;
+    if (!paymentOrderId || !orderData || !paymentInstance) {
+      toast.error('결제 요청에 필요한 주문 정보가 없습니다.');
+      return;
+    }
 
     const origin = window.location.origin;
 
@@ -63,7 +66,7 @@ export default function useTossPayments(customerKey?: string) {
         currency: 'KRW',
         value: orderData.totalPrice,
       },
-      orderId: makePgOrderId(orderId), // 결제용 orderId
+      orderId: paymentOrderId,
       orderName: createOrderName(orderData.orderItems),
       successUrl: `${origin}/pos/payment/success`,
       failUrl: `${origin}/pos/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,

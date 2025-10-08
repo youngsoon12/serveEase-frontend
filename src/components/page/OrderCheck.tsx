@@ -15,18 +15,22 @@ export default function OrderCheck() {
   const { data } = useOrder(orderId);
 
   const tableId = data?.restaurantTableId;
+  const paymentOrderId = data?.orderId;
 
   // 토스페이먼츠 결제 api
   const { requestPayment } = useTossPayments(
     data?.id ? String(data.id) : undefined,
   );
 
+  console.log(data);
+  console.log(paymentOrderId);
+
   // 결제창 띄우기
   const handlePayClick = async () => {
-    if (!orderId || !data || !orderIdParam) return;
+    if (!orderId || !data || !orderIdParam || !paymentOrderId) return;
 
     await requestPayment({
-      orderId: orderId,
+      paymentOrderId,
       orderIdParam: orderIdParam,
       tableId: tableId,
       orderData: data,
