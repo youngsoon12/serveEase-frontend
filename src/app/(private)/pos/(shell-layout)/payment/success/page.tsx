@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useConfirmPayment } from '@/hooks/usePayment';
-import type { PaymentResponse as TossPaymentResponse } from '@/app/api/payments';
+import { useConfirmPayment } from '@/hooks/payment/usePayment';
+import type { PaymentConfirmResponse } from '@/types/payment';
 
 export default function PaymentSuccessPage() {
   const params = useSearchParams();
@@ -20,17 +20,19 @@ export default function PaymentSuccessPage() {
 
   const { mutateAsync, isError } = useConfirmPayment();
 
-  const [paymentLocal, setPaymentLocal] = useState<TossPaymentResponse | null>(
-    null,
-  );
+  const [paymentLocal, setPaymentLocal] =
+    useState<PaymentConfirmResponse | null>(null);
 
+  // 결제 중복 호출 확인용
   const calledRef = useRef(false);
 
   useEffect(() => {
     const ready = !!(paymentKey && orderId && amount != null);
-    console.log('[PAY] params ready:', { paymentKey, orderId, amount, ready });
 
+    // 이미 호출했거나, 필수 파라미터가 없으면 중단
     if (calledRef.current || !ready) return;
+
+    // 결제 중복 방지 설정
     calledRef.current = true;
 
     (async () => {

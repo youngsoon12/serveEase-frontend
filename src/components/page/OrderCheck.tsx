@@ -1,21 +1,9 @@
 'use client';
 
-import {
-  loadTossPayments,
-  TossPaymentsPayment,
-} from '@tosspayments/tosspayments-sdk';
 import { useOrder } from '@/hooks/useOrder';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
-
-const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY!;
-
-// 임시 orderID 생성 함수
-const makePgOrderId = (base: number | string) =>
-  `SN-${base}-${Date.now().toString(36)}-${Math.random()
-    .toString(36)
-    .slice(2, 8)}`;
+import useTossPayments from '@/hooks/payment/useTossPayments';
 
 export default function OrderCheck() {
   // 주문 내역
@@ -27,59 +15,25 @@ export default function OrderCheck() {
   const { data } = useOrder(orderId);
 
   const tableId = data?.restaurantTableId;
+  const paymentOrderId = data?.orderId;
 
   // 토스페이먼츠 결제 api
-  const [paymentInstance, setPaymentInstance] =
-    useState<TossPaymentsPayment | null>(null);
+  const { requestPayment } = useTossPayments(
+    data?.id ? String(data.id) : undefined,
+  );
 
-  useEffect(() => {
-    if (!clientKey || !data) return;
-
-    // 회원 식별 값
-    const customerKey = String(data?.id);
-
-    // SDK 초기화
-    const initializeTossPayments = async () => {
-      try {
-        const tossPayments = await loadTossPayments(clientKey);
-        const payment = tossPayments.payment({ customerKey: customerKey });
-
-        setPaymentInstance(payment);
-      } catch (error) {
-        console.error('토스 SDK 초기화 실패:', error);
-      }
-    };
-
-    initializeTossPayments();
-  }, [data]);
+  console.log(data);
+  console.log(paymentOrderId);
 
   // 결제창 띄우기
   const handlePayClick = async () => {
-    if (!orderId || !data || !paymentInstance) return;
+    if (!orderId || !data || !orderIdParam || !paymentOrderId) return;
 
-    // orderName 생성
-    const firstItemName = data.orderItems[0].menuName;
-    const otherItemsCount = data.orderItems.length - 1;
-    const orderName =
-      otherItemsCount > 0
-        ? `${firstItemName} 외 ${otherItemsCount}건`
-        : firstItemName;
-
-    console.log(orderName); // 콤비네이션 피자 외 3건
-
-    const pgOrderId = makePgOrderId(orderId);
-    const origin = window.location.origin;
-
-    await paymentInstance.requestPayment({
-      method: 'CARD',
-      amount: {
-        currency: 'KRW',
-        value: data.totalPrice,
-      },
-      orderId: pgOrderId, // 결제용 orderId
-      orderName: orderName,
-      successUrl: `${origin}/pos/payment/success`,
-      failUrl: `${origin}/pos/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,
+    await requestPayment({
+      paymentOrderId,
+      orderIdParam: orderIdParam,
+      tableId: tableId,
+      orderData: data,
     });
   };
 
