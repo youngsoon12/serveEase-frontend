@@ -54,7 +54,14 @@ export default function PaymentSuccessPage() {
   }, [paymentKey, orderId, amount]);
 
   if (!paymentLocal && !isError) {
-    return <div className="p-10">결제 정보를 확인 중입니다…</div>;
+    return (
+      <div className="flex items-center justify-center p-10">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
+          <p>결제 정보를 확인 중입니다…</p>
+        </div>
+      </div>
+    );
   }
 
   if (isError || !paymentLocal) {
@@ -75,6 +82,8 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="flex flex-col items-center justify-center ">
+      <h1 className="sr-only">결제 완료</h1>
+
       <div className="text-center mb-5">
         <div className="w-13 h-13 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse">
           <Check size={32} className="text-white" />
