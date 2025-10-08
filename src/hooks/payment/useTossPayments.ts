@@ -6,6 +6,7 @@ import {
 } from '@tosspayments/tosspayments-sdk';
 import { useEffect, useState } from 'react';
 import { createOrderName, makePgOrderId } from '../../lib/paymentUtils';
+import { toast } from 'sonner';
 
 export interface OrderDataForPayment {
   totalPrice: number;
@@ -27,7 +28,10 @@ export default function useTossPayments(customerKey?: string) {
     useState<TossPaymentsPayment | null>(null);
 
   useEffect(() => {
-    if (!clientKey || !customerKey) return;
+    if (!clientKey || !customerKey) {
+      toast.error('결제 모듈 초기화에 필요한 키 정보가 없습니다.');
+      return;
+    }
 
     const initializeTossPayments = async () => {
       try {
