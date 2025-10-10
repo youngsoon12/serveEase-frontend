@@ -5,6 +5,7 @@ export type OrderRequest = {
 
 export type OrderResponse = {
   id: number;
+  orderId: string;
   restaurantTableId: number;
   status: string;
   totalPrice: number;

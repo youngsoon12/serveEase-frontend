@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useConfirmPayment } from '@/hooks/usePayment';
-import type { PaymentResponse as TossPaymentResponse } from '@/app/api/payments';
+import { useConfirmPayment } from '@/hooks/payment/usePayment';
+import type { PaymentConfirmResponse } from '@/types/payment';
 
 export default function PaymentSuccessPage() {
   const params = useSearchParams();
@@ -20,17 +20,19 @@ export default function PaymentSuccessPage() {
 
   const { mutateAsync, isError } = useConfirmPayment();
 
-  const [paymentLocal, setPaymentLocal] = useState<TossPaymentResponse | null>(
-    null,
-  );
+  const [paymentLocal, setPaymentLocal] =
+    useState<PaymentConfirmResponse | null>(null);
 
+  // 결제 중복 호출 확인용
   const calledRef = useRef(false);
 
   useEffect(() => {
     const ready = !!(paymentKey && orderId && amount != null);
-    console.log('[PAY] params ready:', { paymentKey, orderId, amount, ready });
 
+    // 이미 호출했거나, 필수 파라미터가 없으면 중단
     if (calledRef.current || !ready) return;
+
+    // 결제 중복 방지 설정
     calledRef.current = true;
 
     (async () => {
@@ -52,7 +54,14 @@ export default function PaymentSuccessPage() {
   }, [paymentKey, orderId, amount]);
 
   if (!paymentLocal && !isError) {
-    return <div className="p-10">결제 정보를 확인 중입니다…</div>;
+    return (
+      <div className="flex items-center justify-center p-10">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
+          <p>결제 정보를 확인 중입니다…</p>
+        </div>
+      </div>
+    );
   }
 
   if (isError || !paymentLocal) {
@@ -73,6 +82,8 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="flex flex-col items-center justify-center ">
+      <h1 className="sr-only">결제 완료</h1>
+
       <div className="text-center mb-5">
         <div className="w-13 h-13 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3 animate-pulse">
           <Check size={32} className="text-white" />

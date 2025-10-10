@@ -69,6 +69,11 @@ export function useUpdateTableCount() {
       queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
     onError: (err) => {
+      if (err?.response?.status === 409) {
+        toast.error('사용 중인 테이블이 있어 개수를 변경할 수 없습니다.');
+        return;
+      }
+
       toast.error('테이블 개수 수정에 실패했습니다.');
 
       console.error('status:', err?.response?.status);
