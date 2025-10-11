@@ -46,8 +46,6 @@ export async function POST(req: Request) {
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     });
-
-    res.headers.set('x-store-info', JSON.stringify({ storeId }));
   }
 
   return res;
