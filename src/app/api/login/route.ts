@@ -27,6 +27,8 @@ export async function POST(req: Request) {
     maxAge: 60 * 60 * 24 * 7, // 7일
   });
 
+  res.cookies.set('isLoggedIn', 'true', { httpOnly: false, path: '/' });
+
   if (Array.isArray(data.stores) && data.stores?.length > 0) {
     const storeId = String(data.stores[0].storeId);
     const storeName = data.stores[0].storeName ?? '';
