@@ -127,9 +127,6 @@ export function useUpdateTableStatus() {
       toast.success('서빙 완료 처리되었습니다.');
 
       queryClient.setQueryData(['order', updated.id], updated);
-      queryClient.invalidateQueries({ queryKey: ['order', updated.id] });
-
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
 
     onError: (err, _vars, ctx) => {
