@@ -17,6 +17,11 @@ async function proxy(req: Request, ctx: { params: { path: string[] } }) {
   const token = cookieStore.get('accessToken')?.value;
   const storeId = cookieStore.get('storeId')?.value;
 
+  console.log('📦 [BFF] Cookies:', {
+    token: token ? token.slice(0, 20) + '...' : undefined,
+    storeId,
+  });
+
   if (!token) {
     return NextResponse.json(
       { title: '인증정보가 유효하지 않습니다.' },

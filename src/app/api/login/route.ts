@@ -21,8 +21,8 @@ export async function POST(req: Request) {
 
   res.cookies.set('accessToken', data.token, {
     httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7, // 7일
   });
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   if (Array.isArray(data.stores) && data.stores.length > 0) {
     res.cookies.set('storeId', String(data.stores[0].storeId), {
       httpOnly: false,
-      secure: true,
+      secure: false,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7,

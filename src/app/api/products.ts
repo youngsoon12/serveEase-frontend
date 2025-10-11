@@ -17,10 +17,7 @@ export type CreateProductInput = {
 };
 
 export async function getProducts(): Promise<ProductsResponse[]> {
-  const storeId = getStoreId();
-  const { data } = await instance.get<ProductsResponse[]>(
-    `/stores/${storeId}/menus`,
-  );
+  const { data } = await instance.get<ProductsResponse[]>(`/stores/@me/menus`);
   return data;
 }
 
