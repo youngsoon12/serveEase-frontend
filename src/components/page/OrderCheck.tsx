@@ -2,9 +2,18 @@
 
 import { useOrder } from '@/hooks/useOrder';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import useTossPayments from '@/hooks/payment/useTossPayments';
-import { useState } from 'react';
+import dynamic from 'next/dynamic';
+
+const TossPayment = dynamic(() => import('./TossPayment'), {
+  ssr: false,
+  loading: () => (
+    <div className="mt-4 border-t pt-4">
+      <div className="w-full h-12 flex items-center justify-center">
+        결제 모듈 로드 중…
+      </div>
+    </div>
+  ),
+});
 
 export default function OrderCheck() {
   // 주문 내역
@@ -15,33 +24,7 @@ export default function OrderCheck() {
 
   const { data, isFetching, isError } = useOrder(orderId);
 
-  const tableId = data?.restaurantTableId;
   const paymentOrderId = data?.orderId;
-
-  // 토스페이먼츠 결제 api
-  const [isPaymentPending, setIsPaymentPending] = useState(false);
-
-  const { requestPayment } = useTossPayments(
-    data?.id ? String(data.id) : undefined,
-  );
-
-  // 결제창 띄우기
-  const handlePayClick = async () => {
-    if (!orderId || !data || !orderIdParam || !paymentOrderId) return;
-
-    setIsPaymentPending(true);
-
-    try {
-      await requestPayment({
-        paymentOrderId,
-        orderIdParam: orderIdParam,
-        tableId: tableId,
-        orderData: data,
-      });
-    } finally {
-      setIsPaymentPending(false);
-    }
-  };
 
   if (isFetching) {
     return (
@@ -82,20 +65,14 @@ export default function OrderCheck() {
             ))}
           </div>
 
-          {/* 합계 + 버튼 (고정 영역) */}
-          <div className="mt-4 border-t pt-4 space-y-4">
-            <div className="flex items-center justify-between text-lg font-semibold">
-              <span>총 결제 금액</span>
-              <span>{data?.totalPrice.toLocaleString()}원</span>
-            </div>
-            <Button
-              className="w-full h-12"
-              onClick={handlePayClick}
-              disabled={isPaymentPending || isFetching || !data}
-            >
-              {isPaymentPending ? '결제 진행 중…' : '결제하기'}
-            </Button>
-          </div>
+          {/* 결제  */}
+          {paymentOrderId && orderIdParam && data && (
+            <TossPayment
+              data={data}
+              orderIdParam={orderIdParam}
+              paymentOrderId={paymentOrderId}
+            />
+          )}
         </>
       )}
     </div>
