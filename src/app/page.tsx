@@ -17,7 +17,7 @@ export default function Home() {
   });
 
   const router = useRouter();
-  const { mutate, isPending, error } = useLogin();
+  const { mutate } = useLogin();
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

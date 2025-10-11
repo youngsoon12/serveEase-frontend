@@ -10,6 +10,7 @@ export default function OrderCheckPage() {
         buttonStyle={'w-14'}
         iconStyle={'size-5'}
         targetPath={'/pos/tables'}
+        aria-label="뒤로가기"
       />
       <main className="flex flex-col items-center justify-center p-5">
         <h1 className="text-2xl font-bold mb-8">주문 내역 확인</h1>

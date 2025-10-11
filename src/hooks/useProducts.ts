@@ -51,6 +51,7 @@ export function useCreateProduct() {
       qc.setQueryData<ProductsResponse[]>(['products'], (prev) =>
         prev ? [created, ...prev] : [created],
       );
+      qc.invalidateQueries({ queryKey: ['menus'] });
       toast.success('상품이 추가되었습니다.');
       router.back();
     },
@@ -91,6 +92,7 @@ export function useUpdateProduct() {
       qc.setQueryData<ProductsResponse[]>(['products'], (prev) =>
         prev ? prev.map((p) => (p.id === updated.id ? updated : p)) : prev,
       );
+      qc.invalidateQueries({ queryKey: ['menus'] });
       toast.success('상품이 수정되었습니다.');
       router.back();
     },
@@ -126,6 +128,7 @@ export function useDeleteProduct() {
     mutationFn: (id: number) => deleteProduct(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['products'] });
+      qc.invalidateQueries({ queryKey: ['menus'] });
       toast.success('상품을 삭제했습니다.');
     },
     onError: (err) => {

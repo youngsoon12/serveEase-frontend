@@ -2,15 +2,43 @@
 
 import { useOrder } from '@/hooks/useOrder';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import dynamic from 'next/dynamic';
+
+const TossPayment = dynamic(() => import('./TossPayment'), {
+  ssr: false,
+  loading: () => (
+    <div className="mt-4 border-t pt-4">
+      <div className="w-full h-12 flex items-center justify-center">
+        결제 모듈 로드 중…
+      </div>
+    </div>
+  ),
+});
 
 export default function OrderCheck() {
+  // 주문 내역
   const param = useSearchParams();
-  const orderIdParam = param.get('orderId');
 
+  const orderIdParam = param.get('orderId');
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
 
-  const { data } = useOrder(orderId);
+  const { data, isFetching, isError } = useOrder(orderId);
+
+  const paymentOrderId = data?.orderId;
+
+  if (isFetching) {
+    return (
+      <p role="status" aria-live="polite" className="py-8 text-gray-500">
+        주문 내역 불러오는 중…
+      </p>
+    );
+  } else if (isError) {
+    return (
+      <p role="alert" className="py-8 text-red-600">
+        주문 내역을 불러올 수 없습니다.
+      </p>
+    );
+  }
 
   return (
     <div className="flex flex-col w-[21rem] max-w-full">
@@ -37,14 +65,14 @@ export default function OrderCheck() {
             ))}
           </div>
 
-          {/* 합계 + 버튼 (고정 영역) */}
-          <div className="mt-4 border-t pt-4 space-y-4">
-            <div className="flex items-center justify-between text-lg font-semibold">
-              <span>총 결제 금액</span>
-              <span>{data?.totalPrice.toLocaleString()}원</span>
-            </div>
-            <Button className="w-full h-12">결제하기</Button>
-          </div>
+          {/* 결제  */}
+          {paymentOrderId && orderIdParam && data && (
+            <TossPayment
+              data={data}
+              orderIdParam={orderIdParam}
+              paymentOrderId={paymentOrderId}
+            />
+          )}
         </>
       )}
     </div>
