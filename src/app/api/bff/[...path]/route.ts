@@ -57,8 +57,11 @@ export async function proxy(req: Request, ctx: { params: { path: string[] } }) {
 
   const upstream = await fetch(targetUrl, init);
 
-  const buf = await upstream.arrayBuffer();
+  if (upstream.status === 204) {
+    return new NextResponse(null, { status: 204 });
+  }
 
+  const buf = await upstream.arrayBuffer();
   return new NextResponse(buf, {
     status: upstream.status,
     headers: {
