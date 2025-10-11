@@ -1,3 +1,5 @@
+'use client';
+
 import useTossPayments from '@/hooks/payment/useTossPayments';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
