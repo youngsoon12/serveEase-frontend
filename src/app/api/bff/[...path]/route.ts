@@ -1,26 +1,22 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-const API = process.env.NEXT_PUBLIC_BASE_API_URL!.replace(/\/$/, '');
+const API = process.env.NEXT_PUBLIC_BASE_API_URL?.replace(/\/$/, '') ?? '';
 
+// @me를 storeId로 치환
 function buildTargetUrl(pathSegments: string[], storeId?: string, search = '') {
-  const raw = pathSegments.join('/');
-  const resolved = raw.replace(
+  const joined = pathSegments.join('/'); // e.g. "stores/@me/menus"
+  const resolved = joined.replace(
     /stores\/@me/gi,
     `stores/${storeId ?? 'unknown'}`,
   );
   return `${API}/${resolved}${search}`;
 }
 
-async function proxy(req: Request, ctx: { params: { path: string[] } }) {
+export async function proxy(req: Request, ctx: { params: { path: string[] } }) {
   const cookieStore = await cookies();
   const token = cookieStore.get('accessToken')?.value;
   const storeId = cookieStore.get('storeId')?.value;
-
-  console.log('📦 [BFF] Cookies:', {
-    token: token ? token.slice(0, 20) + '...' : undefined,
-    storeId,
-  });
 
   if (!token) {
     return NextResponse.json(
@@ -28,8 +24,8 @@ async function proxy(req: Request, ctx: { params: { path: string[] } }) {
       { status: 401 },
     );
   }
+
   if (!storeId) {
-    // 선택: storeId가 반드시 필요하다면 여기서도 방어
     return NextResponse.json(
       { title: '매장 정보가 없습니다.' },
       { status: 400 },
@@ -37,13 +33,17 @@ async function proxy(req: Request, ctx: { params: { path: string[] } }) {
   }
 
   const url = new URL(req.url);
-  const targetUrl = buildTargetUrl(ctx.params.path, storeId, url.search);
+  const { path } = await ctx.params;
+
+  const targetUrl = buildTargetUrl(path, storeId, url.search);
+  //   console.log('Target URL : ', targetUrl); // 디버깅용 URL
 
   const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
   };
-  const ct = req.headers.get('content-type');
-  if (ct) headers['content-type'] = ct;
+
+  const contentType = req.headers.get('content-type');
+  if (contentType) headers['content-type'] = contentType;
 
   const init: RequestInit = {
     method: req.method,
@@ -58,6 +58,7 @@ async function proxy(req: Request, ctx: { params: { path: string[] } }) {
   const upstream = await fetch(targetUrl, init);
 
   const buf = await upstream.arrayBuffer();
+
   return new NextResponse(buf, {
     status: upstream.status,
     headers: {

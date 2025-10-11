@@ -1,5 +1,4 @@
 import { instance } from '@/lib/axios';
-import { getStoreId } from './store';
 
 export type ProductsResponse = {
   id: number;
@@ -24,24 +23,18 @@ export async function getProducts(): Promise<ProductsResponse[]> {
 export async function postProduct(
   product: CreateProductInput,
 ): Promise<ProductsResponse> {
-  const storeId = getStoreId();
-  const { data } = await instance.post(`/stores/${storeId}/menus`, product);
+  const { data } = await instance.post(`/stores/@me/menus`, product);
   return data;
 }
 
 export async function deleteProduct(menuId: number) {
-  const storeId = getStoreId();
-  const { data } = await instance.delete(`/stores/${storeId}/menus/${menuId}`);
+  const { data } = await instance.delete(`/stores/@me/menus/${menuId}`);
 }
 
 export async function putProduct(
   menuId: number,
   product: CreateProductInput,
 ): Promise<ProductsResponse> {
-  const storeId = getStoreId();
-  const { data } = await instance.put(
-    `/stores/${storeId}/menus/${menuId}`,
-    product,
-  );
+  const { data } = await instance.put(`/stores/@me/menus/${menuId}`, product);
   return data;
 }
