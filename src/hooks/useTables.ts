@@ -1,12 +1,12 @@
-import { OrderResponse } from '@/app/api/order';
 import {
   getTables,
   PAGE_SIZE,
-  TablesResponse,
   updateTableCount,
   updateTableState,
 } from '@/app/api/tables';
 import { TableCardProps } from '@/components/TableCard';
+import { OrderResponse } from '@/types/order';
+import { TablesResponse } from '@/types/table';
 import {
   keepPreviousData,
   useMutation,
@@ -35,8 +35,8 @@ export function useTables(page: number) {
     query.data?.content.map((item) => {
       const status = toUIStatus(item.displayStatus);
       const href = item.activeOrder?.orderId
-        ? `/pos/tables/${item.restaurantTableNumber}?orderId=${item.activeOrder.orderId}`
-        : `/pos/tables/${item.restaurantTableNumber}`;
+        ? `/pos/tables/${item.id}?orderId=${item.activeOrder.orderId}&no=${item.restaurantTableNumber}`
+        : `/pos/tables/${item.id}?no=${item.restaurantTableNumber}`;
 
       return {
         tableNumber: item.restaurantTableNumber,
@@ -69,6 +69,11 @@ export function useUpdateTableCount() {
       queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
     onError: (err) => {
+      if (err?.response?.status === 409) {
+        toast.error('사용 중인 테이블이 있어 개수를 변경할 수 없습니다.');
+        return;
+      }
+
       toast.error('테이블 개수 수정에 실패했습니다.');
 
       console.error('status:', err?.response?.status);

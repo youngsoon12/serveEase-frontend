@@ -2,8 +2,7 @@
 import React from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
-
-import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 import Button from '@/components/Button';
 import useSignup from '@/hooks/useSignup';
@@ -23,7 +22,7 @@ const signupCategory = [
   { type: 'number', placeholder: '매장 테이블 수', min: 0, name: 'tableCount' },
 ];
 
-const singnup = () => {
+const Singnup = () => {
   const [signupInfo, setSignupInfo] = useState({
     loginId: '',
     password: '',
@@ -32,9 +31,8 @@ const singnup = () => {
     storeName: '',
     tableCount: 0,
   });
-
+  const router = useRouter();
   const { mutate: signupFn, isPending } = useSignup();
-  console.log(signupInfo);
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignupInfo((prev) => ({ ...prev, [name]: value }));
@@ -42,15 +40,7 @@ const singnup = () => {
 
   const handleSubmitClick = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signupFn(signupInfo, {
-      onSuccess: (res) => {
-        toast.success('회원가입 성공!');
-        console.log('서버 응답:', res);
-      },
-      onError: (err) => {
-        toast.error(`회원가입 실패: ${err.message}`);
-      },
-    });
+    signupFn(signupInfo);
   };
 
   return (
@@ -101,4 +91,4 @@ const singnup = () => {
   );
 };
 
-export default singnup;
+export default Singnup;

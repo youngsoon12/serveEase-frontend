@@ -1,12 +1,21 @@
+'use client';
+
 import Link from 'next/link';
 import Logo from './Logo';
 import LiveTime from './LiveTime';
+import { useEffect, useState } from 'react';
 
-interface HeaderProps {
-  storeName: string;
-}
+export default function Header() {
+  const [storeName, setStoreName] = useState('');
 
-export default function Header({ storeName = '매장명' }: HeaderProps) {
+  useEffect(() => {
+    const name = localStorage.getItem('storeName');
+
+    if (name) {
+      setStoreName(name);
+    }
+  }, []);
+
   return (
     <header className="h-20 bg-header text-white">
       <div className="mx-auto  h-full flex items-center justify-between px-16">

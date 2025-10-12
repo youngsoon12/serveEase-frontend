@@ -19,6 +19,7 @@ import {
 } from '@/hooks/useOrder';
 import ExistingOrderList from '@/components/ExistingOrderList';
 import { useUpdateTableStatus } from '@/hooks/useTables';
+import usePaymentFail from '@/hooks/payment/usePaymentFail';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -36,6 +37,9 @@ const MODAL = {
 } as const;
 
 export default function PosMenuPage() {
+  // 토스페이먼츠 결제 실패 - 에러 토스트
+  usePaymentFail();
+
   const { tableId } = useParams<{ tableId: string }>();
 
   // 휴지통/주문 취소 컨펌 모달
@@ -49,14 +53,18 @@ export default function PosMenuPage() {
   );
 
   // 메뉴
-  const { data, isFetching, isError } = useMenus();
+  const {
+    data: menu,
+    isFetching: menuIsFetching,
+    isError: menuIsError,
+  } = useMenus();
 
   const filteredMenus = useMemo(() => {
-    if (!data) return [];
-    if (selectedCategory === 'all') return data;
+    if (!menu) return [];
+    if (selectedCategory === 'all') return menu;
 
-    return data.filter((menu) => menu.category === selectedCategory);
-  }, [data, selectedCategory]);
+    return menu.filter((menu) => menu.category === selectedCategory);
+  }, [menu, selectedCategory]);
 
   // 주문 계산
   const cart = useOrderCart();
@@ -73,15 +81,14 @@ export default function PosMenuPage() {
     isError: orderIsError,
   } = useOrder(orderId);
 
-  console.log(order);
-
   // 주문 생성 / 재주문
+  const tableNumberParam = param.get('no');
+  const tableNumber = Number(tableNumberParam);
+
   const createOrder = useCreateOrder(Number(tableId));
   const addOrder = useAddOrder(Number(orderId));
 
   function handleOrderClick() {
-    const tableNumber = Number(tableId);
-
     if (!tableNumber || Number.isNaN(tableNumber)) return;
     if (cart.cartItems.length === 0) return;
 
@@ -138,8 +145,14 @@ export default function PosMenuPage() {
         {/* 메뉴 그리드 영역 */}
         <div className="flex-1 p-5 overflow-y-auto">
           <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 h-fit">
-            {isFetching && !data && null}
-            {isError && !data && null}
+            {menuIsFetching && (
+              <div className="col-span-full text-center">메뉴 로딩 중...</div>
+            )}
+            {menuIsError && (
+              <div className="col-span-full text-red-500">
+                메뉴를 불러올 수 없습니다.
+              </div>
+            )}
 
             {filteredMenus.map((item) => (
               <MenuButton
@@ -157,7 +170,7 @@ export default function PosMenuPage() {
               />
             ))}
 
-            {!isFetching && filteredMenus.length === 0 && (
+            {!menuIsFetching && filteredMenus.length === 0 && (
               <div className="col-span-full text-gray-400">
                 해당 카테고리에 메뉴가 없습니다.
               </div>
@@ -165,7 +178,11 @@ export default function PosMenuPage() {
           </div>
         </div>
         <div className="pb-7 pl-4">
-          <BackButton buttonStyle={'w-14'} iconStyle={'size-6'} />
+          <BackButton
+            buttonStyle={'w-14'}
+            iconStyle={'size-6'}
+            aria-label="뒤로가기"
+          />
         </div>
       </div>
 
@@ -175,11 +192,14 @@ export default function PosMenuPage() {
         <div className="p-[18px] border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <span className="text-lg font-semibold">{tableId}번 테이블</span>
+              <span className="text-lg font-semibold">
+                {tableNumber}번 테이블
+              </span>
               <span
                 className={`text-xs px-2 py-1 rounded ${
                   STATUS_COLORS[order?.status as keyof typeof STATUS_COLORS]
                 }`}
+                aria-label={`현재 상태: ${order?.status}`}
               >
                 {order?.status}
               </span>
@@ -198,6 +218,7 @@ export default function PosMenuPage() {
                       updateTableStatus.mutate({ orderId: Number(orderId) });
                     }
                   }}
+                  aria-label="테이블 서빙 완료 상태로 변경"
                 />
               )}
 
@@ -205,6 +226,7 @@ export default function PosMenuPage() {
                 className="w-7 h-7 text-gray-400 cursor-pointer hover:text-gray-600"
                 variant={'ghost'}
                 onClick={() => open('trash')}
+                aria-label="담아둔 메뉴 전체 삭제"
               >
                 <Trash2 />
               </Button>
@@ -241,21 +263,27 @@ export default function PosMenuPage() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
+                      type="button"
                       className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300"
                       onClick={() => cart.decreaseQuantity(item.menuId)}
+                      aria-label={`${item.name} 수량 감소`}
                     >
                       <Minus className="w-3 h-3" />
                     </button>
                     <span className="w-8 text-center">{item.quantity}</span>
                     <button
+                      type="button"
                       className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300"
                       onClick={() => cart.increaseQuantity(item.menuId)}
+                      aria-label={`${item.name} 수량 증가`}
                     >
                       <Plus className="w-3 h-3" />
                     </button>
                     <button
+                      type="button"
                       className="text-red-500 hover:text-red-700 ml-2 text-sm cursor-pointer"
                       onClick={() => cart.removeItem(item.menuId)}
+                      aria-label={`${item.name} 아이템 삭제`}
                     >
                       삭제
                     </button>
@@ -280,6 +308,7 @@ export default function PosMenuPage() {
                 variant={'link'}
                 className="w-full justify-end underline text-sm hover:text-gray-900 text-gray-400 pr-2"
                 onClick={() => open('cancel')}
+                aria-label="주문 취소"
               >
                 <span>주문 취소</span>
               </Button>
@@ -295,6 +324,7 @@ export default function PosMenuPage() {
               addOrder.isPending ||
               cart.cartItems.length === 0
             }
+            aria-label="주문하기"
           >
             <span className="bg-white text-blue-500 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               {cart.totalCount}
@@ -303,10 +333,17 @@ export default function PosMenuPage() {
             <span>{createOrder.isPending ? '처리 중...' : ''}</span>
           </Button>
 
-          <Button asChild className="w-full bg-slate-600 h-12">
-            <Link href={`/pos/tables/${tableId}/orders`}>
-              <span className="font-semibold">
-                {cart.totalPrice.toLocaleString()}원 결제
+          <Button
+            asChild
+            className="w-full bg-slate-600 h-12"
+            aria-label="결제 페이지로 이동"
+          >
+            <Link href={`/pos/tables/${tableId}/orders?orderId=${orderId}`}>
+              <span className="font-semibold" aria-live="polite">
+                {order?.totalPrice
+                  ? (order?.totalPrice + cart.totalPrice).toLocaleString()
+                  : cart.totalPrice.toLocaleString()}
+                원 결제
               </span>
             </Link>
           </Button>

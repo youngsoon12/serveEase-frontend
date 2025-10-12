@@ -1,4 +1,5 @@
-import { getMenus, MenuItem } from '@/app/api/menu';
+import { getMenus } from '@/app/api/menu';
+import { MenuItem } from '@/types/menu';
 import { useQuery } from '@tanstack/react-query';
 
 export default function useMenus() {
