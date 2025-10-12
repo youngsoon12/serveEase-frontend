@@ -29,9 +29,23 @@ export default function Home() {
 
   const handleLoginClick = () => {
     mutate(userInfo, {
-      onSuccess: (res) => {
-        localStorage.setItem('accessToken', res.token);
-        router.push('/pos');
+      onSuccess: async (res) => {
+        try {
+          const cookies = document.cookie.split('; ');
+          const cookieMap = Object.fromEntries(
+            cookies.map((c) => c.split('=')),
+          );
+
+          const storeId = cookieMap.storeId;
+          const storeName = decodeURIComponent(cookieMap.storeName ?? '');
+
+          if (storeId) localStorage.setItem('storeId', storeId);
+          if (storeName) localStorage.setItem('storeName', storeName);
+
+          router.push('/pos');
+        } catch {
+          console.error('쿠키에서 storeId/storeName 복사 실패');
+        }
       },
       onError: () => {
         toast.error('로그인에 실패했습니다.');

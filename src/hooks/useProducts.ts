@@ -8,7 +8,7 @@ import {
 } from '@/app/api/products';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { isAxiosError, AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 
 type FieldError = { field: string; message: string };
@@ -134,6 +134,7 @@ export function useDeleteProduct() {
     onError: (err) => {
       if (isAxiosError<ValidationError>(err) && err.response) {
         const data = err.response.data;
+        console.log(data);
         toast.error(data?.title ?? '상품 삭제 실패');
       } else {
         toast.error('네트워크 오류가 발생했습니다.');

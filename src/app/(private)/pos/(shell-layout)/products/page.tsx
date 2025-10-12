@@ -18,8 +18,6 @@ export default function Page() {
     () => productSearchFilters(rows, deferredQuery),
     [rows, deferredQuery],
   );
-  console.log(rows);
-  console.log(filteredRows);
   const router = useRouter();
   const sp = useSearchParams();
   const open = sp.get('open');

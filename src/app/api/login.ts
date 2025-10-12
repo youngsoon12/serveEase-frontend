@@ -1,4 +1,4 @@
-import { instance } from '@/lib/axios';
+import axios from 'axios';
 
 export type LoginRequest = {
   loginId: string;
@@ -6,21 +6,17 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
-  userId: number;
-  username: string;
-  token: string;
-  stores: { storeId: number; storeName: string }[];
+  ok: boolean;
+  stores?: { storeId: number; storeName: string }[];
 };
 
 export async function postLogin(
   loginInfo: LoginRequest,
 ): Promise<LoginResponse> {
-  const { data } = await instance.post<LoginResponse>('/user/login', loginInfo);
-
-  if (data.stores?.length > 0) {
-    localStorage.setItem('storeId', String(data.stores[0].storeId));
-    localStorage.setItem('storeName', String(data.stores[0].storeName));
-  }
+  const { data } = await axios.post<LoginResponse>('/api/login', loginInfo, {
+    withCredentials: true,
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   return data;
 }

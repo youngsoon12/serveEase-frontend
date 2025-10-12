@@ -4,12 +4,13 @@ import Link from 'next/link';
 import Logo from './Logo';
 import LiveTime from './LiveTime';
 import { useEffect, useState } from 'react';
+import { getCookie } from '@/lib/cookies';
 
 export default function Header() {
   const [storeName, setStoreName] = useState('');
 
   useEffect(() => {
-    const name = localStorage.getItem('storeName');
+    const name = getCookie('storeName');
 
     if (name) {
       setStoreName(name);

@@ -3,6 +3,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { getCookie } from '@/lib/cookies';
 
 function PrivateInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -13,7 +14,7 @@ function PrivateInner({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const gotoLogin = (msg: string) => {
       if (typeof window !== 'undefined') {
-        alert(msg);
+        alert(msg); // 임시 알림
       }
       const next = encodeURIComponent(
         `${pathname}${sp?.toString() ? `?${sp}` : ''}`,
@@ -21,33 +22,10 @@ function PrivateInner({ children }: { children: React.ReactNode }) {
       router.replace(`/?next=${next}`);
     };
 
-    const token =
-      typeof window !== 'undefined'
-        ? localStorage.getItem('accessToken')
-        : null;
+    const isLoggedIn = getCookie('isLoggedIn') === 'true';
 
-    if (!token) {
+    if (!isLoggedIn) {
       gotoLogin('로그인이 필요합니다.');
-      return;
-    }
-
-    try {
-      const [, payloadB64] = token.split('.');
-      if (payloadB64) {
-        const payload = JSON.parse(atob(payloadB64));
-        if (payload.exp && Date.now() >= payload.exp * 1000) {
-          localStorage.removeItem('accessToken');
-          gotoLogin('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
-          return;
-        }
-      } else {
-        localStorage.removeItem('accessToken');
-        gotoLogin('인증 정보가 유효하지 않습니다. 다시 로그인해주세요.');
-        return;
-      }
-    } catch {
-      localStorage.removeItem('accessToken');
-      gotoLogin('인증 정보가 손상되었습니다. 다시 로그인해주세요.');
       return;
     }
 
