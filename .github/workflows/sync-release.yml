@@ -13,7 +13,7 @@ jobs:
       - name: 🧭 Checkout fork repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.UPSTREAM_TOKEN }}
           persist-credentials: false
 
       - name: 🔗 Add upstream (organization repo)
@@ -28,4 +28,4 @@ jobs:
 
       - name: 🚀 Push changes to fork release
         run: |
-          git push https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/youngsoon12/serveEase-frontend.git release
+          git push https://x-access-token:${{ secrets.UPSTREAM_TOKEN }}@github.com/youngsoon12/serveEase-frontend.git release
