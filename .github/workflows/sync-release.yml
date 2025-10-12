@@ -1,0 +1,45 @@
+name: 🔄 Sync Release Branch from Upstream
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # 6시간마다 실행 (UTC 기준)
+  workflow_dispatch: # 수동 실행 버튼도 표시
+  push:
+    branches:
+      - release # optional: 원본에 push 발생 시 실행하려면 webhook 필요
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧭 Checkout fork repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+
+      - name: 🔗 Add upstream & fetch release branch
+        run: |
+          git remote add upstream https://github.com/ORGANIZATION_NAME/REPO_NAME.git
+          git fetch upstream release
+
+      - name: 🔄 Merge upstream/release into local release
+        run: |
+          git checkout release
+          git merge upstream/release --no-edit || true
+
+      - name: 🚀 Push changes to fork release
+        run: |
+          git push origin release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PR if merge fails
+        if: failure()
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: '🔄 Sync upstream/release'
+          body: 'Automatic sync from upstream/release branch'
+          base: release
+          branch: sync/upstream-release
