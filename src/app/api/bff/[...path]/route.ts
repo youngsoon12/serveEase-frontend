@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const API = process.env.NEXT_PUBLIC_BASE_API_URL?.replace(/\/$/, '') ?? '';
 
@@ -13,7 +13,10 @@ function buildTargetUrl(pathSegments: string[], storeId?: string, search = '') {
   return `${API}/${resolved}${search}`;
 }
 
-export async function proxy(req: Request, ctx: { params: { path: string[] } }) {
+export async function proxy(
+  req: NextRequest,
+  ctx: { params: Promise<{ path: string[] }> },
+) {
   const cookieStore = await cookies();
   const token = cookieStore.get('accessToken')?.value;
   const storeId = cookieStore.get('storeId')?.value;
