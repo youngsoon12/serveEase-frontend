@@ -1,0 +1,31 @@
+name: 🔄 Sync Release Branch from Upstream
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # 6시간마다 자동 실행 (UTC 기준)
+  workflow_dispatch: # 수동 실행 버튼 추가
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧭 Checkout fork repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+
+      - name: 🔗 Add upstream (organization repo)
+        run: |
+          git remote add upstream https://github.com/serve-now/serveEase-frontend.git
+          git fetch upstream release
+
+      - name: 🔄 Merge upstream/release into local release
+        run: |
+          git checkout release
+          git merge upstream/release --no-edit || true
+
+      - name: 🚀 Push changes to fork release
+        run: |
+          git push https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/youngsoon12/serveEase-frontend.git release
