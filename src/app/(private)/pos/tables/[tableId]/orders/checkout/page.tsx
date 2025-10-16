@@ -1,31 +1,16 @@
 'use client';
-import ConfirmModal from '@/components/ConfirmModal';
+import { Banknote } from 'lucide-react';
+import { CreditCard } from 'lucide-react';
 import { useState } from 'react';
+import PaymentTypeBtn from './_components/PaymentTypeBtn';
 
 export default function checkout() {
-  const [open, setOpen] = useState(false);
-  const handleLogout = () => {
-    console.log('히원탈되');
-  };
   return (
     <div>
-      <button
-        onClick={() => {
-          setOpen((prev) => !prev);
-        }}
-      >
-        클릭
-      </button>
-      <ConfirmModal
-        open={open}
-        onOpenChange={setOpen}
-        title="현금 결제하시겠습니까?"
-        confirmText="현금 결제"
-        cancelText="아니오"
-        confirmButtonClassName="bg-blue-600 hover:bg-blue-700 text-white sm:w-36 sm:h-12 text-lg"
-        cancelButtonClassName="border border-gray-300 sm:w-28 sm:h-12 text-gray-700"
-        onConfirm={handleLogout}
-      />
+      <Banknote size={40} className="mx-auto mb-4 text-green-600" />
+      <CreditCard size={40} className="mx-auto mb-4 text-blue-600" />
+      <PaymentTypeBtn title="💰" name="현금 결제" />
+      <PaymentTypeBtn title="💳" name="카드 결제" />
     </div>
   );
 }
