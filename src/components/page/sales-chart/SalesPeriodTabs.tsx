@@ -14,7 +14,7 @@ export default function SalesPeriodTabs({ value, onChange }: Props) {
         if (isPeriod(v)) onChange(v);
       }}
     >
-      <TabsList className="grid grid-cols-3 rounded-full border border-input p-0.1 h-10 ">
+      <TabsList className="grid grid-cols-3 rounded-full border border-input p-0.1 h-10 bg-white">
         <TabsTrigger
           value="day"
           className="rounded-full px-4 py-1.5  font-medium transition-all data-[state=active]:bg-blue-500 data-[state=active]:text-white"
