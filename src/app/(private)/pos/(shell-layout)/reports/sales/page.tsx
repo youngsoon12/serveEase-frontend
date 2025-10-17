@@ -10,15 +10,18 @@ export default function SalesReportChart() {
   const [period, setPeriod] = useState<Period>('day');
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-white">
       <h1 className="text-2xl font-semibold">매출 현황</h1>
 
-      <SalesPeriodTabs value={period} onChange={setPeriod} />
+      <div className="flex justify-between items-center">
+        <SalesPeriodTabs value={period} onChange={setPeriod} />
+        <div>기간 설정 컴포넌트</div>
+      </div>
 
       <div className="grid grid-cols-3 gap-4">
         <SalesKPICard title="실매출" period={period} />
-        <SalesKPICard title="주문건당평균가" period={period} />
-        <SalesKPICard title="취소금액" period={period} />
+        <SalesKPICard title="주문건당 평균가" period={period} />
+        <SalesKPICard title="취소 금액" period={period} />
       </div>
 
       <SalesChart period={period} />
