@@ -1,16 +1,17 @@
-'use client';
-import { Banknote } from 'lucide-react';
-import { CreditCard } from 'lucide-react';
-import { useState } from 'react';
-import PaymentTypeBtn from './_components/PaymentTypeBtn';
+// page.tsx
+import BackButton from '@/components/BackButton';
 
-export default function checkout() {
+export default function CheckoutPage() {
   return (
-    <div>
-      <Banknote size={40} className="mx-auto mb-4 text-green-600" />
-      <CreditCard size={40} className="mx-auto mb-4 text-blue-600" />
-      <PaymentTypeBtn title="💰" name="현금 결제" />
-      <PaymentTypeBtn title="💳" name="카드 결제" />
+    <div className="grid grid-cols-[1fr_360px] gap-8 min-h-screen">
+      <section>
+        <BackButton buttonStyle="w-14 mb-6" iconStyle="size-5" />
+        {/* 좌측 컨텐츠 */}
+          </section>
+          
+      <aside className="sticky top-0 h-screen bg-[#f3f4f5]">
+        {/* 사이드바 */}
+      </aside>
     </div>
   );
 }
