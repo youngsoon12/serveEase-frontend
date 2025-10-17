@@ -44,7 +44,7 @@ export default function DateRangePicker() {
       {/* 날짜 선택 Popover */}
       <Popover>
         <PopoverTrigger>
-          <Button variant="outline" className="h-9">
+          <Button variant="outline" className="h-9 w-48">
             {formattedDate}
           </Button>
         </PopoverTrigger>
