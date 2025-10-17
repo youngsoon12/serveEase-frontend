@@ -1,5 +1,6 @@
 'use client';
 
+import DateRangePicker from '@/components/page/sales-chart/DateRangePicker';
 import SalesChart from '@/components/page/sales-chart/SalesChart';
 import SalesKPICard from '@/components/page/sales-chart/SalesKPICard';
 import SalesPeriodTabs from '@/components/page/sales-chart/SalesPeriodTabs';
@@ -15,7 +16,7 @@ export default function SalesReportChart() {
 
       <div className="flex justify-between items-center">
         <SalesPeriodTabs value={period} onChange={setPeriod} />
-        <div>기간 설정 컴포넌트</div>
+        <DateRangePicker />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
