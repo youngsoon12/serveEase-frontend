@@ -12,7 +12,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-
 import PaymentFilterModal from './PaymentFilterModal';
 
 export default function FilterSection() {
@@ -20,7 +19,6 @@ export default function FilterSection() {
 
   return (
     <div className="space-y-3">
-      {/* 날짜 선택 */}
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-start">
@@ -37,7 +35,6 @@ export default function FilterSection() {
         </PopoverContent>
       </Popover>
 
-      {/* 상세조회 버튼 */}
       <Dialog>
         <DialogTrigger asChild>
           <Button variant="outline" size="sm">

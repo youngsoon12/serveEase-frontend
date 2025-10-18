@@ -9,35 +9,22 @@ export default function PaymentHistory() {
   return (
     <div className="flex h-full gap-6 p-6">
       {/* 좌측: 필터 + 리스트 */}
-      <div className="flex w-[420px] flex-col gap-4">
-        {/* 결제내역 제목 + 네비게이션 */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">결제내역</h2>
+      <div className="flex w-[40%] flex-col gap-4">
+        <h2 className="text-2xl font-bold">결제내역</h2>
 
-          <div className="flex gap-1">
-            <Button variant="outline">
-              <ChevronUp className="h-4 w-4" />
-            </Button>
-            <Button variant="outline">
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+        {/* 검색바 */}
+        <div>검색바</div>
 
         {/* 필터 영역*/}
-        <div>
-          <FilterSection />
-        </div>
+        <FilterSection />
 
         {/* 결제 내역 리스트 */}
-        <div className="flex-1 rounded-md border bg-background">
-          <PaymentList />
-        </div>
+        <PaymentList />
       </div>
 
       {/* 우측: 상세 카드 */}
       <div className="flex flex-1 flex-col gap-4">
-        {/* 우측 네비게이션 */}
+        {/* 위아래 버튼 */}
         <div className="flex justify-end gap-1">
           <Button variant="outline">
             <ChevronUp className="h-4 w-4" />
