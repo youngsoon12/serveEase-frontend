@@ -1,6 +1,7 @@
 // page.tsx
 import BackButton from '@/components/BackButton';
 import PaymentTypeBtn from './_components/PaymentTypeBtn';
+import OrderCheck2 from './_components/OrderCheck2';
 
 const paymentMethod = [
   { title: '💳', name: '신용 카드' },
@@ -26,8 +27,8 @@ export default function CheckoutPage() {
                 </div>
               </div>
               <button
-                className="bg-[#e6f3ff] text-[#3B82F6] px-6 py-3 rounded-md
-                       hover:bg-[#d9ecff] transition-colors duration-200"
+                className="bg-[#e6f3ff] text-[#3B82F6] px-6 py-3 rounded-md cursor-pointer
+                       hover:bg-[#d9ecff] transition-colors duration-200 "
               >
                 분할 결제
               </button>
@@ -66,9 +67,15 @@ export default function CheckoutPage() {
         </div>
       </section>
 
-      <aside className="sticky top-0 h-[100svh] bg-[#f3f4f5]">
-              {/* 사이드바 */}
-              
+      <aside className="sticky top-0 h-[100vh] bg-[#f3f4f5]">
+        {/* 스크롤 컨테이너는 한 군데만 */}
+        <div className="h-full overflow-auto">
+          <div className="min-h-full flex">
+            <div className="mt-30 my-auto mx-auto w-full max-w-[22rem] px-5 py-0">
+              <OrderCheck2 />
+            </div>
+          </div>
+        </div>
       </aside>
     </div>
   );
