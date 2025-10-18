@@ -15,7 +15,7 @@ export default function PaymentHistory() {
         {/* 검색바 */}
         <div>검색바</div>
 
-        {/* 필터 영역*/}
+        {/* 필터 영역 + 상세 조회*/}
         <FilterSection />
 
         {/* 결제 내역 리스트 */}

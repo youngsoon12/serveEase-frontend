@@ -37,7 +37,7 @@ export default function FilterSection() {
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button size="sm">
             <Search className="mr-1 h-3 w-3" />
             상세조회
           </Button>
