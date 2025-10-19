@@ -39,7 +39,10 @@ export default function SalesCalendar({ sales, onMonthChange }: Props) {
           right: 'next',
         }}
         datesSet={(info) => {
-          onMonthChange?.(info.start);
+          const correctedMonth = new Date(info.start);
+          correctedMonth.setDate(correctedMonth.getDate() + 7);
+
+          onMonthChange?.(correctedMonth);
         }}
         eventContent={(eventInfo) => (
           <div className="text-sm font-medium">{eventInfo.event.title}</div>
