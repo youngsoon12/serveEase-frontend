@@ -23,7 +23,7 @@ export default function ReportsLayout({
       <Header />
 
       {/* 좌: 사이드바 / 우: 본문 */}
-      <div className="flex h-[calc(100svh-80px)] overflow-hidden">
+      <div className="flex min-h-screen overflow-hidden">
         <aside
           className="w-56 shrink-0 bg-[#3E4B57] text-white p-4
                  flex flex-col items-center"
