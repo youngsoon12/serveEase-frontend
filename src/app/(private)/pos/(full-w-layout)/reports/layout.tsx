@@ -52,7 +52,7 @@ export default function ReportsLayout({
           </nav>
         </aside>
 
-        <main className="flex-1 min-h-0 p-8 overflow-auto">{children}</main>
+        <main className="flex-1 min-h-0 overflow-auto">{children}</main>
       </div>
     </div>
   );
