@@ -17,12 +17,11 @@ export default function Page() {
     '2025-07-21': 880000,
   };
 
-    // 일요일 = 0, 월요일 = 1
+  // 일요일 = 0, 월요일 = 1
   const WEEK_STARTS_ON = 1;
 
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
 
-  // 현재 월 데이터만 필터링
   const monthEntries = useMemo(() => {
     return Object.entries(sales)
       .map(([iso, amount]) => ({ date: parseISO(iso), amount }))
@@ -37,13 +36,11 @@ export default function Page() {
   );
 
   const weeklyTotals = useMemo(() => {
-    // 1) 현재 월의 마지막 날 기준 '해당 월의 총 주차 수' 구하기
     const totalWeeksInMonth = getWeekOfMonth(endOfMonth(viewMonth), {
       locale: ko,
       weekStartsOn: WEEK_STARTS_ON,
     });
 
-    // 2) 실제 매출이 있는 주만 먼저 누적
     const map = new Map<number, number>();
     monthEntries.forEach(({ date, amount }) => {
       const w = getWeekOfMonth(date, {
@@ -53,7 +50,6 @@ export default function Page() {
       map.set(w, (map.get(w) ?? 0) + amount);
     });
 
-    // 3) 1주차부터 totalWeeksInMonth까지 모두 채우기(없으면 0)
     return Array.from({ length: totalWeeksInMonth }, (_, i) => {
       const weekNo = i + 1;
       const total = map.get(weekNo) ?? 0;
@@ -64,10 +60,8 @@ export default function Page() {
   return (
     <main className="p-10">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] max-w-6xl mx-auto">
-        {/* 캘린더 */}
         <SalesCalendar sales={sales} onMonthChange={setViewMonth} />
 
-        {/* 우측 요약 */}
         <aside className="rounded-xl border bg-white p-4 shadow h-fit lg:sticky lg:top-6">
           <div className="text-sm text-gray-500">현재 월 총액</div>
           <div className="text-2xl font-bold tabular-nums">
