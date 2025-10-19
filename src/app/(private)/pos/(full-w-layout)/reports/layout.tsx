@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const links = [
-  { href: '/pos/reports/overview', label: '매출 현황' },
+  { href: '/pos/reports/sales/chart', label: '매출 현황' },
   { href: '/pos/reports/sales/calendar', label: '매출 달력' },
 ];
 
@@ -22,7 +22,7 @@ export default function ReportsLayout({
     <div className="min-h-screen bg-default">
       <Header />
 
-      {/* 좌: 사이드바 / 우: 본문 */}
+      {/* 사이드바 */}
       <div className="flex min-h-screen overflow-hidden">
         <aside
           className="w-56 shrink-0 bg-[#3E4B57] text-white p-4
