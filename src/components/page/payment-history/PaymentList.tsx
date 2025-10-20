@@ -23,7 +23,7 @@ export default function PaymentList({
   onSelect,
 }: PaymentListProps) {
   return (
-    <ScrollArea className="h-[70%]">
+    <ScrollArea className="h-[67%]">
       <div className="space-y-2">
         {payments.map((payment) => (
           <Card

@@ -48,7 +48,7 @@ export default function PaymentHistory() {
   };
 
   return (
-    <div className="flex  gap-6 p-6">
+    <div className="flex gap-6 p-6">
       {/* 좌측: 필터 + 리스트 */}
       <div className="flex w-[40%] flex-col gap-4">
         <h2 className="text-2xl font-bold">결제내역</h2>
@@ -68,9 +68,9 @@ export default function PaymentHistory() {
       </div>
 
       {/* 우측: 상세 카드 */}
-      <div className="flex flex-1 flex-col gap-4">
+      <div className="relative flex flex-1 flex-col gap-4 pt-12">
         {/* 위아래 버튼 */}
-        <div className="flex justify-end gap-1">
+        <div className="absolute right-0 top-0 flex gap-1">
           <Button
             variant="outline"
             onClick={() => handleNavigate('up')}
