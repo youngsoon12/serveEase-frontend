@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { mockPaymentData } from '@/lib/mock/paymentData';
-import { PaymentStatus } from '@/types/payment-history';
+import { Payment, PaymentStatus } from '@/types/payment-history';
 
 const STATUS_BADGE_STATUS: Record<PaymentStatus, 'secondary' | 'destructive'> =
   {
@@ -13,13 +11,21 @@ const STATUS_BADGE_STATUS: Record<PaymentStatus, 'secondary' | 'destructive'> =
     취소: 'destructive',
   };
 
-export default function PaymentList() {
-  const [selectedId, setSelectedId] = useState<number>(4);
+interface PaymentListProps {
+  payments: Payment[];
+  selectedId: number | null;
+  onSelect: (id: number) => void;
+}
 
+export default function PaymentList({
+  payments,
+  selectedId,
+  onSelect,
+}: PaymentListProps) {
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-[70%]">
       <div className="space-y-2">
-        {mockPaymentData.map((payment) => (
+        {payments.map((payment) => (
           <Card
             key={payment.id}
             className={`p-4 cursor-pointer transition-colors ${
@@ -27,7 +33,7 @@ export default function PaymentList() {
                 ? 'bg-blue-50 border-blue-200'
                 : 'hover:bg-gray-50'
             }`}
-            onClick={() => setSelectedId(payment.id)}
+            onClick={() => onSelect(payment.id)}
           >
             <div className="flex justify-between items-start mb-2">
               <div className="flex-1 mr-4">
