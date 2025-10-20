@@ -16,7 +16,8 @@ export default function SalesReportChart() {
 
       <div className="flex justify-between items-center">
         <SalesPeriodTabs value={period} onChange={setPeriod} />
-        <DateRangePicker />
+
+        {period === 'day' && <DateRangePicker />}
       </div>
 
       <div className="grid grid-cols-3 gap-4">
