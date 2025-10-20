@@ -20,9 +20,12 @@ export default function PaymentDetailCard({ detail }: PaymentDetailCardProps) {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <span className="font-semibold">{detail.category}</span>
-          <button className="px-4 py-1.5 font-semibold text-sm text-red-500 bg-red-50 rounded hover:bg-red-100 cursor-pointer">
-            결제 취소
-          </button>
+
+          {detail.approvalStatus !== '취소완료' && (
+            <button className="px-4 py-1.5 font-semibold text-sm text-red-500 bg-red-50 rounded hover:bg-red-100 cursor-pointer">
+              결제 취소
+            </button>
+          )}
         </div>
 
         <DetailRow label="금액" value={detail.totalPrice.toLocaleString()} />
