@@ -5,6 +5,7 @@ import FilterSection from '@/components/page/payment-history/FilterSection';
 import OrderDetailCard from '@/components/page/payment-history/OrderDetailCard';
 import PaymentDetailCard from '@/components/page/payment-history/PaymentDetailCard';
 import PaymentList from '@/components/page/payment-history/PaymentList';
+import SearchBar from '@/components/SearchBar';
 import {
   mockOrderDetailData,
   mockPaymentData,
@@ -47,13 +48,13 @@ export default function PaymentHistory() {
   };
 
   return (
-    <div className="flex h-full gap-6 p-6">
+    <div className="flex  gap-6 p-6">
       {/* 좌측: 필터 + 리스트 */}
       <div className="flex w-[40%] flex-col gap-4">
         <h2 className="text-2xl font-bold">결제내역</h2>
 
         {/* 검색바 */}
-        <div>검색바</div>
+        <SearchBar />
 
         {/* 필터 영역 + 상세 조회*/}
         <FilterSection />
