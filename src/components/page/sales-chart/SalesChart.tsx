@@ -29,12 +29,6 @@ export default function SalesChart({ period }: Props) {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="sr-only">매출 현황 차트</CardTitle>
-          <div className="flex gap-2">
-            <button className="text-sm px-3 py-1 rounded border">일별</button>
-            <button className="text-sm px-3 py-1 rounded border bg-gray-100">
-              시간대별
-            </button>
-          </div>
         </div>
       </CardHeader>
 
@@ -65,18 +59,6 @@ export default function SalesChart({ period }: Props) {
             />
           </BarChart>
         </ChartContainer>
-
-        {/* 이번주/지난주 비교 정보 */}
-        <div className="mt-4 flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500" />
-            <span>이번주 이 시간: 0원</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gray-300" />
-            <span>지난주 이 시간: 980,000원</span>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );
