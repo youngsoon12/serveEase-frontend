@@ -39,7 +39,10 @@ export default function SalesChart({ period }: Props) {
       </CardHeader>
 
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[clamp(240px,40vh,420px)] w-full"
+        >
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
@@ -58,7 +61,7 @@ export default function SalesChart({ period }: Props) {
               dataKey="sales"
               fill="var(--color-sales)"
               radius={[4, 4, 0, 0]}
-              maxBarSize={55}
+              maxBarSize={52}
             />
           </BarChart>
         </ChartContainer>
