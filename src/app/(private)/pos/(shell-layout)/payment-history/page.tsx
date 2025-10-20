@@ -95,7 +95,7 @@ export default function PaymentHistory() {
             <OrderDetailCard detail={selectedOrderDetail} />
           </>
         ) : (
-          <div className="flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
+          <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
             <p className="text-gray-400">결제 내역을 선택해주세요</p>
           </div>
         )}
