@@ -12,7 +12,7 @@ export default function SalesReportChart() {
 
   return (
     <div className="p-6 space-y-6 ">
-      <h1 className="text-2xl font-semibold">매출 현황</h1>
+      <h1 className="text-2xl font-bold">매출 현황</h1>
 
       <div className="flex justify-between items-center">
         <SalesPeriodTabs value={period} onChange={setPeriod} />
