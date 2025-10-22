@@ -16,10 +16,10 @@ export default function Dropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <Link href={'/pos/reports/sales'}>매출 리포트</Link>
+          <Link href={'/pos/reports/sales/chart'}>매출 리포트</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href={'/pos/reports/payment-history'}>결제 내역</Link>
+          <Link href={'/pos/payment-history'}>결제 내역</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
