@@ -67,8 +67,8 @@ export default function useTossPayments(customerKey?: string) {
       method: 'CARD',
       amount: {
         currency: 'KRW',
-        // value: orderData.totalPrice,
-        value: 1000,
+        value: orderData.totalPrice,
+        // value: 1000,
       },
       orderId: externalOrderId,
       orderName: createOrderName(orderData.orderItems),

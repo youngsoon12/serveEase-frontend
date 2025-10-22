@@ -12,4 +12,7 @@ export type PaymentConfirmResponse = {
   maskedCardNumber: string;
   approvalNumber: string;
   approvedAt: string;
+  paidAmount: number;
+  remainingAmount: number;
+  orderStatus: string;
 };
