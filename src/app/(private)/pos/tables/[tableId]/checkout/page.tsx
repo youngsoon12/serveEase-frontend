@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import SplitPaymentModal from './_components/SplitPaymentModal';
 import BackButton from '@/components/BackButton';
 import PaymentTypeBtn from './_components/PaymentTypeBtn';
 import OrderCheck2 from './_components/OrderCheck2';
+import { useOrder } from '@/hooks/useOrder';
 
 const paymentMethod = [
   { title: '💳', name: '신용 카드' },
@@ -12,9 +14,18 @@ const paymentMethod = [
 ];
 
 export default function CheckoutPage() {
+  const params = useSearchParams();
+  const orderIdParam = params.get('orderId');
+  const orderId = orderIdParam ? Number(orderIdParam) : undefined;
+
+  const { data: order, isLoading } = useOrder(orderId);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [partialAmount, setPartialAmount] = useState<number | null>(null);
-  const totalAmount = 16500;
+
+  const totalAmount = order?.totalPrice ?? 0;
+  const remainingAmount = order?.remainingAmount ?? totalAmount;
+
   return (
     <>
       <div className="grid grid-cols-[1fr_clamp(18rem,24vw,22rem)] gap-10 min-h-screen">
@@ -60,7 +71,7 @@ export default function CheckoutPage() {
                   <dd className="tabular-nums font-semibold">
                     {partialAmount
                       ? (totalAmount - partialAmount).toLocaleString() + '원'
-                      : '-'}
+                      : remainingAmount.toLocaleString() + '원'}
                   </dd>
                 </dl>
               </div>
