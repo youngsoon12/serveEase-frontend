@@ -6,6 +6,7 @@ import {
 } from '@tosspayments/tosspayments-sdk';
 import { useEffect, useState } from 'react';
 import { createOrderName } from '../../lib/paymentUtils';
+import { getNextPartOrderId } from '@/lib/paymentPartCounter.ts'; // 분할결제 회수 임시 카운터 유틸
 import { toast } from 'sonner';
 
 export interface OrderDataForPayment {
@@ -60,13 +61,16 @@ export default function useTossPayments(customerKey?: string) {
 
     const origin = window.location.origin;
 
+    const externalOrderId = getNextPartOrderId(paymentOrderId);
+
     await paymentInstance.requestPayment({
       method: 'CARD',
       amount: {
         currency: 'KRW',
-        value: orderData.totalPrice,
+        // value: orderData.totalPrice,
+        value: 1000,
       },
-      orderId: paymentOrderId,
+      orderId: externalOrderId,
       orderName: createOrderName(orderData.orderItems),
       successUrl: `${origin}/pos/payment/success`,
       failUrl: `${origin}/pos/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,

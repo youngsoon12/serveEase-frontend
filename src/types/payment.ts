@@ -1,6 +1,7 @@
 export type PaymentConfirmRequest = {
   paymentKey: string;
   orderId: string;
+  parentOrderId: string;
   amount: number;
 };
 

@@ -40,12 +40,11 @@ export default function PaymentSuccessPage() {
         const res = await mutateAsync({
           paymentKey,
           orderId,
+          parentOrderId: orderId.replace(/-part\d+$/, ''),
           amount: amount as number,
         });
 
         setPaymentLocal(res);
-
-        console.log('토스페이먼츠 결제 승인 성공:', res);
       } catch (err) {
         console.error('토스페이먼츠 결제 승인 실패:', err);
       }
