@@ -99,7 +99,7 @@ export default function CheckoutPage() {
           <div className="h-full overflow-auto">
             <div className="min-h-full flex">
               <div className="mt-30 my-auto mx-auto w-full max-w-[22rem] px-5 py-0">
-                <OrderCheck2 />
+                <OrderCheck2 order={order} isLoading={isLoading} />
               </div>
             </div>
           </div>
