@@ -16,8 +16,8 @@ export interface OrderDataForPayment {
 }
 
 export interface PaymentParams {
-  paymentOrderId: string;
-  orderIdParam: string;
+  // paymentOrderId: string;
+  parentOrderId: string;
   tableId?: number;
   orderData: OrderDataForPayment;
 }
@@ -49,19 +49,18 @@ export default function useTossPayments(customerKey?: string) {
   }, [customerKey]);
 
   const requestPayment = async ({
-    paymentOrderId,
-    orderIdParam,
+    parentOrderId,
     tableId,
     orderData,
   }: PaymentParams) => {
-    if (!paymentOrderId || !orderData || !paymentInstance) {
+    if (!parentOrderId || !orderData || !paymentInstance) {
       toast.error('결제 요청에 필요한 주문 정보가 없습니다.');
       return;
     }
 
     const origin = window.location.origin;
 
-    const externalOrderId = getNextPartOrderId(paymentOrderId);
+    const externalOrderId = getNextPartOrderId(parentOrderId);
 
     await paymentInstance.requestPayment({
       method: 'CARD',
@@ -73,7 +72,7 @@ export default function useTossPayments(customerKey?: string) {
       orderId: externalOrderId,
       orderName: createOrderName(orderData.orderItems),
       successUrl: `${origin}/pos/payment/success`,
-      failUrl: `${origin}/pos/payment/fail?tableId=${tableId}&orderId=${orderIdParam}`,
+      failUrl: `${origin}/pos/payment/fail?tableId=${tableId}&orderId=${parentOrderId}`,
     });
   };
 

@@ -7,6 +7,8 @@ import BackButton from '@/components/BackButton';
 import PaymentTypeBtn from './_components/PaymentTypeBtn';
 import OrderCheck2 from './_components/OrderCheck2';
 import { useOrder } from '@/hooks/useOrder';
+import useTossPayments from '@/hooks/payment/useTossPayments';
+import { toast } from 'sonner';
 
 const paymentMethod = [
   { title: '💳', name: '신용 카드' },
@@ -25,6 +27,39 @@ export default function CheckoutPage() {
 
   const totalAmount = order?.totalPrice ?? 0;
   const remainingAmount = order?.remainingAmount ?? totalAmount;
+
+  //  -------------
+  const { requestPayment } = useTossPayments(
+    order?.id ? String(order.id) : undefined,
+  );
+
+  const handleCreditCardPayment = async () => {
+    if (!order) return;
+
+    const paymentAmount = partialAmount ?? remainingAmount;
+
+    // 간단 검증
+    if (paymentAmount <= 0) {
+      toast.error('결제 금액이 올바르지 않습니다.');
+      return;
+    }
+    if (paymentAmount > remainingAmount) {
+      toast.error('남은 금액을 초과할 수 없습니다.');
+      return;
+    }
+
+    await requestPayment({
+      parentOrderId: order.orderId,
+      tableId: order.restaurantTableId,
+      orderData: {
+        totalPrice: paymentAmount,
+        orderItems: order.orderItems.map((item) => ({
+          menuName: item.menuName,
+          quantity: item.quantity,
+        })),
+      },
+    });
+  };
 
   return (
     <>
@@ -87,7 +122,15 @@ export default function CheckoutPage() {
 
               <div className="mt-5 flex gap-5">
                 {paymentMethod.map(({ title, name }, key) => (
-                  <PaymentTypeBtn key={key} title={title} name={name} />
+                  <PaymentTypeBtn
+                    key={key}
+                    title={title}
+                    name={name}
+                    onClick={
+                      name === '신용 카드' ? handleCreditCardPayment : undefined
+                    }
+                    disabled={isLoading || !order}
+                  />
                 ))}
               </div>
             </div>
