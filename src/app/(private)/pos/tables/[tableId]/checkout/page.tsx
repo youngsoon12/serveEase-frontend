@@ -1,13 +1,18 @@
+// CheckoutPage.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import SplitPaymentModal from './_components/SplitPaymentModal';
 import BackButton from '@/components/BackButton';
 import PaymentTypeBtn from './_components/PaymentTypeBtn';
 import OrderCheck2 from './_components/OrderCheck2';
 import { useOrder } from '@/hooks/useOrder';
 import useTossPayments from '@/hooks/payment/useTossPayments';
+import {
+  useCashPayment,
+  useCashPaymentFull,
+} from '@/hooks/payment/usePaymentsCash';
 import { toast } from 'sonner';
 
 const paymentMethod = [
@@ -16,10 +21,13 @@ const paymentMethod = [
 ];
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const params = useSearchParams();
   const orderIdParam = params.get('orderId');
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
+
   const { data: order, isLoading } = useOrder(orderId);
+
   useEffect(() => {
     if (order?.restaurantTableId && order?.orderId) {
       if (!localStorage.getItem('lastPaymentTableId')) {
@@ -40,16 +48,58 @@ export default function CheckoutPage() {
   const totalAmount = order?.totalPrice ?? 0;
   const remainingAmount = order?.remainingAmount ?? totalAmount;
 
+  // 카드 결제
   const { requestPayment } = useTossPayments(
     order?.id ? String(order.id) : undefined,
   );
 
+  // 현금 결제 훅
+  const cashPartial = useCashPayment();
+  const cashFull = useCashPaymentFull();
+
+  const paymentAmount = partialAmount ?? remainingAmount;
+
+  const validateAmount = (amt: number) => {
+    if (amt <= 0) {
+      toast.error('결제 금액이 올바르지 않습니다.');
+      return false;
+    }
+    if (amt > remainingAmount) {
+      toast.error('남은 금액을 초과할 수 없습니다.');
+      return false;
+    }
+    return true;
+  };
+
   const handleCreditCardPayment = async () => {
     if (!order) return;
+    if (!validateAmount(paymentAmount)) return;
 
+    await requestPayment({
+      parentOrderId: order.orderId, // 내부 주문의 문자열형 orderId (parent)
+      tableId: order.restaurantTableId,
+      orderData: {
+        totalPrice: paymentAmount, // 이번 결제 금액
+        orderItems: order.orderItems.map((item) => ({
+          menuName: item.menuName,
+          quantity: item.quantity,
+        })),
+      },
+    });
+  };
+
+  const handleCashPayment = async () => {
+    if (!order) return;
+
+    const storedOrderId = Number(localStorage.getItem('lastPaymentOrderId'));
+    if (!storedOrderId) {
+      toast.error('주문 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    // partialAmount가 없으면 남은 금액(=전액) 결제
     const paymentAmount = partialAmount ?? remainingAmount;
 
-    // 간단 검증
     if (paymentAmount <= 0) {
       toast.error('결제 금액이 올바르지 않습니다.');
       return;
@@ -59,17 +109,26 @@ export default function CheckoutPage() {
       return;
     }
 
-    await requestPayment({
-      parentOrderId: order.orderId,
-      tableId: order.restaurantTableId,
-      orderData: {
-        totalPrice: paymentAmount,
-        orderItems: order.orderItems.map((item) => ({
-          menuName: item.menuName,
-          quantity: item.quantity,
-        })),
-      },
-    });
+    try {
+      if (paymentAmount === remainingAmount) {
+        // 전액 현금 결제
+        await cashFull.mutateAsync({ orderId: storedOrderId });
+        toast.success('현금 전액 결제가 완료되었습니다.');
+      } else {
+        // 분할 현금 결제
+        await cashPartial.mutateAsync({
+          orderId: storedOrderId,
+          amount: paymentAmount,
+        });
+        toast.success('현금 분할 결제가 완료되었습니다.');
+      }
+
+      router.replace(
+        `/pos/tables/${order.restaurantTableId}/checkout?orderId=${order.id}`,
+      );
+    } catch {
+      toast.error('현금 결제에 실패했습니다.');
+    }
   };
 
   return (
@@ -92,8 +151,7 @@ export default function CheckoutPage() {
                 </div>
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-[#e6f3ff] text-[#3B82F6] px-6 py-3 rounded-md cursor-pointer
-                       hover:bg-[#d9ecff] transition-colors duration-200 "
+                  className="bg-[#e6f3ff] text-[#3B82F6] px-6 py-3 rounded-md cursor-pointer hover:bg-[#d9ecff] transition-colors duration-200 "
                 >
                   분할 결제
                 </button>
@@ -137,9 +195,18 @@ export default function CheckoutPage() {
                     title={title}
                     name={name}
                     onClick={
-                      name === '신용 카드' ? handleCreditCardPayment : undefined
+                      name === '신용 카드'
+                        ? handleCreditCardPayment
+                        : name === '현금'
+                        ? handleCashPayment
+                        : undefined
                     }
-                    disabled={isLoading || !order}
+                    disabled={
+                      isLoading ||
+                      !order ||
+                      cashPartial.isPending ||
+                      cashFull.isPending
+                    }
                   />
                 ))}
               </div>
@@ -148,7 +215,6 @@ export default function CheckoutPage() {
         </section>
 
         <aside className="sticky top-0 h-[100vh] bg-[#f3f4f5]">
-          {/* 스크롤 컨테이너는 한 군데만 */}
           <div className="h-full overflow-auto">
             <div className="min-h-full flex">
               <div className="mt-30 my-auto mx-auto w-full max-w-[22rem] px-5 py-0">
@@ -159,7 +225,7 @@ export default function CheckoutPage() {
         </aside>
       </div>
 
-      {/* 모달 */}
+      {/* 분할 금액 입력 모달 */}
       <SplitPaymentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

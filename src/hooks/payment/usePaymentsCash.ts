@@ -7,9 +7,15 @@ import {
   type RequestCash,
 } from '@/app/api/paymentsCash';
 
+type CashVars = { orderId: number; amount: number };
+type FullVars = { orderId: number };
+
 export function useCashPayment() {
-  return useMutation<unknown, unknown, RequestCash>({
-    mutationFn: (payload) => paymentsCash(payload),
+  return useMutation<unknown, unknown, CashVars>({
+    mutationFn: ({ orderId, amount }) => paymentsCash(orderId, { amount }),
+    onSuccess: () => {
+      toast.success('현금 결제가 처리되었습니다.');
+    },
     onError: (err) => {
       if (isAxiosError(err)) {
         toast.error(
@@ -25,8 +31,11 @@ export function useCashPayment() {
 }
 
 export function useCashPaymentFull() {
-  return useMutation<unknown, unknown, void>({
-    mutationFn: () => paymentsCashFull(),
+  return useMutation<unknown, unknown, FullVars>({
+    mutationFn: ({ orderId }) => paymentsCashFull(orderId),
+    onSuccess: () => {
+      toast.success('현금 전액 결제가 처리되었습니다.');
+    },
     onError: (err) => {
       if (isAxiosError(err)) {
         toast.error(
