@@ -20,7 +20,6 @@ export default function CheckoutPage() {
   const orderIdParam = params.get('orderId');
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
   const { data: order, isLoading } = useOrder(orderId);
-  console.log(order);
   useEffect(() => {
     if (order?.restaurantTableId && order?.orderId) {
       if (!localStorage.getItem('lastPaymentTableId')) {
