@@ -115,7 +115,7 @@ export default function CheckoutPage() {
         localStorage.removeItem('lastPaymentOrderId');
         localStorage.removeItem('lastPaymentTableId');
         localStorage.removeItem(`split-count:${order.orderId}`);
-        router.replace('/pos/tables');
+        // router.replace('/pos/tables');
       } else {
         // 분할 현금 결제
         await cashPartial.mutateAsync({
@@ -128,9 +128,9 @@ export default function CheckoutPage() {
           String(order.restaurantTableId),
         );
         localStorage.setItem('lastPaymentOrderId', String(order.id));
-        router.replace(
-          `/pos/tables/${order.restaurantTableId}/checkout?orderId=${order.id}`,
-        );
+        // router.replace(
+        //   `/pos/tables/${order.restaurantTableId}/checkout?orderId=${order.id}`,
+        // );
       }
     } catch {
       toast.error('현금 결제에 실패했습니다.');
