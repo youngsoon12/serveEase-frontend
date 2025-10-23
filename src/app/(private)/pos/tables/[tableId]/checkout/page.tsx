@@ -27,7 +27,6 @@ export default function CheckoutPage() {
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
 
   const { data: order, isLoading } = useOrder(orderId);
-
   useEffect(() => {
     if (order?.restaurantTableId && order?.orderId) {
       if (!localStorage.getItem('lastPaymentTableId')) {
@@ -97,7 +96,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    // partialAmount가 없으면 남은 금액(=전액) 결제
     const paymentAmount = partialAmount ?? remainingAmount;
 
     if (paymentAmount <= 0) {
@@ -113,19 +111,27 @@ export default function CheckoutPage() {
       if (paymentAmount === remainingAmount) {
         // 전액 현금 결제
         await cashFull.mutateAsync({ orderId: storedOrderId });
-        toast.success('현금 전액 결제가 완료되었습니다.');
+        toast.success('결제가 완료되었습니다.');
+        localStorage.removeItem('lastPaymentOrderId');
+        localStorage.removeItem('lastPaymentTableId');
+        localStorage.removeItem(`split-count:${order.orderId}`);
+        router.replace('/pos/tables');
       } else {
         // 분할 현금 결제
         await cashPartial.mutateAsync({
           orderId: storedOrderId,
           amount: paymentAmount,
         });
-        toast.success('현금 분할 결제가 완료되었습니다.');
+        toast.success(`${paymentAmount}원 결제가 완료되었습니다.`);
+        localStorage.setItem(
+          'lastPaymentTableId',
+          String(order.restaurantTableId),
+        );
+        localStorage.setItem('lastPaymentOrderId', String(order.id));
+        router.replace(
+          `/pos/tables/${order.restaurantTableId}/checkout?orderId=${order.id}`,
+        );
       }
-
-      router.replace(
-        `/pos/tables/${order.restaurantTableId}/checkout?orderId=${order.id}`,
-      );
     } catch {
       toast.error('현금 결제에 실패했습니다.');
     }
