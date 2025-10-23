@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import SplitPaymentModal from './_components/SplitPaymentModal';
 import BackButton from '@/components/BackButton';
@@ -19,8 +19,21 @@ export default function CheckoutPage() {
   const params = useSearchParams();
   const orderIdParam = params.get('orderId');
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
-
   const { data: order, isLoading } = useOrder(orderId);
+  console.log(order);
+  useEffect(() => {
+    if (order?.restaurantTableId && order?.orderId) {
+      if (!localStorage.getItem('lastPaymentTableId')) {
+        localStorage.setItem(
+          'lastPaymentTableId',
+          String(order.restaurantTableId),
+        );
+      }
+      if (!localStorage.getItem('lastPaymentOrderId')) {
+        localStorage.setItem('lastPaymentOrderId', String(orderId));
+      }
+    }
+  }, [order?.restaurantTableId, order?.orderId]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [partialAmount, setPartialAmount] = useState<number | null>(null);
@@ -28,7 +41,6 @@ export default function CheckoutPage() {
   const totalAmount = order?.totalPrice ?? 0;
   const remainingAmount = order?.remainingAmount ?? totalAmount;
 
-  //  -------------
   const { requestPayment } = useTossPayments(
     order?.id ? String(order.id) : undefined,
   );
@@ -97,15 +109,14 @@ export default function CheckoutPage() {
 
                   <dt className="text-gray-500">이번 결제</dt>
                   <dd className="tabular-nums font-semibold text-[#3B82F6]">
-                    {partialAmount
-                      ? `${partialAmount.toLocaleString()}원`
-                      : '-'}
+                    {(partialAmount ?? remainingAmount).toLocaleString()}원
                   </dd>
 
                   <dt className="text-gray-500">남은 금액</dt>
                   <dd className="tabular-nums font-semibold">
                     {partialAmount
-                      ? (totalAmount - partialAmount).toLocaleString() + '원'
+                      ? (remainingAmount - partialAmount).toLocaleString() +
+                        '원'
                       : remainingAmount.toLocaleString() + '원'}
                   </dd>
                 </dl>
@@ -154,6 +165,7 @@ export default function CheckoutPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         totalAmount={totalAmount}
+        remainingAmount={remainingAmount}
         onConfirm={(value) => setPartialAmount(value)}
       />
     </>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { AlertTriangle, CreditCard } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,19 @@ interface Props {
 }
 
 export default function PartialPaymentNotice({ payment }: Props) {
+  const [lastTableId, setLastTableId] = useState<string | null>(null);
+  const [lastOrderId, setLastOrderId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedTableId = localStorage.getItem('lastPaymentTableId');
+    const storedOrderId = localStorage.getItem('lastPaymentOrderId');
+    setLastTableId(storedTableId);
+    setLastOrderId(storedOrderId);
+  }, []);
+
+  const checkoutUrl = lastTableId
+    ? `/pos/tables/${lastTableId}/checkout?orderId=${lastOrderId}`
+    : `/pos/tables`;
   return (
     <div className="flex flex-col items-center justify-center text-center">
       <div className="mb-5">
@@ -51,9 +65,7 @@ export default function PartialPaymentNotice({ payment }: Props) {
 
       <div className="flex flex-col gap-2 w-full max-w-sm">
         <Button variant="default" asChild>
-          <Link href={`/pos/payment?orderId=${payment.orderId}`}>
-            추가 결제 진행하기
-          </Link>
+          <Link href={checkoutUrl}>추가 결제 진행하기</Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href={'/pos/tables'}>테이블 페이지로 돌아가기</Link>

@@ -5,8 +5,9 @@ import { useState } from 'react';
 interface SplitPaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  totalAmount: number; 
+  totalAmount: number;
   onConfirm: (amount: number) => void;
+  remainingAmount: number;
 }
 
 export default function SplitPaymentModal({
@@ -14,6 +15,7 @@ export default function SplitPaymentModal({
   onClose,
   totalAmount,
   onConfirm,
+  remainingAmount,
 }: SplitPaymentModalProps) {
   const [amount, setAmount] = useState('');
 
@@ -38,9 +40,9 @@ export default function SplitPaymentModal({
         <h2 className="text-lg font-bold mb-6">분할 결제</h2>
 
         <p className="text-gray-500 text-sm mb-2">
-          총 결제금액{' '}
-          <span className="font-semibold">
-            {totalAmount.toLocaleString()}원
+          남은 결제금액{' '}
+          <span className="font-semibold text-[#3B82F6]">
+            {remainingAmount.toLocaleString()}원
           </span>{' '}
           중
         </p>
@@ -79,11 +81,12 @@ export default function SplitPaymentModal({
           <button
             onClick={() => {
               const finalAmount = parseInt(amount || '0', 10);
-              if (finalAmount > 0 && finalAmount <= totalAmount) {
+              if (finalAmount > 0 && finalAmount <= remainingAmount) {
+                // ✅ 검증 기준 변경
                 onConfirm(finalAmount);
                 onClose();
               } else {
-                alert('유효한 금액을 입력해주세요.');
+                alert('남은 금액 이하로 입력해주세요.');
               }
             }}
             className="px-5 py-2 rounded-md bg-[#3B82F6] text-white font-semibold hover:bg-blue-600"
