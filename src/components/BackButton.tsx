@@ -32,6 +32,11 @@ export default function BackButton({
     const parentSegments = pathSegments.slice(0, -1); // ['', 'pos']
     const parentPath = parentSegments.join('/'); // /pos
 
+    if (currentPath.includes('/checkout')) {
+      router.back();
+      return;
+    }
+
     if (pathSegments.includes('reports')) {
       router.push('/pos');
       return;
