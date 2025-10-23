@@ -27,9 +27,7 @@ export default function SalesChart({ period }: Props) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle className="sr-only">매출 현황 차트</CardTitle>
-        </div>
+        <CardTitle className="sr-only">매출 현황 차트</CardTitle>
       </CardHeader>
 
       <CardContent>
