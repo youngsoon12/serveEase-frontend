@@ -1,4 +1,3 @@
-// CheckoutPage.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -28,18 +27,20 @@ export default function CheckoutPage() {
 
   const { data: order, isLoading } = useOrder(orderId);
   useEffect(() => {
-    if (order?.restaurantTableId && order?.orderId) {
-      if (!localStorage.getItem('lastPaymentTableId')) {
-        localStorage.setItem(
-          'lastPaymentTableId',
-          String(order.restaurantTableId),
-        );
-      }
-      if (!localStorage.getItem('lastPaymentOrderId')) {
-        localStorage.setItem('lastPaymentOrderId', String(orderId));
-      }
+    if (order?.restaurantTableId) {
+      localStorage.setItem(
+        'lastPaymentTableId',
+        String(order.restaurantTableId),
+      );
     }
-  }, [order?.restaurantTableId, order?.orderId]);
+
+    if (order?.id || orderId) {
+      localStorage.setItem(
+        'lastPaymentOrderId',
+        String(order?.id ?? orderId), // CHANGED
+      );
+    }
+  }, [order?.restaurantTableId, order?.id, orderId]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [partialAmount, setPartialAmount] = useState<number | null>(null);
