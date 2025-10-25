@@ -42,6 +42,11 @@ export default function BackButton({
       return;
     }
 
+    if (pathSegments.includes('success')) {
+      router.push('/pos/tables');
+      return;
+    }
+
     router.push(parentPath);
   };
 
