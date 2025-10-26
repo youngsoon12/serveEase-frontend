@@ -13,49 +13,84 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import {
+  PERIODS,
+  PAYMENT_METHODS,
+  PAYMENT_TYPES,
+  PeriodType,
+  PaymentMethodType,
+  PaymentTypeType,
+} from '@/constants/payment-history';
 
 export default function PaymentFilterModal() {
-  const [selectedPeriod, setSelectedPeriod] = useState('오늘');
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('카드');
-  const [selectedPaymentType, setSelectedPaymentType] = useState('취소결제');
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>(
+    PERIODS.TODAY,
+  );
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentMethodType>(PAYMENT_METHODS.CARD);
+  const [selectedPaymentType, setSelectedPaymentType] =
+    useState<PaymentTypeType>(PAYMENT_TYPES.CANCELLED);
+
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [isDateInputDisabled, setIsDateInputDisabled] = useState(true);
 
-  const periods = ['오늘', '일주일', '1개월', '직접설정'];
-  const paymentMethods = ['카드', '현금'];
-  const paymentTypes = ['취소결제', '분할결제', '정상결제'];
+  const periods = Object.values(PERIODS);
+  const paymentMethods = Object.values(PAYMENT_METHODS);
+  const paymentTypes = Object.values(PAYMENT_TYPES);
+
+  const DATE_RANGE_CONFIG = {
+    [PERIODS.TODAY]: {
+      start: () => new Date(),
+      end: () => new Date(),
+      disabled: true,
+    },
+    [PERIODS.WEEK]: {
+      start: () => {
+        const date = new Date();
+        date.setDate(date.getDate() - 7);
+        return date;
+      },
+      end: () => new Date(),
+      disabled: true,
+    },
+    [PERIODS.MONTH]: {
+      start: () => {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 1);
+        return date;
+      },
+      end: () => new Date(),
+      disabled: true,
+    },
+    [PERIODS.CUSTOM]: {
+      start: () => null,
+      end: () => null,
+      disabled: false,
+    },
+  };
+
+  const calculateDateRange = (period: PeriodType) => {
+    const config =
+      DATE_RANGE_CONFIG[period] || DATE_RANGE_CONFIG[PERIODS.TODAY];
+
+    return {
+      start: config.start(),
+      end: config.end(),
+      disabled: config.disabled,
+    };
+  };
 
   // 기간 선택에 따라 날짜 설정
   useEffect(() => {
-    const today = new Date();
+    const { start, end, disabled } = calculateDateRange(selectedPeriod);
 
-    switch (selectedPeriod) {
-      case '오늘':
-        setStartDate(today);
-        setEndDate(today);
-        setIsDateInputDisabled(true);
-        break;
-      case '일주일':
-        const weekAgo = new Date(today);
-        weekAgo.setDate(today.getDate() - 7);
-        setStartDate(weekAgo);
-        setEndDate(today);
-        setIsDateInputDisabled(true);
-        break;
-      case '1개월':
-        const monthAgo = new Date(today);
-        monthAgo.setMonth(today.getMonth() - 1);
-        setStartDate(monthAgo);
-        setEndDate(today);
-        setIsDateInputDisabled(true);
-        break;
-      case '직접설정':
-        setIsDateInputDisabled(false);
-        break;
-      default:
-        break;
+    if (start && end) {
+      setStartDate(start);
+      setEndDate(end);
     }
+
+    setIsDateInputDisabled(disabled);
   }, [selectedPeriod]);
 
   return (
