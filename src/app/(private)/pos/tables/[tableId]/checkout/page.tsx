@@ -26,6 +26,7 @@ export default function CheckoutPage() {
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
 
   const { data: order, isLoading } = useOrder(orderId);
+
   useEffect(() => {
     if (order?.restaurantTableId) {
       localStorage.setItem(
@@ -191,7 +192,6 @@ export default function CheckoutPage() {
               <div className="flex items-end gap-3">
                 <span className="text-xl font-semibold">결제 방법</span>
                 <span className="text-lg font-semibold text-[#3B82F6]">
-                  고객도 선택 가능
                 </span>
               </div>
 
@@ -223,8 +223,8 @@ export default function CheckoutPage() {
 
         <aside className="sticky top-0 h-[100vh] bg-[#f3f4f5]">
           <div className="h-full overflow-auto">
-            <div className="min-h-full flex">
-              <div className="mt-30 my-auto mx-auto w-full max-w-[22rem] px-5 py-0">
+            <div className="min-h-full flex items-start">
+              <div className="mx-auto w-full max-w-[22rem] px-5 py-0">
                 <OrderCheck2 order={order} isLoading={isLoading} />
               </div>
             </div>
