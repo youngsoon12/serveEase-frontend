@@ -13,23 +13,25 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function DateRangePicker() {
-  const [date, setDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // 날짜 포맷팅 (2025. 7. 1(금))
-  const formattedDate = format(date, 'yyyy. M. d(EEE)', { locale: ko });
+  // 날짜 포맷팅 (2025. 7. 1(금)
+  const formattedDate = format(selectedDate, 'yyyy. M. d(EEE)', { locale: ko });
 
   // 이전 날짜
   const handlePrevDay = () => {
-    const newDate = new Date(date);
+    const newDate = new Date(selectedDate);
+
     newDate.setDate(newDate.getDate() - 1);
-    setDate(newDate);
+    setSelectedDate(newDate);
   };
 
   // 다음 날짜
   const handleNextDay = () => {
-    const newDate = new Date(date);
+    const newDate = new Date(selectedDate);
+
     newDate.setDate(newDate.getDate() + 1);
-    setDate(newDate);
+    setSelectedDate(newDate);
   };
 
   return (
@@ -43,7 +45,7 @@ export default function DateRangePicker() {
 
       {/* 날짜 선택 Popover */}
       <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger asChild>
           <Button variant="outline" className="h-9 w-48">
             {formattedDate}
           </Button>
@@ -52,8 +54,10 @@ export default function DateRangePicker() {
         <PopoverContent className="w-auto p-1">
           <Calendar
             mode="single"
-            selected={date}
-            onSelect={(newDate) => newDate && setDate(newDate)}
+            selected={selectedDate}
+            onSelect={(newDate) => {
+              if (newDate) setSelectedDate(newDate);
+            }}
             locale={ko}
           />
         </PopoverContent>

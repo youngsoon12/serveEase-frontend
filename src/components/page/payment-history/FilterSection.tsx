@@ -30,7 +30,11 @@ export default function FilterSection() {
           <Calendar
             mode="single"
             selected={date}
-            onSelect={(d) => d && setDate(d)}
+            onSelect={(selectedDate) => {
+              if (selectedDate) {
+                setDate(selectedDate);
+              }
+            }}
           />
         </PopoverContent>
       </Popover>

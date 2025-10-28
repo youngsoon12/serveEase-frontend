@@ -35,8 +35,9 @@ export default function PaymentHistory() {
     if (!selectedPaymentId || mockPaymentData.length === 0) return;
 
     const currentIndex = mockPaymentData.findIndex(
-      (p) => p.id === selectedPaymentId,
+      (payment) => payment.id === selectedPaymentId,
     );
+
     if (currentIndex === -1) return;
 
     const newIndex =
