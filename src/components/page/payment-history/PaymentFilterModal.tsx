@@ -22,6 +22,7 @@ import {
   PaymentTypeType,
 } from '@/constants/payment-history';
 import { calculateDateRange } from '@/lib/payment-period-utils';
+import DatePicker from './DatePicker';
 
 interface FilterState {
   period: PeriodType;
@@ -57,6 +58,11 @@ export default function PaymentFilterModal() {
         endDate: end,
         isDateInputDisabled: disabled,
       }));
+    } else {
+      setFilters((prev) => ({
+        ...prev,
+        isDateInputDisabled: disabled,
+      }));
     }
   }, [filters.period]);
 
@@ -87,68 +93,23 @@ export default function PaymentFilterModal() {
         {/* 날짜 범위 선택 */}
         <div className="flex items-center gap-3">
           {/* 시작 날짜 */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                disabled={filters.isDateInputDisabled}
-                className={cn(
-                  'flex-1 justify-start text-left font-normal',
-                  !filters.startDate && 'text-muted-foreground',
-                  filters.isDateInputDisabled &&
-                    'bg-gray-50 text-gray-500 cursor-not-allowed',
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {filters.startDate
-                  ? format(filters.startDate, 'yyyy.MM.dd', { locale: ko })
-                  : '날짜 선택'}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-1" align="start">
-              <Calendar
-                mode="single"
-                selected={filters.startDate}
-                onSelect={(date) =>
-                  setFilters((prev) => ({ ...prev, startDate: date }))
-                }
-                locale={ko}
-              />
-            </PopoverContent>
-          </Popover>
-
+          <DatePicker
+            date={filters.startDate}
+            onSelect={(date) =>
+              setFilters((prev) => ({ ...prev, startDate: date }))
+            }
+            disabled={filters.isDateInputDisabled}
+          />
           <span className="text-muted-foreground">~</span>
 
           {/* 종료 날짜 */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                disabled={filters.isDateInputDisabled}
-                className={cn(
-                  'flex-1 justify-start text-left font-normal',
-                  !filters.endDate && 'text-muted-foreground',
-                  filters.isDateInputDisabled &&
-                    'bg-gray-50 text-gray-500 cursor-not-allowed',
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {filters.endDate
-                  ? format(filters.endDate, 'yyyy.MM.dd', { locale: ko })
-                  : '날짜 선택'}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={filters.endDate}
-                onSelect={(date) =>
-                  setFilters((prev) => ({ ...prev, endDate: date }))
-                }
-                locale={ko}
-              />
-            </PopoverContent>
-          </Popover>
+          <DatePicker
+            date={filters.endDate}
+            onSelect={(date) =>
+              setFilters((prev) => ({ ...prev, endDate: date }))
+            }
+            disabled={filters.isDateInputDisabled}
+          />
         </div>
 
         {/* 결제수단 */}
