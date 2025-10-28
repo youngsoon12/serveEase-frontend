@@ -21,6 +21,7 @@ import {
   PaymentMethodType,
   PaymentTypeType,
 } from '@/constants/payment-history';
+import { calculateDateRange } from '@/lib/payment-period-utils';
 
 export default function PaymentFilterModal() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>(
@@ -38,48 +39,6 @@ export default function PaymentFilterModal() {
   const periods = Object.values(PERIODS);
   const paymentMethods = Object.values(PAYMENT_METHODS);
   const paymentTypes = Object.values(PAYMENT_TYPES);
-
-  const DATE_RANGE_CONFIG = {
-    [PERIODS.TODAY]: {
-      start: () => new Date(),
-      end: () => new Date(),
-      disabled: true,
-    },
-    [PERIODS.WEEK]: {
-      start: () => {
-        const date = new Date();
-        date.setDate(date.getDate() - 7);
-        return date;
-      },
-      end: () => new Date(),
-      disabled: true,
-    },
-    [PERIODS.MONTH]: {
-      start: () => {
-        const date = new Date();
-        date.setMonth(date.getMonth() - 1);
-        return date;
-      },
-      end: () => new Date(),
-      disabled: true,
-    },
-    [PERIODS.CUSTOM]: {
-      start: () => null,
-      end: () => null,
-      disabled: false,
-    },
-  };
-
-  const calculateDateRange = (period: PeriodType) => {
-    const config =
-      DATE_RANGE_CONFIG[period] || DATE_RANGE_CONFIG[PERIODS.TODAY];
-
-    return {
-      start: config.start(),
-      end: config.end(),
-      disabled: config.disabled,
-    };
-  };
 
   // 기간 선택에 따라 날짜 설정
   useEffect(() => {
