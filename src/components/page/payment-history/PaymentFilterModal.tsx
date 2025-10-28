@@ -23,18 +23,24 @@ import {
 } from '@/constants/payment-history';
 import { calculateDateRange } from '@/lib/payment-period-utils';
 
-export default function PaymentFilterModal() {
-  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>(
-    PERIODS.TODAY,
-  );
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<PaymentMethodType>(PAYMENT_METHODS.CARD);
-  const [selectedPaymentType, setSelectedPaymentType] =
-    useState<PaymentTypeType>(PAYMENT_TYPES.CANCELLED);
+interface FilterState {
+  period: PeriodType;
+  paymentMethod: PaymentMethodType;
+  paymentType: PaymentTypeType;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  isDateInputDisabled: boolean;
+}
 
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
-  const [isDateInputDisabled, setIsDateInputDisabled] = useState(true);
+export default function PaymentFilterModal() {
+  const [filters, setFilters] = useState<FilterState>({
+    period: PERIODS.TODAY,
+    paymentMethod: PAYMENT_METHODS.CARD,
+    paymentType: PAYMENT_TYPES.CANCELLED,
+    startDate: new Date(),
+    endDate: new Date(),
+    isDateInputDisabled: true,
+  });
 
   const periods = Object.values(PERIODS);
   const paymentMethods = Object.values(PAYMENT_METHODS);
@@ -42,15 +48,17 @@ export default function PaymentFilterModal() {
 
   // 기간 선택에 따라 날짜 설정
   useEffect(() => {
-    const { start, end, disabled } = calculateDateRange(selectedPeriod);
+    const { start, end, disabled } = calculateDateRange(filters.period);
 
     if (start && end) {
-      setStartDate(start);
-      setEndDate(end);
+      setFilters((prev) => ({
+        ...prev,
+        startDate: start,
+        endDate: end,
+        isDateInputDisabled: disabled,
+      }));
     }
-
-    setIsDateInputDisabled(disabled);
-  }, [selectedPeriod]);
+  }, [filters.period]);
 
   return (
     <div className="flex flex-col h-full">
@@ -64,9 +72,9 @@ export default function PaymentFilterModal() {
           {periods.map((period) => (
             <button
               key={period}
-              onClick={() => setSelectedPeriod(period)}
+              onClick={() => setFilters((prev) => ({ ...prev, period }))}
               className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-lg ${
-                selectedPeriod === period
+                filters.period === period
                   ? 'bg-gray-700 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
@@ -83,25 +91,27 @@ export default function PaymentFilterModal() {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                disabled={isDateInputDisabled}
+                disabled={filters.isDateInputDisabled}
                 className={cn(
                   'flex-1 justify-start text-left font-normal',
-                  !startDate && 'text-muted-foreground',
-                  isDateInputDisabled &&
+                  !filters.startDate && 'text-muted-foreground',
+                  filters.isDateInputDisabled &&
                     'bg-gray-50 text-gray-500 cursor-not-allowed',
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {startDate
-                  ? format(startDate, 'yyyy.MM.dd', { locale: ko })
+                {filters.startDate
+                  ? format(filters.startDate, 'yyyy.MM.dd', { locale: ko })
                   : '날짜 선택'}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-1" align="start">
               <Calendar
                 mode="single"
-                selected={startDate}
-                onSelect={setStartDate}
+                selected={filters.startDate}
+                onSelect={(date) =>
+                  setFilters((prev) => ({ ...prev, startDate: date }))
+                }
                 locale={ko}
               />
             </PopoverContent>
@@ -114,25 +124,27 @@ export default function PaymentFilterModal() {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                disabled={isDateInputDisabled}
+                disabled={filters.isDateInputDisabled}
                 className={cn(
                   'flex-1 justify-start text-left font-normal',
-                  !endDate && 'text-muted-foreground',
-                  isDateInputDisabled &&
+                  !filters.endDate && 'text-muted-foreground',
+                  filters.isDateInputDisabled &&
                     'bg-gray-50 text-gray-500 cursor-not-allowed',
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {endDate
-                  ? format(endDate, 'yyyy.MM.dd', { locale: ko })
+                {filters.endDate
+                  ? format(filters.endDate, 'yyyy.MM.dd', { locale: ko })
                   : '날짜 선택'}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={endDate}
-                onSelect={setEndDate}
+                selected={filters.endDate}
+                onSelect={(date) =>
+                  setFilters((prev) => ({ ...prev, endDate: date }))
+                }
                 locale={ko}
               />
             </PopoverContent>
@@ -146,9 +158,11 @@ export default function PaymentFilterModal() {
             {paymentMethods.map((method) => (
               <button
                 key={method}
-                onClick={() => setSelectedPaymentMethod(method)}
+                onClick={() =>
+                  setFilters((prev) => ({ ...prev, paymentMethod: method }))
+                }
                 className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  selectedPaymentMethod === method
+                  filters.paymentMethod === method
                     ? 'bg-gray-700 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
@@ -168,9 +182,11 @@ export default function PaymentFilterModal() {
             {paymentTypes.map((type) => (
               <button
                 key={type}
-                onClick={() => setSelectedPaymentType(type)}
+                onClick={() =>
+                  setFilters((prev) => ({ ...prev, paymentType: type }))
+                }
                 className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  selectedPaymentType === type
+                  filters.paymentType === type
                     ? 'bg-gray-700 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
