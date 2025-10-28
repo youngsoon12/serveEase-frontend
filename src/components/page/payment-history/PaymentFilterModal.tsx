@@ -2,61 +2,59 @@
 
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+  PERIODS,
+  PAYMENT_METHODS,
+  PAYMENT_TYPES,
+  PeriodType,
+  PaymentMethodType,
+  PaymentTypeType,
+} from '@/constants/payment-history';
 import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
-import { ko } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
+import { calculateDateRange } from '@/lib/payment-period-utils';
+import DatePicker from './DatePicker';
+
+interface FilterState {
+  period: PeriodType;
+  paymentMethod: PaymentMethodType;
+  paymentType: PaymentTypeType;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  isDateInputDisabled: boolean;
+}
 
 export default function PaymentFilterModal() {
-  const [selectedPeriod, setSelectedPeriod] = useState('오늘');
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('카드');
-  const [selectedPaymentType, setSelectedPaymentType] = useState('취소결제');
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
-  const [isDateInputDisabled, setIsDateInputDisabled] = useState(true);
+  const [filters, setFilters] = useState<FilterState>({
+    period: PERIODS.TODAY,
+    paymentMethod: PAYMENT_METHODS.CARD,
+    paymentType: PAYMENT_TYPES.CANCELLED,
+    startDate: new Date(),
+    endDate: new Date(),
+    isDateInputDisabled: true,
+  });
 
-  const periods = ['오늘', '일주일', '1개월', '직접설정'];
-  const paymentMethods = ['카드', '현금'];
-  const paymentTypes = ['취소결제', '분할결제', '정상결제'];
+  const periods = Object.values(PERIODS);
+  const paymentMethods = Object.values(PAYMENT_METHODS);
+  const paymentTypes = Object.values(PAYMENT_TYPES);
 
   // 기간 선택에 따라 날짜 설정
   useEffect(() => {
-    const today = new Date();
+    const { start, end, disabled } = calculateDateRange(filters.period);
 
-    switch (selectedPeriod) {
-      case '오늘':
-        setStartDate(today);
-        setEndDate(today);
-        setIsDateInputDisabled(true);
-        break;
-      case '일주일':
-        const weekAgo = new Date(today);
-        weekAgo.setDate(today.getDate() - 7);
-        setStartDate(weekAgo);
-        setEndDate(today);
-        setIsDateInputDisabled(true);
-        break;
-      case '1개월':
-        const monthAgo = new Date(today);
-        monthAgo.setMonth(today.getMonth() - 1);
-        setStartDate(monthAgo);
-        setEndDate(today);
-        setIsDateInputDisabled(true);
-        break;
-      case '직접설정':
-        setIsDateInputDisabled(false);
-        break;
-      default:
-        break;
+    if (start && end) {
+      setFilters((prev) => ({
+        ...prev,
+        startDate: start,
+        endDate: end,
+        isDateInputDisabled: disabled,
+      }));
+    } else {
+      setFilters((prev) => ({
+        ...prev,
+        isDateInputDisabled: disabled,
+      }));
     }
-  }, [selectedPeriod]);
+  }, [filters.period]);
 
   return (
     <div className="flex flex-col h-full">
@@ -70,9 +68,9 @@ export default function PaymentFilterModal() {
           {periods.map((period) => (
             <button
               key={period}
-              onClick={() => setSelectedPeriod(period)}
+              onClick={() => setFilters((prev) => ({ ...prev, period }))}
               className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-lg ${
-                selectedPeriod === period
+                filters.period === period
                   ? 'bg-gray-700 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
@@ -85,64 +83,23 @@ export default function PaymentFilterModal() {
         {/* 날짜 범위 선택 */}
         <div className="flex items-center gap-3">
           {/* 시작 날짜 */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                disabled={isDateInputDisabled}
-                className={cn(
-                  'flex-1 justify-start text-left font-normal',
-                  !startDate && 'text-muted-foreground',
-                  isDateInputDisabled &&
-                    'bg-gray-50 text-gray-500 cursor-not-allowed',
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {startDate
-                  ? format(startDate, 'yyyy.MM.dd', { locale: ko })
-                  : '날짜 선택'}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-1" align="start">
-              <Calendar
-                mode="single"
-                selected={startDate}
-                onSelect={setStartDate}
-                locale={ko}
-              />
-            </PopoverContent>
-          </Popover>
-
+          <DatePicker
+            date={filters.startDate}
+            onSelect={(date) =>
+              setFilters((prev) => ({ ...prev, startDate: date }))
+            }
+            disabled={filters.isDateInputDisabled}
+          />
           <span className="text-muted-foreground">~</span>
 
           {/* 종료 날짜 */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                disabled={isDateInputDisabled}
-                className={cn(
-                  'flex-1 justify-start text-left font-normal',
-                  !endDate && 'text-muted-foreground',
-                  isDateInputDisabled &&
-                    'bg-gray-50 text-gray-500 cursor-not-allowed',
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {endDate
-                  ? format(endDate, 'yyyy.MM.dd', { locale: ko })
-                  : '날짜 선택'}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={endDate}
-                onSelect={setEndDate}
-                locale={ko}
-              />
-            </PopoverContent>
-          </Popover>
+          <DatePicker
+            date={filters.endDate}
+            onSelect={(date) =>
+              setFilters((prev) => ({ ...prev, endDate: date }))
+            }
+            disabled={filters.isDateInputDisabled}
+          />
         </div>
 
         {/* 결제수단 */}
@@ -152,9 +109,11 @@ export default function PaymentFilterModal() {
             {paymentMethods.map((method) => (
               <button
                 key={method}
-                onClick={() => setSelectedPaymentMethod(method)}
+                onClick={() =>
+                  setFilters((prev) => ({ ...prev, paymentMethod: method }))
+                }
                 className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  selectedPaymentMethod === method
+                  filters.paymentMethod === method
                     ? 'bg-gray-700 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
@@ -174,9 +133,11 @@ export default function PaymentFilterModal() {
             {paymentTypes.map((type) => (
               <button
                 key={type}
-                onClick={() => setSelectedPaymentType(type)}
+                onClick={() =>
+                  setFilters((prev) => ({ ...prev, paymentType: type }))
+                }
                 className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  selectedPaymentType === type
+                  filters.paymentType === type
                     ? 'bg-gray-700 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
