@@ -1,6 +1,5 @@
 'use client';
 
-import { Period } from '@/types/sales';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartContainer,
@@ -8,10 +7,22 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { mockChartData } from '@/lib/mock/salesData';
 
 interface Props {
-  period: Period;
+  seriesData: Array<{
+    date: string;
+    month: {
+      year: number;
+      month: string;
+      monthValue: number;
+      leapYear: boolean;
+    };
+    week: number;
+    netSales: number;
+    orderCount: number;
+    averageOrderValue: number;
+    canceledAmount: number;
+  }>;
 }
 
 const chartConfig = {
@@ -21,8 +32,11 @@ const chartConfig = {
   },
 };
 
-export default function SalesChart({ period }: Props) {
-  const data = mockChartData[period];
+export default function SalesChart({ seriesData }: Props) {
+  const chartData = seriesData.map((item) => ({
+    data: item.date,
+    sales: item.netSales,
+  }));
 
   return (
     <Card>
@@ -35,7 +49,7 @@ export default function SalesChart({ period }: Props) {
           config={chartConfig}
           className="h-[clamp(240px,40vh,420px)] w-full"
         >
-          <BarChart data={data}>
+          <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"

@@ -1,14 +1,11 @@
-import { Period, SalesKPITitle } from '@/types/sales';
-import { mockData } from '@/lib/mock/salesData';
+import { SalesKPITitle } from '@/types/sales';
 
 interface Props {
   title: SalesKPITitle;
-  period: Period;
+  value: number;
 }
 
-export default function SalesKPICard({ title, period }: Props) {
-  const value = mockData[title][period];
-
+export default function SalesKPICard({ title, value }: Props) {
   return (
     <div className="flex flex-col gap-2 p-5 border rounded-md bg-white">
       <p className="text-gray-600">{title}</p>
