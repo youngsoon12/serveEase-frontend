@@ -1,22 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import SalesCalendar from './_components/SalesCalendar';
 import SalesSummary from './_components/SalesSummary';
+import { useSalesCalendar } from '@/hooks/calendar/useSalesCalendar';
 import { useSalesSummary } from '@/hooks/useSalesSummary';
+import { format } from 'date-fns';
+import Loading from '@/app/(private)/pos/(shell-layout)/loading';
 
-const sales = {
-  '2025-07-01': 2234000,
-  '2025-07-02': 234000,
-  '2025-07-05': 1230000,
-  '2025-08-13': 3234000,
-  '2025-07-14': 500000,
-  '2025-07-21': 880000,
-};
+// const sales = {
+//   '2025-07-01': 2234000,
+//   '2025-07-02': 234000,
+//   '2025-07-05': 1230000,
+//   '2025-08-13': 3234000,
+//   '2025-07-14': 500000,
+//   '2025-07-21': 880000,
+// };
 
-export default function Page() {
+export default function salesCalendarPage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
-  const { monthTotal, weeklyTotals } = useSalesSummary(sales, viewMonth);
+
+  const viewMonthString = useMemo(
+    () => format(viewMonth, 'yyyy-MM'),
+    [viewMonth],
+  );
+  const { data, isLoading, isError } = useSalesCalendar(viewMonthString);
+
+  const salesMap = useMemo(() => {
+    if (!data?.dailySales) return {};
+    return Object.fromEntries(data.dailySales.map((d) => [d.date, d.netSales]));
+  }, [data?.dailySales]);
+
+  const { monthTotal, weeklyTotals } = useSalesSummary(salesMap, viewMonth);
+  console.log(data);
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <main
@@ -32,7 +51,7 @@ export default function Page() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <SalesCalendar sales={sales} onMonthChange={setViewMonth} />
+          <SalesCalendar sales={salesMap} onMonthChange={setViewMonth} />
           <SalesSummary monthTotal={monthTotal} weeklyTotals={weeklyTotals} />
         </div>
       </div>
