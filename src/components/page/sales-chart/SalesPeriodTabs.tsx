@@ -8,7 +8,7 @@ interface Props {
 
 export default function SalesPeriodTabs({ value, onChange }: Props) {
   return (
-    <Tabs value={value} onValueChange={(value) => onChange(value)}>
+    <Tabs value={value} onValueChange={onChange as (value: string) => void}>
       <TabsList className="grid grid-cols-3 rounded-full border border-input p-0.1 h-10 bg-white">
         <TabsTrigger
           value="day"
