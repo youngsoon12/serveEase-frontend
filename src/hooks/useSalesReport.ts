@@ -17,5 +17,6 @@ export function useSalesReport(params: SalesReportParams) {
     ],
     queryFn: () => getSalesReport(params),
     staleTime: 60 * 5 * 1000,
+    enabled: !!params.from && !!params.to,
   });
 }
