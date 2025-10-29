@@ -46,7 +46,7 @@ export default function SalesReportChart() {
         />
       </div>
 
-      <SalesChart seriesData={salesData?.series ?? []} />
+      <SalesChart period={period} seriesData={salesData?.series ?? []} />
     </div>
   );
 }

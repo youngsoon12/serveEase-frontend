@@ -7,8 +7,10 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Period } from '@/types/sales';
 
 interface Props {
+  period: Period;
   seriesData: Array<{
     date: string;
     month: {
@@ -32,11 +34,23 @@ const chartConfig = {
   },
 };
 
-export default function SalesChart({ seriesData }: Props) {
-  const chartData = seriesData.map((item) => ({
-    data: item.date,
-    sales: item.netSales,
-  }));
+export default function SalesChart({ period, seriesData }: Props) {
+  const chartData = seriesData.map((item) => {
+    let xAxisLabel: string;
+
+    if (period === 'day') {
+      xAxisLabel = item.date.slice(5);
+    } else if (period === 'week') {
+      xAxisLabel = `${item.week}주차`;
+    } else {
+      xAxisLabel = `${item.month.monthValue}월`;
+    }
+
+    return {
+      label: xAxisLabel,
+      sales: item.netSales,
+    };
+  });
 
   return (
     <Card>
@@ -52,7 +66,7 @@ export default function SalesChart({ seriesData }: Props) {
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey="label"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
