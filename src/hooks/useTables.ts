@@ -82,24 +82,69 @@ export function useUpdateTableCount() {
   });
 }
 
+type TablesSnapshot = Array<[readonly unknown[], TablesResponse | undefined]>;
+
 export function useUpdateTableStatus() {
   const queryClient = useQueryClient();
 
-  return useMutation<OrderResponse, AxiosError, { orderId: number }>({
+  return useMutation<
+    OrderResponse,
+    AxiosError,
+    { orderId: number },
+    { prevTables: TablesSnapshot }
+  >({
     mutationFn: ({ orderId }) => updateTableState(orderId),
+
+    onMutate: async ({ orderId }) => {
+      await queryClient.cancelQueries({ queryKey: ['tables'] });
+
+      const prevTables = queryClient.getQueriesData<TablesResponse>({
+        queryKey: ['tables'],
+      }) as TablesSnapshot;
+
+      for (const [key, data] of prevTables) {
+        if (!data) continue;
+
+        const next = {
+          ...data,
+          content: data.content.map((t) =>
+            t.activeOrder?.orderId === orderId
+              ? {
+                  ...t,
+                  displayStatus: 'SERVED',
+                  activeOrder: { ...t.activeOrder, status: 'SERVED' },
+                }
+              : t,
+          ),
+        };
+        queryClient.setQueryData(key, next);
+      }
+
+      return { prevTables };
+    },
+
     onSuccess: (updated) => {
       toast.success('서빙 완료 처리되었습니다.');
 
       queryClient.setQueryData(['order', updated.id], updated);
-      queryClient.invalidateQueries({ queryKey: ['order', updated.id] });
-
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
-    onError: (err) => {
+
+    onError: (err, _vars, ctx) => {
+      if (ctx?.prevTables) {
+        for (const [key, data] of ctx.prevTables) {
+          queryClient.setQueryData(key, data);
+        }
+      }
+
       toast.error('서빙 처리에 실패했습니다.');
 
       console.error('status:', err?.response?.status);
       console.error('data:', err?.response?.data);
+    },
+
+    onSettled: (_data, _err, { orderId }) => {
+      queryClient.invalidateQueries({ queryKey: ['order', orderId] });
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
     },
   });
 }
