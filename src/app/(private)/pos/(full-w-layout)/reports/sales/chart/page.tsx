@@ -12,14 +12,18 @@ import { useState } from 'react';
 
 export default function SalesReportChart() {
   const [period, setPeriod] = useState<Period>('day');
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   const storeId = getStoreId();
 
   const { to, from } = salesCalculateDate(period);
 
+  const finalTo = period === 'day' && selectedDate ? selectedDate : to;
+  const finalFrom = period === 'day' && selectedDate ? selectedDate : from;
+
   const { data: salesData } = useSalesReport({
-    to,
-    from,
+    to: finalTo,
+    from: finalFrom,
     storeId,
     period,
   });
@@ -31,7 +35,12 @@ export default function SalesReportChart() {
       <div className="flex justify-between items-center">
         <SalesPeriodTabs value={period} onChange={setPeriod} />
 
-        {period === 'day' && <DateRangePicker />}
+        {period === 'day' && (
+          <DateRangePicker
+            selectedDate={selectedDate || from}
+            onDateChange={setSelectedDate}
+          />
+        )}
       </div>
 
       <div className="grid grid-cols-3 gap-4">

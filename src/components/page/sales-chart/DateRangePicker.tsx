@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Calendar } from '@/components/ui/calendar';
@@ -12,26 +11,31 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function DateRangePicker() {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+interface Props {
+  selectedDate: string;
+  onDateChange: (date: string) => void;
+}
+
+export default function DateRangePicker({ selectedDate, onDateChange }: Props) {
+  const date = new Date(selectedDate);
 
   // 날짜 포맷팅 (2025. 7. 1(금)
-  const formattedDate = format(selectedDate, 'yyyy. M. d(EEE)', { locale: ko });
+  const formattedDate = format(date, 'yyyy. M. d(EEE)', { locale: ko });
 
   // 이전 날짜
   const handlePrevDay = () => {
-    const newDate = new Date(selectedDate);
+    const prevDate = new Date(selectedDate);
 
-    newDate.setDate(newDate.getDate() - 1);
-    setSelectedDate(newDate);
+    prevDate.setDate(prevDate.getDate() - 1);
+    onDateChange(format(prevDate, 'yyyy-MM-dd'));
   };
 
   // 다음 날짜
   const handleNextDay = () => {
-    const newDate = new Date(selectedDate);
+    const nextDate = new Date(selectedDate);
 
-    newDate.setDate(newDate.getDate() + 1);
-    setSelectedDate(newDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+    onDateChange(format(nextDate, 'yyyy-MM-dd'));
   };
 
   return (
@@ -54,9 +58,11 @@ export default function DateRangePicker() {
         <PopoverContent className="w-auto p-1">
           <Calendar
             mode="single"
-            selected={selectedDate}
+            selected={date}
             onSelect={(newDate) => {
-              if (newDate) setSelectedDate(newDate);
+              if (newDate) {
+                onDateChange(format(newDate, 'yyyy-MM-dd'));
+              }
             }}
             locale={ko}
           />
