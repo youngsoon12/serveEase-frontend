@@ -30,8 +30,8 @@ export default function TossPayment({
 
     try {
       await requestPayment({
-        paymentOrderId,
-        orderIdParam: orderIdParam,
+        parentOrderId: paymentOrderId,
+        // orderIdParam: orderIdParam,
         tableId: data?.restaurantTableId,
         orderData: data,
       });

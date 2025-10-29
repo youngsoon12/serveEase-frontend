@@ -10,24 +10,8 @@ import { useConfirmPayment } from '@/hooks/payment/usePayment';
 import type { PaymentConfirmResponse } from '@/types/payment';
 import PartialPaymentNotice from './_components/PartialPaymentNotice';
 import FullPaymentComplete from './_components/FullPaymentComplete';
-import {
-  mockCompletedPayment,
-  mockPartialPayment,
-} from '@/lib/mock/paymentMocks';
 
 export default function PaymentSuccessPage() {
-  const TEST_MODE = false; // <-- false로 바꾸면 원래 로직 복구됨
-  const TEST_PAYMENT = mockPartialPayment; // or mockCompletedPayment
-  // const TEST_PAYMENT = mockCompletedPayment; // or mockCompletedPayment
-
-  if (TEST_MODE) {
-    return TEST_PAYMENT.orderStatus === 'COMPLETED' ? (
-      <FullPaymentComplete payment={TEST_PAYMENT} />
-    ) : (
-      <PartialPaymentNotice payment={TEST_PAYMENT} />
-    );
-  }
-
   const params = useSearchParams();
 
   const orderId = params.get('orderId');
