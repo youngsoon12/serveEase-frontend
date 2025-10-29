@@ -17,6 +17,8 @@ type ConfirmModalProps = {
   description?: string;
   confirmText: string;
   cancelText?: string;
+  confirmButtonClassName?: string;
+  cancelButtonClassName?: string;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void | Promise<void>;
 };
@@ -27,6 +29,8 @@ export default function ConfirmModal({
   description,
   confirmText,
   cancelText = '취소',
+  confirmButtonClassName,
+  cancelButtonClassName,
   onOpenChange,
   onConfirm,
 }: ConfirmModalProps) {
@@ -59,13 +63,15 @@ export default function ConfirmModal({
         <AlertDialogFooter className="sm:justify-center gap-2">
           <AlertDialogCancel
             onClick={() => onOpenChange(false)}
-            className="sm:w-28"
+            className={`sm:w-28 ${cancelButtonClassName ?? ''}`}
           >
             {cancelText}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className="sm:w-28 bg-red-600 hover:bg-red-700"
+            className={`sm:w-28 ${
+              confirmButtonClassName ?? 'bg-red-600 hover:bg-red-700'
+            }`}
             autoFocus
           >
             {confirmText}
