@@ -18,8 +18,23 @@ export default function SalesReportChart() {
 
   const { to, from } = salesCalculateDate(period);
 
-  const finalTo = period === 'day' && selectedDate ? selectedDate : to;
-  const finalFrom = period === 'day' && selectedDate ? selectedDate : from;
+  const getFinalDateRange = () => {
+    if (period === 'day' && selectedDate) {
+      const endDate = new Date(selectedDate);
+      const startDate = new Date(selectedDate);
+
+      startDate.setDate(endDate.getDate() - 6);
+
+      return {
+        to: selectedDate,
+        from: startDate.toISOString().split('T')[0],
+      };
+    }
+
+    return { to, from };
+  };
+
+  const { to: finalTo, from: finalFrom } = getFinalDateRange();
 
   const { data: salesData } = useSalesReport({
     to: finalTo,
