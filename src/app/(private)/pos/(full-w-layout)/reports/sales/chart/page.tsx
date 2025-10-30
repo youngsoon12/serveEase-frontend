@@ -52,7 +52,7 @@ export default function SalesReportChart() {
 
         {period === 'day' && (
           <DateRangePicker
-            selectedDate={selectedDate || from}
+            selectedDate={selectedDate || to}
             onDateChange={setSelectedDate}
           />
         )}
