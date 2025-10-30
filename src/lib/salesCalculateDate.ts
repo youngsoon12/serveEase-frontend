@@ -19,7 +19,7 @@ export default function salesCalculateDate(period: Period) {
   } else {
     const monthPeriod = new Date(today);
 
-    monthPeriod.setMonth(today.getMonth() - 5);
+    monthPeriod.setMonth(today.getMonth() - 6);
     from = monthPeriod.toISOString().split('T')[0];
   }
 
