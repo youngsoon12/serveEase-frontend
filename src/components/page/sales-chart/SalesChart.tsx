@@ -39,7 +39,7 @@ export default function SalesChart({ period, seriesData }: Props) {
     let xAxisLabel: string;
 
     if (period === 'day') {
-      xAxisLabel = item.date.slice(5);
+      xAxisLabel = item.date.slice(5).replace('-', '/');
     } else if (period === 'week') {
       xAxisLabel = `${item.week}주차`;
     } else {
