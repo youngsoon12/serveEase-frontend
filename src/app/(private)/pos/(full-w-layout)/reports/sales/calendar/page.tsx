@@ -4,9 +4,8 @@ import { useState, useMemo } from 'react';
 import SalesCalendar from './_components/SalesCalendar';
 import SalesSummary from './_components/SalesSummary';
 import { useSalesCalendar } from '@/hooks/calendar/useSalesCalendar';
-import { useSalesSummary } from '@/hooks/useSalesSummary';
+// import { useSalesSummary } from '@/hooks/useSalesSummary';
 import { format } from 'date-fns';
-import Loading from '@/app/(private)/pos/(shell-layout)/loading';
 
 export default function salesCalendarPage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
@@ -15,14 +14,23 @@ export default function salesCalendarPage() {
     () => format(viewMonth, 'yyyy-MM'),
     [viewMonth],
   );
-  const { data, isLoading, isError } = useSalesCalendar(viewMonthString);
+  const { data } = useSalesCalendar(viewMonthString);
+  console.log(data);
 
   const salesMap = useMemo(() => {
     if (!data?.dailySales) return {};
     return Object.fromEntries(data.dailySales.map((d) => [d.date, d.netSales]));
   }, [data?.dailySales]);
 
-  const { monthTotal, weeklyTotals } = useSalesSummary(salesMap, viewMonth);
+  const weeklyTotals = useMemo(() => {
+    if (!data?.weeklySummaries) return [];
+    return data.weeklySummaries.map((w) => [w.weekNumber, w.netSales] as const);
+  }, [data?.weeklySummaries]);
+
+  const monthTotal = useMemo(
+    () => weeklyTotals.reduce((sum, [, total]) => sum + total, 0),
+    [weeklyTotals],
+  );
 
   return (
     <main
