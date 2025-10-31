@@ -15,13 +15,15 @@ interface Props {
 export default function SalesCalendar({ sales, onMonthChange }: Props) {
   const events = useMemo(
     () =>
-      Object.entries(sales).map(([date, amount]) => ({
-        title: `₩${amount.toLocaleString()}`,
-        date,
-        backgroundColor: '#E6F4EA',
-        borderColor: '#16a34a',
-        textColor: '#166534',
-      })),
+      Object.entries(sales)
+        .filter(([_, amount]) => amount > 0)
+        .map(([date, amount]) => ({
+          title: `₩${amount.toLocaleString()}`,
+          date,
+          backgroundColor: '#E6F4EA',
+          borderColor: '#16a34a',
+          textColor: '#166534',
+        })),
     [sales],
   );
 
