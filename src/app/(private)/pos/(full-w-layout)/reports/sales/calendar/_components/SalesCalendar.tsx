@@ -20,9 +20,9 @@ export default function SalesCalendar({ sales, onMonthChange }: Props) {
         .map(([date, amount]) => ({
           title: `₩${amount.toLocaleString()}`,
           date,
-          backgroundColor: '#E6F4EA',
-          borderColor: '#16a34a',
-          textColor: '#166534',
+          backgroundColor: '#F2F4F6',
+          borderColor: '#0064FF',
+          textColor: '#191F28',
         })),
     [sales],
   );
@@ -43,11 +43,12 @@ export default function SalesCalendar({ sales, onMonthChange }: Props) {
         datesSet={(info) => {
           const correctedMonth = new Date(info.start);
           correctedMonth.setDate(correctedMonth.getDate() + 7);
-
           onMonthChange?.(correctedMonth);
         }}
         eventContent={(eventInfo) => (
-          <div className="text-sm font-medium">{eventInfo.event.title}</div>
+          <div className="flex items-center justify-center h-full text-sm font-medium text-[#191F28]">
+            {eventInfo.event.title}
+          </div>
         )}
         dayMaxEventRows={true}
         fixedWeekCount={false}

@@ -8,15 +8,6 @@ import { useSalesSummary } from '@/hooks/useSalesSummary';
 import { format } from 'date-fns';
 import Loading from '@/app/(private)/pos/(shell-layout)/loading';
 
-// const sales = {
-//   '2025-07-01': 2234000,
-//   '2025-07-02': 234000,
-//   '2025-07-05': 1230000,
-//   '2025-08-13': 3234000,
-//   '2025-07-14': 500000,
-//   '2025-07-21': 880000,
-// };
-
 export default function salesCalendarPage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
 
