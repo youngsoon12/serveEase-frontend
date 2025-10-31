@@ -28,6 +28,14 @@ instance.interceptors.response.use(
       alert('로그인이 만료되었습니다.');
       console.warn(' 인증 만료 (401 Unauthorized)');
 
+      document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
+      document.cookie = 'storeId=; Max-Age=0; path=/;';
+      document.cookie = 'storeName=; Max-Age=0; path=/;';
+      try {
+        localStorage.removeItem('storeId');
+        localStorage.removeItem('storeName');
+      } catch {}
+
       const currentPath = window.location.pathname;
       document.cookie = 'accessToken=; Max-Age=0; path=/;';
 
