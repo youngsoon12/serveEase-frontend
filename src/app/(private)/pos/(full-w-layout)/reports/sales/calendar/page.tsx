@@ -23,10 +23,6 @@ export default function salesCalendarPage() {
   }, [data?.dailySales]);
 
   const { monthTotal, weeklyTotals } = useSalesSummary(salesMap, viewMonth);
-  console.log(data);
-  if (isLoading) {
-    return <Loading />;
-  }
 
   return (
     <main
