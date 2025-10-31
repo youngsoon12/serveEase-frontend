@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import useLogin from '@/hooks/useLogin';
 
@@ -17,6 +17,8 @@ export default function Home() {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect') ?? '/pos';
   const { mutate } = useLogin();
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +44,7 @@ export default function Home() {
           if (storeId) localStorage.setItem('storeId', storeId);
           if (storeName) localStorage.setItem('storeName', storeName);
 
-          router.push('/pos');
+          router.push(redirectUrl);
         } catch {
           console.error('쿠키에서 storeId/storeName 복사 실패');
         }
