@@ -78,6 +78,7 @@ export default function SalesChart({ period, seriesData }: Props) {
               fill="var(--color-sales)"
               radius={[4, 4, 0, 0]}
               maxBarSize={52}
+              minPointSize={5}
             />
           </BarChart>
         </ChartContainer>
