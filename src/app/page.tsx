@@ -20,6 +20,7 @@ export default function Home() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') ?? '/pos';
   const [checking, setChecking] = useState(true);
+  const { mutate } = useLogin();
   useEffect(() => {
     const isLoggedIn =
       typeof document !== 'undefined' &&
@@ -38,7 +39,6 @@ export default function Home() {
       </div>
     );
   }
-  const { mutate } = useLogin();
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

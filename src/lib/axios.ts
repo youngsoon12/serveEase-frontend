@@ -24,9 +24,11 @@ instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const status = error.response?.status;
-    if (status === 401) {
-      alert('로그인이 만료되었습니다.');
-      console.warn(' 인증 만료 (401 Unauthorized)');
+    if (status === 400 || status === 401) {
+      const msg =
+        status === 400 ? '로그인이 필요합니다.' : '로그인이 만료되었습니다.';
+      alert(msg);
+      console.warn(`인증 문제 (${status})`);
 
       document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
       document.cookie = 'storeId=; Max-Age=0; path=/;';
