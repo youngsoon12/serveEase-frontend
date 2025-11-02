@@ -13,13 +13,9 @@ interface Props {
   period: Period;
   seriesData: Array<{
     date: string;
-    month: {
-      year: number;
-      month: string;
-      monthValue: number;
-      leapYear: boolean;
-    };
-    week: number;
+    month: string;
+    monthValue: number;
+    week: number | null;
     netSales: number;
     orderCount: number;
     averageOrderValue: number;
@@ -43,7 +39,7 @@ export default function SalesChart({ period, seriesData }: Props) {
     } else if (period === 'week') {
       xAxisLabel = `${item.week}주차`;
     } else {
-      xAxisLabel = `${item.month.monthValue}월`;
+      xAxisLabel = `${item.monthValue}월`;
     }
 
     return {

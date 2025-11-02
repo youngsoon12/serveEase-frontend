@@ -16,13 +16,9 @@ export interface SalesReportResponse {
   };
   series: Array<{
     date: string;
-    month: {
-      year: number;
-      month: string;
-      monthValue: number;
-      leapYear: boolean;
-    };
-    week: number;
+    month: string;
+    monthValue: number;
+    week: number | null;
     netSales: number;
     orderCount: number;
     averageOrderValue: number;
