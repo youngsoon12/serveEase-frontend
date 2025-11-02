@@ -9,7 +9,7 @@ export default function salesCalculateDate(period: Period) {
   if (period === 'day') {
     const dayPeriod = new Date(today);
 
-    dayPeriod.setDate(today.getDate() - 5);
+    dayPeriod.setDate(today.getDate() - 6);
     from = dayPeriod.toISOString().split('T')[0];
   } else if (period === 'week') {
     const weekPeriod = new Date(today);
