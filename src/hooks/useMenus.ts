@@ -1,10 +1,11 @@
 import { getMenus } from '@/app/api/menu';
-import { MenuItem } from '@/types/menu';
 import { useQuery } from '@tanstack/react-query';
+import { MenuItem } from '@/types/menu';
+import { menuKeys } from '@/lib/queries/keys';
 
 export default function useMenus() {
   const query = useQuery<MenuItem[]>({
-    queryKey: ['menus'],
+    queryKey: menuKeys.all,
     queryFn: getMenus,
     staleTime: 60 * 5 * 1000,
     refetchOnWindowFocus: false,
