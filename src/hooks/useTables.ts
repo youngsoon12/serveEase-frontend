@@ -4,9 +4,8 @@ import {
   updateTableCount,
   updateTableState,
 } from '@/app/api/tables';
-import { TableCardProps } from '@/components/TableCard';
 import { OrderResponse } from '@/types/order';
-import { TablesResponse } from '@/types/table';
+import { TablesResponse, TableCardProps } from '@/types/table';
 import {
   keepPreviousData,
   useMutation,

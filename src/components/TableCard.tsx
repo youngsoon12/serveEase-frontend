@@ -6,14 +6,7 @@ import {
   CardContent,
   CardFooter,
 } from './ui/card';
-
-export interface TableCardProps {
-  tableNumber: number;
-  price?: number;
-  status: 'EMPTY' | 'ORDERED' | 'SERVED';
-  href: string;
-  menuItems?: string[];
-}
+import { TableCardProps } from '@/types/table';
 
 export default function TableCard({
   tableNumber,

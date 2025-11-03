@@ -21,3 +21,11 @@ export type TablesResponse = {
   last: boolean;
   empty: boolean;
 };
+
+export interface TableCardProps {
+  tableNumber: number;
+  price?: number;
+  status: 'EMPTY' | 'ORDERED' | 'SERVED';
+  href: string;
+  menuItems?: string[];
+}
