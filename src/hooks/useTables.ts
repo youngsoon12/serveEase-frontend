@@ -34,6 +34,8 @@ export function useTables(page: number) {
   const cards: TableCardProps[] =
     query.data?.content.map((item) => {
       const status = toUIStatus(item.displayStatus);
+      const orderId = item.activeOrder?.orderId;
+
       const href = item.activeOrder?.orderId
         ? `/pos/tables/${item.id}?orderId=${item.activeOrder.orderId}&no=${item.restaurantTableNumber}`
         : `/pos/tables/${item.id}?no=${item.restaurantTableNumber}`;
@@ -46,6 +48,7 @@ export function useTables(page: number) {
         menuItems:
           item.activeOrder?.orderItems?.map((o) => o.menuName).slice(0, 2) ??
           [],
+        orderId,
       };
     }) ?? [];
 

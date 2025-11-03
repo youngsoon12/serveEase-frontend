@@ -7,6 +7,9 @@ import {
   CardFooter,
 } from './ui/card';
 import { TableCardProps } from '@/types/table';
+import { useQueryClient } from '@tanstack/react-query';
+import { orderKeys } from '@/lib/queries/keys';
+import { getOrder } from '@/app/api/order';
 
 export default function TableCard({
   tableNumber,
@@ -14,7 +17,20 @@ export default function TableCard({
   status,
   href,
   menuItems,
+  orderId,
 }: TableCardProps) {
+  const queryClient = useQueryClient();
+
+  const prefetchOrder = () => {
+    if (!orderId) return;
+
+    queryClient.prefetchQuery({
+      queryKey: orderKeys.detail(orderId),
+      queryFn: () => getOrder(orderId),
+      staleTime: 50_000,
+    });
+  };
+
   const BADGE_TABLE: Record<'EMPTY' | 'ORDERED' | 'SERVED', string> = {
     EMPTY: 'bg-gray-300 text-gray-800',
     ORDERED: 'bg-amber-500 ',
@@ -22,7 +38,7 @@ export default function TableCard({
   };
 
   return (
-    <Link href={href}>
+    <Link href={href} onMouseEnter={prefetchOrder}>
       <Card className="h-38 relative w-[clamp(2rem,20vw,12rem)]">
         <CardHeader className="">
           <div className="flex justify-between items-center">

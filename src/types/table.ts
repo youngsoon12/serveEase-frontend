@@ -28,4 +28,5 @@ export interface TableCardProps {
   status: 'EMPTY' | 'ORDERED' | 'SERVED';
   href: string;
   menuItems?: string[];
+  orderId?: number;
 }
