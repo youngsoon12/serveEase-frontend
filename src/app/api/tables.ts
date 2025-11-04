@@ -1,6 +1,10 @@
 import { instance } from '@/lib/axios';
-import { TablesResponse } from '@/types/table';
-import { OrderResponse } from '@/types/order';
+import {
+  TablesResponse,
+  TablesResponseSchema,
+  OrderResponseSchema,
+} from '@/lib/schemas';
+import { validate } from '@/app/api/validate';
 
 export const PAGE_SIZE = 12;
 
@@ -11,24 +15,21 @@ export async function getTables(
   const { data } = await instance.get(`/stores/@me/tables`, {
     params: { page, size },
   });
-  return data;
+
+  return validate(data, TablesResponseSchema);
 }
 
 export async function updateTableCount(newTotalCount: number) {
-  const { data } = await instance.put(`/stores/@me/tables/bulk-update`, {
+  await instance.put(`/stores/@me/tables/bulk-update`, {
     newTotalCount,
   });
-
-  return data;
 }
 
-export async function updateTableState(
-  orderId: number,
-): Promise<OrderResponse> {
+export async function updateTableState(orderId: number) {
   const { data } = await instance.patch(
     `/stores/@me/orders/${orderId}/serve`,
     {},
   );
 
-  return data;
+  return validate(data, OrderResponseSchema);
 }

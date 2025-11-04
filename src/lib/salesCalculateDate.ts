@@ -1,4 +1,4 @@
-import { Period } from '@/types/sales';
+import { Period } from './schemas';
 
 export default function salesCalculateDate(period: Period) {
   const today = new Date();

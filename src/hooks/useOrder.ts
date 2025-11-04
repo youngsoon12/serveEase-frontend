@@ -4,11 +4,12 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
 import { ApiErrorBody } from '@/lib/error';
-import { OrderRequest, OrderResponse } from '@/types/order';
+import { OrderRequest, OrderResponse } from '@/lib/schemas/order';
+import { orderKeys, tableKeys } from '@/lib/queries/keys';
 
 export function useOrder(orderId?: number) {
   return useQuery<OrderResponse>({
-    queryKey: ['order', orderId],
+    queryKey: orderKeys.detail(orderId!),
     queryFn: () => getOrder(orderId as number),
     staleTime: 60 * 5 * 1000,
     enabled: !!orderId,
@@ -28,7 +29,7 @@ export function useCreateOrder(tableId: number) {
       console.log(order);
 
       router.push('/pos/tables');
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
+      queryClient.invalidateQueries({ queryKey: tableKeys.all });
     },
     onError: (err) => {
       toast.error('주문 처리에 실패했습니다.');
@@ -52,11 +53,10 @@ export function useAddOrder(orderId: number) {
     mutationFn: (payload) => addOrder(orderId, payload),
 
     onMutate: async (payload) => {
-      await queryClient.cancelQueries({ queryKey: ['order', orderId] });
+      await queryClient.cancelQueries({ queryKey: orderKeys.detail(orderId) });
 
       const prevOrder = queryClient.getQueryData<OrderResponse>([
-        'order',
-        orderId,
+        orderKeys.detail(orderId),
       ]);
 
       if (prevOrder) {
@@ -77,7 +77,7 @@ export function useAddOrder(orderId: number) {
           status: 'ORDERED',
         };
 
-        queryClient.setQueryData(['order', orderId], optimistic);
+        queryClient.setQueryData(orderKeys.detail(orderId), optimistic);
       }
 
       return { prevOrder };
@@ -87,13 +87,13 @@ export function useAddOrder(orderId: number) {
       toast.success('주문이 접수되었습니다.');
 
       router.push('/pos/tables');
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
-      queryClient.invalidateQueries({ queryKey: ['order', orderId] });
+      queryClient.invalidateQueries({ queryKey: tableKeys.all });
+      queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
     },
 
     onError: (err, _payload, context) => {
       if (context?.prevOrder) {
-        queryClient.setQueryData(['order', orderId], context.prevOrder);
+        queryClient.setQueryData(orderKeys.detail(orderId), context.prevOrder);
       }
 
       toast.error('주문 처리에 실패했습니다.');
@@ -103,8 +103,8 @@ export function useAddOrder(orderId: number) {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['order', orderId] });
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
+      queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+      queryClient.invalidateQueries({ queryKey: tableKeys.all });
     },
   });
 }
@@ -122,11 +122,10 @@ export function useCancelOrder(orderId: number) {
     mutationFn: () => cancelOrder(orderId),
 
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['order', orderId] });
+      await queryClient.cancelQueries({ queryKey: orderKeys.detail(orderId) });
 
       const prevOrder = queryClient.getQueryData<OrderResponse>([
-        'order',
-        orderId,
+        orderKeys.detail(orderId),
       ]);
 
       if (prevOrder) {
@@ -137,7 +136,7 @@ export function useCancelOrder(orderId: number) {
           status: 'EMPTY',
         };
 
-        queryClient.setQueryData(['order', orderId], optimistic);
+        queryClient.setQueryData(orderKeys.detail(orderId), optimistic);
       }
 
       return { prevOrder };
@@ -146,13 +145,13 @@ export function useCancelOrder(orderId: number) {
     onSuccess: (serverOrder) => {
       toast.success('주문이 취소되었습니다.');
 
-      queryClient.setQueryData(['order', orderId], serverOrder);
+      queryClient.setQueryData(orderKeys.detail(orderId), serverOrder);
       router.push('/pos/tables');
     },
 
     onError: (err, _payload, context) => {
       if (context?.prevOrder) {
-        queryClient.setQueryData(['order', orderId], context.prevOrder);
+        queryClient.setQueryData(orderKeys.detail(orderId), context.prevOrder);
       }
 
       toast.error('주문 취소에 실패했습니다.');
@@ -162,8 +161,8 @@ export function useCancelOrder(orderId: number) {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
-      queryClient.invalidateQueries({ queryKey: ['order', orderId] });
+      queryClient.invalidateQueries({ queryKey: tableKeys.all });
+      queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
     },
   });
 }

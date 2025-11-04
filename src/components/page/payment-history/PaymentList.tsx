@@ -11,17 +11,13 @@ const STATUS_BADGE_STATUS: Record<PaymentStatus, 'secondary' | 'destructive'> =
     취소: 'destructive',
   };
 
-interface PaymentListProps {
+interface Props {
   payments: Payment[];
   selectedId: number | null;
   onSelect: (id: number) => void;
 }
 
-export default function PaymentList({
-  payments,
-  selectedId,
-  onSelect,
-}: PaymentListProps) {
+export default function PaymentList({ payments, selectedId, onSelect }: Props) {
   return (
     <ScrollArea className="h-[67%]">
       <div className="space-y-2">

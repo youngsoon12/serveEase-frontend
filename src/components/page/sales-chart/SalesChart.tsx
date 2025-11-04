@@ -7,20 +7,14 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { Period } from '@/types/sales';
+
+import SalesChartSkeleton from './SalesChartSkeleton';
+import { Period, SalesSeriesData } from '@/lib/schemas';
 
 interface Props {
   period: Period;
-  seriesData: Array<{
-    date: string;
-    month: string;
-    monthValue: number;
-    week: number | null;
-    netSales: number;
-    orderCount: number;
-    averageOrderValue: number;
-    canceledAmount: number;
-  }>;
+  seriesData: SalesSeriesData[];
+  isLoading?: boolean;
 }
 
 const chartConfig = {
@@ -30,7 +24,7 @@ const chartConfig = {
   },
 };
 
-export default function SalesChart({ period, seriesData }: Props) {
+export default function SalesChart({ period, seriesData, isLoading }: Props) {
   const chartData = seriesData.map((item) => {
     let xAxisLabel: string;
 
@@ -47,6 +41,10 @@ export default function SalesChart({ period, seriesData }: Props) {
       sales: item.netSales,
     };
   });
+
+  if (isLoading) {
+    return <SalesChartSkeleton />;
+  }
 
   return (
     <Card>
