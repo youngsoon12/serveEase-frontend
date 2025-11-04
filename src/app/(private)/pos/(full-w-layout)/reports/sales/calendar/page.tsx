@@ -1,10 +1,14 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import SalesCalendar from './_components/SalesCalendar';
 import SalesSummary from './_components/SalesSummary';
 import { useSalesCalendar } from '@/hooks/calendar/useSalesCalendar';
-import { format } from 'date-fns';
+import { getSalesCalendar } from '@/app/api/salesCalendar';
+import { calendarKeys } from '@/lib/queries/keys/calendarKeys';
+
+import { addMonths, subMonths, format } from 'date-fns';
 
 export default function salesCalendarPage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
@@ -13,7 +17,24 @@ export default function salesCalendarPage() {
     [viewMonth],
   );
   const { data } = useSalesCalendar(viewMonthString);
-  console.log(data);
+  const queryClient = useQueryClient(); // ✅ React Query 클라이언트 접근
+
+  useEffect(() => {
+    const nextMonth = format(addMonths(viewMonth, 1), 'yyyy-MM');
+    const prevMonth = format(subMonths(viewMonth, 1), 'yyyy-MM');
+
+    queryClient.prefetchQuery({
+      queryKey: calendarKeys.month(nextMonth),
+      queryFn: () => getSalesCalendar(nextMonth),
+      staleTime: 1000 * 60 * 5,
+    });
+
+    queryClient.prefetchQuery({
+      queryKey: calendarKeys.month(prevMonth),
+      queryFn: () => getSalesCalendar(prevMonth),
+      staleTime: 1000 * 60 * 5,
+    });
+  }, [viewMonth, queryClient]);
 
   const salesMap = useMemo(() => {
     if (!data?.dailySales) return {};

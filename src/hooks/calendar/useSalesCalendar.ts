@@ -2,25 +2,26 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getSalesCalendar } from '@/app/api/salesCalendar';
 import { SalesCalendarResponse } from '@/types/calendar';
+import { calendarKeys } from '@/lib/queries/keys/calendarKeys';
 import { AxiosError } from 'axios';
 
 export function useSalesCalendar(month: string) {
-  const { data, error, isError, isLoading, isFetching } = useQuery<
-    SalesCalendarResponse,
-    AxiosError
-  >({
-    queryKey: ['salesCalendar', month],
+  const queryKey = calendarKeys.month(month);
+
+  const query = useQuery<SalesCalendarResponse, AxiosError>({
+    queryKey,
     queryFn: () => getSalesCalendar(month),
     enabled: !!month,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5분 동안 fresh
   });
 
   useEffect(() => {
-    if (isError && error) {
-      console.error('Status:', error.response?.status);
-      console.error('Message:', error.response?.data);
+    if (query.isError && query.error) {
+      console.error('❌ Sales Calendar API Error');
+      console.error('Status:', query.error.response?.status);
+      console.error('Message:', query.error.response?.data);
     }
-  }, [isError, error]);
+  }, [query.isError, query.error]);
 
-  return { data, error, isError, isLoading, isFetching };
+  return query;
 }
