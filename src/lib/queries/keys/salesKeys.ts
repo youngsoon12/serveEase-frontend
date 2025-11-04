@@ -1,4 +1,4 @@
-import { SalesReportParams } from '@/app/api/salesReport';
+import { SalesReportParams } from '@/types/sales';
 
 export const salesKeys = {
   all: ['salesReport'] as const,
