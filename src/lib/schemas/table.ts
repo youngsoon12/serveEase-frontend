@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const TableOrderItemSchema = z.object({
   menuName: z.string(),
