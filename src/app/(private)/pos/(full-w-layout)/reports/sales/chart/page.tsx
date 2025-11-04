@@ -9,6 +9,7 @@ import { getStoreId } from '@/app/api/store';
 import { useSalesReport } from '@/hooks/useSalesReport';
 import { useState } from 'react';
 import { Period } from '@/lib/schemas';
+import ErrorState from '@/components/ErrorState';
 
 export default function SalesReportChart() {
   const [period, setPeriod] = useState<Period>('day');
@@ -36,12 +37,32 @@ export default function SalesReportChart() {
 
   const { to: finalTo, from: finalFrom } = getFinalDateRange();
 
-  const { data: salesData, isLoading } = useSalesReport({
+  const {
+    data: salesData,
+    isError,
+    refetch,
+    isFetching,
+    isLoading,
+  } = useSalesReport({
     to: finalTo,
     from: finalFrom,
     storeId,
     period,
   });
+
+  if (isError) {
+    return (
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-bold">매출 현황</h1>
+        <ErrorState
+          title="매출 데이터를 불러올 수 없습니다"
+          message="네트워크 연결을 확인하거나 잠시 후 다시 시도해주세요."
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6 ">
