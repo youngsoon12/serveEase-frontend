@@ -1,6 +1,6 @@
 import { instance } from '@/lib/axios';
 import { OrderResponse } from '@/lib/schemas/order';
-import { TablesResponse } from '@/types/table';
+import { TablesResponse } from '@/lib/schemas/table';
 
 export const PAGE_SIZE = 12;
 

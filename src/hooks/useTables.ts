@@ -5,7 +5,6 @@ import {
   updateTableState,
 } from '@/app/api/tables';
 
-import { TablesResponse, TableCardProps } from '@/types/table';
 import {
   keepPreviousData,
   useMutation,
@@ -17,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { OrderResponse } from '@/lib/schemas/order';
 import { orderKeys, tableKeys } from '@/lib/queries/keys';
+import { TableCardProps, TablesResponse } from '@/lib/schemas/table';
 
 export function useTables(page: number) {
   const query = useQuery<TablesResponse>({

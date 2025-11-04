@@ -6,10 +6,10 @@ import {
   CardContent,
   CardFooter,
 } from './ui/card';
-import { TableCardProps } from '@/types/table';
 import { useQueryClient } from '@tanstack/react-query';
 import { orderKeys } from '@/lib/queries/keys';
 import { getOrder } from '@/app/api/order';
+import { TableCardProps } from '@/lib/schemas/table';
 
 export default function TableCard({
   tableNumber,
