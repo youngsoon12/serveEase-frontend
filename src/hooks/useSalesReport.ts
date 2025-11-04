@@ -1,6 +1,7 @@
 import { getSalesReport } from '@/app/api/salesReport';
-import { SalesReportParams, SalesReportResponse } from '@/types/sales';
+
 import { salesKeys } from '@/lib/queries/keys';
+import { SalesReportParams, SalesReportResponse } from '@/lib/schemas';
 import { useQuery } from '@tanstack/react-query';
 
 export function useSalesReport(params: SalesReportParams) {
