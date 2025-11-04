@@ -7,20 +7,11 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { Period } from '@/types/sales';
+import { Period, SalesSeriesData } from '@/types/sales';
 
 interface Props {
   period: Period;
-  seriesData: Array<{
-    date: string;
-    month: string;
-    monthValue: number;
-    week: number | null;
-    netSales: number;
-    orderCount: number;
-    averageOrderValue: number;
-    canceledAmount: number;
-  }>;
+  seriesData: SalesSeriesData[];
 }
 
 const chartConfig = {

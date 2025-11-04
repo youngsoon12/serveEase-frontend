@@ -1,37 +1,5 @@
 import { instance } from '@/lib/axios';
-import { Period } from '@/types/sales';
-
-export interface SalesReportResponse {
-  context: {
-    periodType: string;
-    storeId: number;
-    from: string;
-    to: string;
-  };
-  summary: {
-    netSales: number;
-    orderCount: number;
-    averageOrderValue: number;
-    canceledAmount: number;
-  };
-  series: Array<{
-    date: string;
-    month: string;
-    monthValue: number;
-    week: number | null;
-    netSales: number;
-    orderCount: number;
-    averageOrderValue: number;
-    canceledAmount: number;
-  }>;
-}
-
-export interface SalesReportParams {
-  storeId: number;
-  from: string;
-  to: string;
-  period: Period;
-}
+import { Period, SalesReportParams, SalesReportResponse } from '@/types/sales';
 
 export async function getSalesReport(params: SalesReportParams) {
   const periodTypeMap: Record<Period, string> = {
