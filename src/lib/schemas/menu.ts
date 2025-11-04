@@ -8,4 +8,6 @@ export const MenuItemSchema = z.object({
   available: z.boolean(),
 });
 
+export const MenuListSchema = z.array(MenuItemSchema);
+
 export type MenuItem = z.infer<typeof MenuItemSchema>;
