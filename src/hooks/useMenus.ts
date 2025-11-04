@@ -1,6 +1,6 @@
 import { getMenus } from '@/app/api/menu';
 import { useQuery } from '@tanstack/react-query';
-import { MenuItem } from '@/types/menu';
+import { MenuItem } from '@/lib/schemas/menu';
 import { menuKeys } from '@/lib/queries/keys';
 
 export default function useMenus() {
