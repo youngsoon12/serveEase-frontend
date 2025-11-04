@@ -36,7 +36,7 @@ export default function SalesReportChart() {
 
   const { to: finalTo, from: finalFrom } = getFinalDateRange();
 
-  const { data: salesData } = useSalesReport({
+  const { data: salesData, isLoading } = useSalesReport({
     to: finalTo,
     from: finalFrom,
     storeId,
@@ -70,7 +70,11 @@ export default function SalesReportChart() {
         />
       </div>
 
-      <SalesChart period={period} seriesData={salesData?.series ?? []} />
+      <SalesChart
+        period={period}
+        seriesData={salesData?.series ?? []}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
