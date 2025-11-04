@@ -1,5 +1,10 @@
 import { instance } from '@/lib/axios';
-import { Period, SalesReportParams, SalesReportResponse } from '@/lib/schemas';
+import {
+  Period,
+  SalesReportParams,
+  SalesReportResponseSchema,
+} from '@/lib/schemas';
+import { validate } from '@/app/api/validate';
 
 export async function getSalesReport(params: SalesReportParams) {
   const periodTypeMap: Record<Period, string> = {
@@ -8,7 +13,7 @@ export async function getSalesReport(params: SalesReportParams) {
     month: 'MONTHLY',
   };
 
-  const { data } = await instance.get<SalesReportResponse>('/reports/sales', {
+  const { data } = await instance.get('/reports/sales', {
     params: {
       to: params.to,
       from: params.from,
@@ -17,5 +22,5 @@ export async function getSalesReport(params: SalesReportParams) {
     },
   });
 
-  return data;
+  return validate(data, SalesReportResponseSchema);
 }
