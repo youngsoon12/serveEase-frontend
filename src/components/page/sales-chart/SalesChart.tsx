@@ -7,8 +7,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { Period, SalesSeriesData } from '@/types/sales';
+
 import SalesChartSkeleton from './SalesChartSkeleton';
+import { Period, SalesSeriesData } from '@/lib/schemas';
 
 interface Props {
   period: Period;

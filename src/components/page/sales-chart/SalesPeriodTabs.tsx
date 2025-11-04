@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Period, isPeriod } from '@/types/sales';
+import { isPeriod, Period } from '@/lib/schemas';
 
 interface Props {
   value: Period;

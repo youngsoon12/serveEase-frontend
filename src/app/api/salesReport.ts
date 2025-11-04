@@ -1,5 +1,5 @@
 import { instance } from '@/lib/axios';
-import { Period, SalesReportParams, SalesReportResponse } from '@/types/sales';
+import { Period, SalesReportParams, SalesReportResponse } from '@/lib/schemas';
 
 export async function getSalesReport(params: SalesReportParams) {
   const periodTypeMap: Record<Period, string> = {

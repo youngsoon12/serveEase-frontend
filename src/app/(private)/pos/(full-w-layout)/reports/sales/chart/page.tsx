@@ -5,10 +5,10 @@ import SalesChart from '@/components/page/sales-chart/SalesChart';
 import SalesKPICard from '@/components/page/sales-chart/SalesKPICard';
 import SalesPeriodTabs from '@/components/page/sales-chart/SalesPeriodTabs';
 import salesCalculateDate from '@/lib/salesCalculateDate';
-import { Period } from '@/types/sales';
 import { getStoreId } from '@/app/api/store';
 import { useSalesReport } from '@/hooks/useSalesReport';
 import { useState } from 'react';
+import { Period } from '@/lib/schemas';
 
 export default function SalesReportChart() {
   const [period, setPeriod] = useState<Period>('day');
