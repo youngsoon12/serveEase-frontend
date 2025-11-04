@@ -1,10 +1,10 @@
 import { OrderDetail } from '@/types/payment-history';
 
-interface OrderDetailCardProps {
+interface Props {
   detail: OrderDetail;
 }
 
-export default function OrderDetailCard({ detail }: OrderDetailCardProps) {
+export default function OrderDetailCard({ detail }: Props) {
   return (
     <div className="rounded-lg border bg-white p-6 overflow-y-auto max-h-[320px]">
       <h3 className="text-xl font-bold mb-6 text-gray-900">주문내역</h3>

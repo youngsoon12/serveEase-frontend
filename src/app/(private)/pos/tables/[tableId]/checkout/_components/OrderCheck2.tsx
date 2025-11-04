@@ -1,6 +1,6 @@
 'use client';
 
-import { OrderResponse } from '@/types/order';
+import { OrderResponse } from '@/lib/schemas/order';
 
 interface Props {
   order?: OrderResponse | null;

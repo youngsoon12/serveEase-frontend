@@ -1,11 +1,11 @@
 import { PaymentDetail } from '@/types/payment-history';
 import DetailRow from './DetailRow';
 
-interface PaymentDetailCardProps {
+interface Props {
   detail: PaymentDetail;
 }
 
-export default function PaymentDetailCard({ detail }: PaymentDetailCardProps) {
+export default function PaymentDetailCard({ detail }: Props) {
   return (
     <div className="rounded-lg border bg-white p-6">
       <div className="mb-3">

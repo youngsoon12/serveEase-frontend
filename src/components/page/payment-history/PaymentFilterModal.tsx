@@ -11,7 +11,7 @@ import {
   PaymentTypeType,
 } from '@/constants/payment-history';
 import { useState, useEffect } from 'react';
-import { calculateDateRange } from '@/lib/payment-period-utils';
+import { calculateDateRange } from '@/lib/paymentCalculatePeriod';
 import DatePicker from './DatePicker';
 
 interface FilterState {

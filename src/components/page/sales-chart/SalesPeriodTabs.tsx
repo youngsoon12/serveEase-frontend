@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Period } from '@/types/sales';
+import { isPeriod, Period } from '@/lib/schemas';
 
 interface Props {
   value: Period;
@@ -8,7 +8,14 @@ interface Props {
 
 export default function SalesPeriodTabs({ value, onChange }: Props) {
   return (
-    <Tabs value={value} onValueChange={(value) => onChange(value)}>
+    <Tabs
+      value={value}
+      onValueChange={(value) => {
+        if (isPeriod(value)) {
+          onChange(value);
+        }
+      }}
+    >
       <TabsList className="grid grid-cols-3 rounded-full border border-input p-0.1 h-10 bg-white">
         <TabsTrigger
           value="day"
