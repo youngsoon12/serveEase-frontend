@@ -4,7 +4,7 @@ import {
   updateTableCount,
   updateTableState,
 } from '@/app/api/tables';
-import { OrderResponse } from '@/types/order';
+
 import { TablesResponse, TableCardProps } from '@/types/table';
 import {
   keepPreviousData,
@@ -15,6 +15,7 @@ import {
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { OrderResponse } from '@/lib/schemas/order';
 import { orderKeys, tableKeys } from '@/lib/queries/keys';
 
 export function useTables(page: number) {

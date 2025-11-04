@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
 import { ApiErrorBody } from '@/lib/error';
-import { OrderRequest, OrderResponse } from '@/types/order';
+import { OrderRequest, OrderResponse } from '@/lib/schemas/order';
 import { orderKeys, tableKeys } from '@/lib/queries/keys';
 
 export function useOrder(orderId?: number) {

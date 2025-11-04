@@ -3,7 +3,7 @@
 import useTossPayments from '@/hooks/payment/useTossPayments';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { OrderResponse } from '@/types/order';
+import { OrderResponse } from '@/lib/schemas/order';
 
 type TossPaymentProps = {
   data: OrderResponse;

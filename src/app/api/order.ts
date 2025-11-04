@@ -1,5 +1,5 @@
 import { instance } from '@/lib/axios';
-import { OrderRequest, OrderResponse } from '@/types/order';
+import { OrderRequest, OrderResponse } from '@/lib/schemas/order';
 
 export async function getOrder(orderId: number) {
   const { data } = await instance.get<OrderResponse>(
