@@ -5,12 +5,17 @@ const API = process.env.NEXT_PUBLIC_BASE_API_URL?.replace(/\/$/, '') ?? '';
 
 // @me를 storeId로 치환
 function buildTargetUrl(pathSegments: string[], storeId?: string, search = '') {
-  const joined = pathSegments.join('/'); // e.g. "stores/@me/menus"
+  const fixedSearch = search
+    .replace(/storeId=@me/g, `storeId=${storeId}`)
+    .replace(/storeId=%40me/g, `storeId=${storeId}`);
+
+  const joined = pathSegments.join('/');
   const resolved = joined.replace(
     /stores\/@me/gi,
     `stores/${storeId ?? 'unknown'}`,
   );
-  return `${API}/${resolved}${search}`;
+
+  return `${API}/${resolved}${fixedSearch}`;
 }
 
 export async function proxy(
@@ -39,7 +44,7 @@ export async function proxy(
   const { path } = await ctx.params;
 
   const targetUrl = buildTargetUrl(path, storeId, url.search);
-  //   console.log('Target URL : ', targetUrl); // 디버깅용 URL
+  console.log('Target URL : ', targetUrl); // 디버깅용 URL
 
   const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,

@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import useLogin from '@/hooks/useLogin';
 
@@ -17,7 +17,28 @@ export default function Home() {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect') ?? '/pos';
+  const [checking, setChecking] = useState(true);
   const { mutate } = useLogin();
+  useEffect(() => {
+    const isLoggedIn =
+      typeof document !== 'undefined' &&
+      document.cookie.split('; ').some((c) => c === 'isLoggedIn=true');
+
+    if (isLoggedIn) {
+      router.replace(redirectUrl);
+    } else {
+      setChecking(false);
+    }
+  }, [redirectUrl, router]);
+  if (checking) {
+    return (
+      <div className="relative h-screen w-full grid place-items-center">
+        <div className="text-gray-500">세션 확인 중…</div>
+      </div>
+    );
+  }
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,7 +63,7 @@ export default function Home() {
           if (storeId) localStorage.setItem('storeId', storeId);
           if (storeName) localStorage.setItem('storeName', storeName);
 
-          router.push('/pos');
+          router.push(redirectUrl);
         } catch {
           console.error('쿠키에서 storeId/storeName 복사 실패');
         }

@@ -19,15 +19,12 @@ export default function ReportsLayout({
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-default">
+    <div className="flex flex-col h-screen bg-default">
       <Header />
 
       {/* 사이드바 */}
-      <div className="flex min-h-screen overflow-hidden">
-        <aside
-          className="w-56 shrink-0 bg-[#3E4B57] text-white p-4
-                 flex flex-col items-center"
-        >
+      <div className="flex flex-1 min-h-0">
+        <aside className="w-56 shrink-0 bg-[#3E4B57] text-white p-4 flex flex-col items-center">
           <BackButton
             buttonStyle="w-10 h-10 rounded-md hover:bg-white/10"
             iconStyle="size-5"
@@ -52,7 +49,7 @@ export default function ReportsLayout({
           </nav>
         </aside>
 
-        <main className="flex-1 min-h-0 overflow-auto">{children}</main>
+        <main className="flex-1 h-full min-h-0 overflow-auto">{children}</main>
       </div>
     </div>
   );
