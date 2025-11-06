@@ -6,12 +6,6 @@ import { usePaymentHistory } from '@/hooks/usePaymentHistory';
 import { useEffect, useRef, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-interface Props {
-  selectedId: string | null;
-  onSelect: (orderId: string) => void;
-  onListChange?: (ids: string[]) => void;
-}
-
 const STATUS_BADGE_STATUS: Record<string, string> = {
   COMPLETED: '완료',
   CANCELED: '취소',
@@ -34,7 +28,15 @@ const getPaymentMethodLabel = (method: string | null) => {
   return PAYMENT_METHOD_LABEL[method] ?? '간편 결제';
 };
 
+interface Props {
+  date: Date;
+  selectedId: string | null;
+  onSelect: (orderId: string) => void;
+  onListChange?: (ids: string[]) => void;
+}
+
 export default function PaymentList({
+  date,
   selectedId,
   onSelect,
   onListChange,
@@ -46,7 +48,7 @@ export default function PaymentList({
     isFetchingNextPage,
     isLoading,
     isError,
-  } = usePaymentHistory();
+  } = usePaymentHistory(date);
 
   // 모든 페이지의 content를 하나의 배열로 합침
   const payments = useMemo(
