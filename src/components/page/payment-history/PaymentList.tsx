@@ -1,14 +1,15 @@
 'use client';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { PaymentSummary } from '@/lib/schemas/paymentHistory';
+import { usePaymentHistory } from '@/hooks/usePaymentHistory';
+import { useEffect, useRef, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 interface Props {
-  payments: PaymentSummary[];
   selectedId: string | null;
   onSelect: (orderId: string) => void;
+  onListChange?: (ids: string[]) => void;
 }
 
 const STATUS_BADGE_STATUS: Record<string, string> = {
@@ -24,9 +25,74 @@ const STATUS_BADGE_VARIANT: Record<string, 'secondary' | 'destructive'> = {
 const getStatusLabel = (status: string) =>
   STATUS_BADGE_STATUS[status] ?? status;
 
-export default function PaymentList({ payments, selectedId, onSelect }: Props) {
+export default function PaymentList({
+  selectedId,
+  onSelect,
+  onListChange,
+}: Props) {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = usePaymentHistory();
+
+  // 모든 페이지의 content를 하나의 배열로 합침
+  const payments = useMemo(
+    () => data?.pages.flatMap((page) => page.content) ?? [],
+    [data],
+  );
+
+  console.log(data);
+  console.log(payments);
+
+  // 리스트 컨테이너
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // 리스트 컨테이너를 root로 지정(페이지 전체 스크롤 X)
+  const { ref: sentinelRef, inView } = useInView({
+    root: listRef.current ?? undefined,
+    rootMargin: '200px',
+    threshold: 0,
+  });
+
+  // 하단 도달 시 자동으로 다음 페이지 로드
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // 결제 내역들의 orderId 배열 -> 부모의 네비게이션 기능
+  useEffect(() => {
+    onListChange?.(payments.map((p) => p.orderId));
+  }, [payments, onListChange]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-sm">결제 내역을 불러오는 중...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-lg text-red-500">
+          결제 내역을 불러오는데 실패했습니다.
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <ScrollArea className="h-full">
+    <div
+      ref={listRef}
+      className="h-full min-h-0 overflow-y-auto overscroll-contain pr-3"
+    >
       <div className="space-y-2">
         {payments.map((payment) => (
           <Card
@@ -85,7 +151,23 @@ export default function PaymentList({ payments, selectedId, onSelect }: Props) {
             </p>
           </Card>
         ))}
+
+        {/* 무한 스크롤 트리거 영역 */}
+        {(hasNextPage || isFetchingNextPage) && (
+          <div
+            ref={sentinelRef}
+            className="py-4 text-center text-sm text-muted-foreground"
+          >
+            {isFetchingNextPage ? '더 불러오는 중...' : '아래로 스크롤'}
+          </div>
+        )}
+
+        {!hasNextPage && payments.length > 0 && (
+          <div className="py-4 text-center text-xs text-gray-400">
+            모든 결제 내역을 불러왔습니다.
+          </div>
+        )}
       </div>
-    </ScrollArea>
+    </div>
   );
 }
