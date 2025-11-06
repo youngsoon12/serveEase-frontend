@@ -17,6 +17,7 @@ export function usePaymentHistory(date: Date) {
         from: formattedDate,
         to: formattedDate,
       }),
+    staleTime: 5 * 60 * 1000,
 
     getNextPageParam: (lastPage) => {
       return lastPage.last ? undefined : lastPage.number + 1;
