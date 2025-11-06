@@ -5,28 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { usePaymentHistory } from '@/hooks/usePaymentHistory';
 import { useEffect, useRef, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-
-const STATUS_BADGE_STATUS: Record<string, string> = {
-  COMPLETED: '완료',
-  CANCELED: '취소',
-};
-
-const STATUS_BADGE_VARIANT: Record<string, 'secondary' | 'destructive'> = {
-  완료: 'secondary',
-  취소: 'destructive',
-};
-
-const getStatusLabel = (status: string) =>
-  STATUS_BADGE_STATUS[status] ?? status;
-
-const PAYMENT_METHOD_LABEL: Record<string, string> = {
-  CASH: '현금 결제',
-};
-
-const getPaymentMethodLabel = (method: string | null) => {
-  if (!method) return '결제수단 없음';
-  return PAYMENT_METHOD_LABEL[method] ?? '간편 결제';
-};
+import {
+  getApprovalStatusLabel,
+  getApprovalStatusVariant,
+  getPaymentMethodLabel,
+} from '@/constants/payment-history';
 
 interface Props {
   date: Date;
@@ -137,13 +120,15 @@ export default function PaymentList({
                     {payment.totalPaymentAmount.toLocaleString()}원
                   </p>
                   <Badge
-                    variant={
-                      STATUS_BADGE_VARIANT[
-                        getStatusLabel(payment.representativePaymentStatus)
-                      ] ?? 'secondary'
-                    }
+                    variant={getApprovalStatusVariant(
+                      getApprovalStatusLabel(
+                        payment.representativePaymentStatus,
+                      ),
+                    )}
                   >
-                    {getStatusLabel(payment.representativePaymentStatus)}
+                    {getApprovalStatusLabel(
+                      payment.representativePaymentStatus,
+                    )}
                   </Badge>
                 </div>
 

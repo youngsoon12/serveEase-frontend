@@ -17,9 +17,21 @@ export const PAYMENT_TYPES = {
 } as const;
 
 export const APPROVAL_STATUS = {
-  COMPLETED: '승인완료',
-  CANCELLED: '취소완료',
-  PENDING: '승인대기',
+  COMPLETED: '완료',
+  CANCELLED: '취소',
+} as const;
+
+export const APPROVAL_STATUS_VARIANT: Record<
+  string,
+  'secondary' | 'destructive' | 'default'
+> = {
+  완료: 'secondary',
+  취소: 'destructive',
+} as const;
+
+export const PAYMENT_METHOD_RESPONSE_LABEL: Record<string, string> = {
+  간편결제: '간편 결제',
+  CASH: '현금 결제',
 } as const;
 
 export type PeriodType = (typeof PERIODS)[keyof typeof PERIODS];
@@ -27,3 +39,14 @@ export type PaymentMethodType =
   (typeof PAYMENT_METHODS)[keyof typeof PAYMENT_METHODS];
 export type PaymentTypeType =
   (typeof PAYMENT_TYPES)[keyof typeof PAYMENT_TYPES];
+
+export const getApprovalStatusLabel = (status: string) =>
+  APPROVAL_STATUS[status as keyof typeof APPROVAL_STATUS] ?? status;
+
+export const getApprovalStatusVariant = (statusLabel: string) =>
+  APPROVAL_STATUS_VARIANT[statusLabel] ?? 'secondary';
+
+export const getPaymentMethodLabel = (method: string | null) => {
+  if (!method) return '결제수단 없음';
+  return PAYMENT_METHOD_RESPONSE_LABEL[method] ?? method;
+};
