@@ -3,8 +3,10 @@
 import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
-
+import { useRouter } from 'next/navigation';
+import { useLogout } from '@/hooks/useLogin';
 import { cn } from '@/lib/utils';
+import { unknown } from 'zod';
 
 function DropdownMenu({
   ...props
@@ -238,6 +240,21 @@ function DropdownMenuSubContent({
   );
 }
 
+function DropdownLogoutItem() {
+  const router = useRouter();
+  const { mutate: logout } = useLogout();
+  const handleLogoutClick = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        router.push('/');
+      },
+    });
+  };
+  return (
+    <DropdownMenuItem onClick={handleLogoutClick}>로그아웃</DropdownMenuItem>
+  );
+}
+
 export {
   DropdownMenu,
   DropdownMenuPortal,
@@ -254,4 +271,5 @@ export {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownLogoutItem,
 };

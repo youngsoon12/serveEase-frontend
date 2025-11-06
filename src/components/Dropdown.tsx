@@ -6,6 +6,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
+import { useLogout } from '@/hooks/useLogin';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Dropdown() {
@@ -31,4 +33,4 @@ export default function Dropdown() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+} 
