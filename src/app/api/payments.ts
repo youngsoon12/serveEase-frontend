@@ -18,7 +18,7 @@ export async function getPaymentHistory(params: PaymentHistoryParams) {
   const { data } = await instance.get('/payments', {
     params: {
       ...params,
-      range: params.range ?? 'TODAY',
+      range: params.from && params.to ? undefined : params.range ?? 'TODAY',
     },
   });
 
