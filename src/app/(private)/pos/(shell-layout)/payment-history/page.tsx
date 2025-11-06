@@ -14,6 +14,7 @@ export default function PaymentHistory() {
     null,
   );
   const [paymentIdList, setPaymentIdList] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   // 위아래 네비게이션
   const handleNavigate = (direction: 'up' | 'down') => {
@@ -41,11 +42,12 @@ export default function PaymentHistory() {
         <SearchBar />
 
         {/* 필터 영역 + 상세 조회*/}
-        <FilterSection />
+        <FilterSection date={selectedDate} onDateChange={setSelectedDate} />
 
         {/* 결제 내역 리스트 */}
         <div className="flex-1 min-h-0">
           <PaymentList
+            date={selectedDate}
             selectedId={selectedPaymentId}
             onSelect={setSelectedPaymentId}
             onListChange={setPaymentIdList}
