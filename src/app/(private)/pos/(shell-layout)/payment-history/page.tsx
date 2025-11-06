@@ -6,36 +6,46 @@ import OrderDetailCard from '@/components/page/payment-history/OrderDetailCard';
 import PaymentDetailCard from '@/components/page/payment-history/PaymentDetailCard';
 import PaymentList from '@/components/page/payment-history/PaymentList';
 import SearchBar from '@/components/SearchBar';
-import {
-  mockOrderDetailData,
-  mockPaymentData,
-  mockPaymentDetailData,
-} from '@/lib/mock/paymentData';
+import { usePaymentHistory } from '@/hooks/usePaymentHistory';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 export default function PaymentHistory() {
-  const [selectedPaymentId, setSelectedPaymentId] = useState<number | null>(
+  const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(
     null,
   );
 
-  // 선택된 결제의 상세 정보 찾기
-  const selectedPaymentDetail = selectedPaymentId
-    ? mockPaymentDetailData.find(
-        (detail) => detail.paymentId === selectedPaymentId,
-      )
-    : null;
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = usePaymentHistory();
 
-  const selectedOrderDetail = selectedPaymentId
-    ? mockOrderDetailData.find((order) => order.paymentId === selectedPaymentId)
-    : null;
+  // 무한 스크롤을 위한 하단 감지
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+
+  // 하단 도달 시 자동으로 다음 페이지 로드
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // 모든 페이지의 content를 하나의 배열로 합치기 -> 왜 필요해?
+  const allPayments = data?.pages.flatMap((page) => page.content) ?? [];
 
   // 위아래 네비게이션
   const handleNavigate = (direction: 'up' | 'down') => {
-    if (!selectedPaymentId || mockPaymentData.length === 0) return;
+    if (!selectedPaymentId || allPayments.length === 0) return;
 
-    const currentIndex = mockPaymentData.findIndex(
-      (payment) => payment.id === selectedPaymentId,
+    const currentIndex = allPayments.findIndex(
+      (payment) => payment.orderId === selectedPaymentId,
     );
 
     if (currentIndex === -1) return;
@@ -43,10 +53,28 @@ export default function PaymentHistory() {
     const newIndex =
       direction === 'up'
         ? Math.max(0, currentIndex - 1)
-        : Math.min(mockPaymentData.length - 1, currentIndex + 1);
+        : Math.min(allPayments.length - 1, currentIndex + 1);
 
-    setSelectedPaymentId(mockPaymentData[newIndex].id);
+    setSelectedPaymentId(allPayments[newIndex].orderId);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-lg">결제 내역을 불러오는 중...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-lg text-red-500">
+          결제 내역을 불러오는데 실패했습니다.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-6 p-6">
@@ -61,11 +89,25 @@ export default function PaymentHistory() {
         <FilterSection />
 
         {/* 결제 내역 리스트 */}
-        <PaymentList
-          payments={mockPaymentData}
-          selectedId={selectedPaymentId}
-          onSelect={setSelectedPaymentId}
-        />
+        <div className="flex-1 h-[67%]">
+          <PaymentList
+            payments={allPayments}
+            selectedId={selectedPaymentId}
+            onSelect={setSelectedPaymentId}
+          />
+        </div>
+
+        {/* 무한 스크롤 트리거 영역 */}
+        <div ref={ref} className="flex h-20 items-center justify-center">
+          {isFetchingNextPage && (
+            <div className="text-sm text-gray-500">더 불러오는 중...</div>
+          )}
+          {!hasNextPage && allPayments.length > 0 && (
+            <div className="text-sm text-gray-400">
+              모든 결제 내역을 불러왔습니다.
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 우측: 상세 카드 */}
@@ -88,13 +130,13 @@ export default function PaymentHistory() {
           </Button>
         </div>
 
-        {selectedPaymentDetail && selectedOrderDetail ? (
+        {selectedPaymentId ? (
           <>
             {/* 결제 상세 카드 */}
-            <PaymentDetailCard detail={selectedPaymentDetail} />
+            {/* <PaymentDetailCard detail={selectedPaymentDetail} /> */}
 
             {/* 주문 상세 카드 */}
-            <OrderDetailCard detail={selectedOrderDetail} />
+            {/* <OrderDetailCard detail={selectedOrderDetail} /> */}
           </>
         ) : (
           <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
