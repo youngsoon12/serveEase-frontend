@@ -243,15 +243,15 @@ function DropdownMenuSubContent({
 function DropdownLogoutItem() {
   const router = useRouter();
   const { mutate: logout } = useLogout();
-  const handleLogoutClick = () => {
-    logout(undefined, {
-      onSuccess: () => {
-        router.push('/');
-      },
-    });
-  };
   return (
-    <DropdownMenuItem onClick={handleLogoutClick}>로그아웃</DropdownMenuItem>
+    <DropdownMenuItem
+      className="cursor-pointer"
+      onClick={() => {
+        logout;
+      }}
+    >
+      로그아웃
+    </DropdownMenuItem>
   );
 }
 
