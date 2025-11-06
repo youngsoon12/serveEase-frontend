@@ -17,7 +17,7 @@ export function useSalesCalendar(month: string) {
 
   useEffect(() => {
     if (query.isError && query.error) {
-      console.error('❌ Sales Calendar API Error');
+      console.error('Sales Calendar API Error');
       console.error('Status:', query.error.response?.status);
       console.error('Message:', query.error.response?.data);
     }

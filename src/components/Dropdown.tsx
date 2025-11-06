@@ -4,6 +4,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownLogoutItem,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
@@ -25,9 +26,7 @@ export default function Dropdown() {
         <DropdownMenuItem>
           <Link href={'/'}>마이페이지</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={'/'}>로그아웃</Link>
-        </DropdownMenuItem>
+        <DropdownLogoutItem />
       </DropdownMenuContent>
     </DropdownMenu>
   );
