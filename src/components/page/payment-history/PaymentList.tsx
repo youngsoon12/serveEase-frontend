@@ -25,6 +25,15 @@ const STATUS_BADGE_VARIANT: Record<string, 'secondary' | 'destructive'> = {
 const getStatusLabel = (status: string) =>
   STATUS_BADGE_STATUS[status] ?? status;
 
+const PAYMENT_METHOD_LABEL: Record<string, string> = {
+  CASH: '현금 결제',
+};
+
+const getPaymentMethodLabel = (method: string | null) => {
+  if (!method) return '결제수단 없음';
+  return PAYMENT_METHOD_LABEL[method] ?? '간편 결제';
+};
+
 export default function PaymentList({
   selectedId,
   onSelect,
@@ -107,7 +116,8 @@ export default function PaymentList({
             <div className="flex justify-between items-start mb-2">
               <div className="flex-1 mr-4">
                 <h3 className="font-semibold mb-1">
-                  {payment.representativePaymentMethod ?? '결제수단 없음'}
+                  {getPaymentMethodLabel(payment.representativePaymentMethod) ??
+                    '결제수단 없음'}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   {payment.representativeItemName}
