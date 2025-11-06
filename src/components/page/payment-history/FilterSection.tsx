@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import PaymentFilterModal from './PaymentFilterModal';
+import { useState } from 'react';
 
 interface Props {
   date: Date;
@@ -19,9 +20,11 @@ interface Props {
 }
 
 export default function FilterSection({ date, onDateChange }: Props) {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="space-y-3">
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-start">
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -35,6 +38,8 @@ export default function FilterSection({ date, onDateChange }: Props) {
             onSelect={(selectedDate) => {
               if (selectedDate) {
                 onDateChange(selectedDate);
+
+                setOpen(false);
               }
             }}
           />
