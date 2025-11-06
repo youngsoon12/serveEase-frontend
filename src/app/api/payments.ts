@@ -15,7 +15,12 @@ export async function confirmPayment(body: PaymentConfirmRequest) {
 }
 
 export async function getPaymentHistory(params: PaymentHistoryParams) {
-  const { data } = await instance.get('/payments', { params });
+  const { data } = await instance.get('/payments', {
+    params: {
+      ...params,
+      range: params.range ?? 'TODAY',
+    },
+  });
 
   return validate(data, PaymentHistoryResponseSchema);
 }
