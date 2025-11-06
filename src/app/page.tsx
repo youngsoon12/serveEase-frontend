@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import useLogin from '@/hooks/useLogin';
+import { useLogin } from '@/hooks/useLogin';
 
 import Link from 'next/link';
 import Logo from '@/components/Logo';
