@@ -1,5 +1,5 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { getPaymentHistory } from '@/app/api/payments';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { getOrderDetail, getPaymentHistory } from '@/app/api/payments';
 import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 import { format } from 'date-fns';
 
@@ -24,5 +24,13 @@ export function usePaymentHistory(date: Date) {
     },
 
     initialPageParam: 0,
+  });
+}
+
+export function useOrderDetail(orderId: string) {
+  return useQuery({
+    queryKey: paymentKeys.detail(orderId),
+    queryFn: () => getOrderDetail(orderId),
+    enabled: !!orderId,
   });
 }
