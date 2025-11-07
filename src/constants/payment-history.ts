@@ -18,7 +18,9 @@ export const PAYMENT_TYPES = {
 
 export const APPROVAL_STATUS = {
   COMPLETED: '완료',
+  DONE: '완료',
   CANCELLED: '취소',
+  PARTIALLY_PAID: '분할 결제',
 } as const;
 
 export const APPROVAL_STATUS_VARIANT: Record<
@@ -27,6 +29,7 @@ export const APPROVAL_STATUS_VARIANT: Record<
 > = {
   완료: 'secondary',
   취소: 'destructive',
+  '분할 결제': 'destructive',
 } as const;
 
 export const PAYMENT_METHOD_RESPONSE_LABEL: Record<string, string> = {
@@ -50,3 +53,9 @@ export const getPaymentMethodLabel = (method: string | null) => {
   if (!method) return '결제수단 없음';
   return PAYMENT_METHOD_RESPONSE_LABEL[method] ?? method;
 };
+
+export function getDisplayStatus(status: string | null | undefined) {
+  if (!status) return '-';
+
+  return APPROVAL_STATUS[status as keyof typeof APPROVAL_STATUS] || status;
+}
