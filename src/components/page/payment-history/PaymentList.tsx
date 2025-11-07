@@ -66,18 +66,26 @@ export default function PaymentList({
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-sm">결제 내역을 불러오는 중...</div>
+      <div className="flex pt-12 items-center justify-center">
+        <div className="text-sm">결제 내역 불러오는 중...</div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-lg text-red-500">
+      <div className="flex pt-12 items-center justify-center">
+        <div className="text-md text-red-500">
           결제 내역을 불러오는데 실패했습니다.
         </div>
+      </div>
+    );
+  }
+
+  if (payments.length === 0) {
+    return (
+      <div className="flex pt-12 items-center justify-center">
+        <div className="text-sm">결제 내역이 없습니다.</div>
       </div>
     );
   }
