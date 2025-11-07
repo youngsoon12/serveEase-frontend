@@ -45,7 +45,7 @@ export default function PaymentDetailCard({ detail }: Props) {
             <>
               <div className="flex justify-between items-center">
                 <span className="font-semibold">
-                  {detail.splits[0].paymentMethod}
+                  {getPaymentMethodLabel(detail.splits[0].paymentMethod)}
                 </span>
                 {detail.splits[0].paymentStatus !== 'CANCELLED' && (
                   <button className="px-4 py-1.5 font-semibold text-sm text-red-500 bg-red-50 cursor-pointer rounded hover:bg-red-100">
