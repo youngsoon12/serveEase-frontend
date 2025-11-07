@@ -8,6 +8,7 @@ import PaymentList from '@/components/page/payment-history/PaymentList';
 import SearchBar from '@/components/SearchBar';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
+import { useOrderDetail } from '@/hooks/usePaymentHistory';
 
 export default function PaymentHistory() {
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(
@@ -16,12 +17,17 @@ export default function PaymentHistory() {
   const [paymentIdList, setPaymentIdList] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
+  const {
+    data: orderDetail,
+    isLoading,
+    error,
+  } = useOrderDetail(selectedPaymentId);
+
   // 위아래 네비게이션
   const handleNavigate = (direction: 'up' | 'down') => {
     if (!selectedPaymentId || paymentIdList.length === 0) return;
 
     const currentIndex = paymentIdList.indexOf(selectedPaymentId);
-
     if (currentIndex === -1) return;
 
     const newIndex =
@@ -75,17 +81,25 @@ export default function PaymentHistory() {
           </Button>
         </div>
 
-        {selectedPaymentId ? (
-          <>
-            {/* 결제 상세 카드 */}
-            {/* <PaymentDetailCard detail={selectedPaymentDetail} /> */}
-
-            {/* 주문 상세 카드 */}
-            {/* <OrderDetailCard detail={selectedOrderDetail} /> */}
-          </>
-        ) : (
+        {!selectedPaymentId ? (
           <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
             <p className="text-gray-400">결제 내역을 선택해주세요</p>
+          </div>
+        ) : isLoading ? (
+          <div className="flex h-64 items-center justify-center rounded-lg border bg-white">
+            <p className="text-gray-500">로딩 중...</p>
+          </div>
+        ) : error || !orderDetail ? (
+          <div className="flex h-64 items-center justify-center rounded-lg border bg-white">
+            <p className="text-red-500">주문 정보를 불러올 수 없습니다</p>
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto space-y-4">
+            {/* 결제 상세 카드 */}
+            <PaymentDetailCard detail={orderDetail} />
+
+            {/* 주문 상세 카드 */}
+            <OrderDetailCard orderItems={orderDetail.orderItems} />
           </div>
         )}
       </div>
