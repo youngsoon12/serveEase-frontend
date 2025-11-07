@@ -27,10 +27,13 @@ export function usePaymentHistory(date: Date) {
   });
 }
 
-export function useOrderDetail(orderId: string) {
+export function useOrderDetail(orderId: string | null) {
   return useQuery({
-    queryKey: paymentKeys.detail(orderId),
-    queryFn: () => getOrderDetail(orderId),
-    enabled: !!orderId,
+    queryKey: paymentKeys.detail(orderId || 'empty'),
+    queryFn: () => getOrderDetail(orderId!),
+    staleTime: 5 * 60 * 1000,
+    enabled: !!orderId && orderId.length > 0,
+    refetchOnWindowFocus: false,
+    retry: false,
   });
 }
