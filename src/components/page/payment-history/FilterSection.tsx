@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { CalendarIcon, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -13,13 +12,19 @@ import {
 } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import PaymentFilterModal from './PaymentFilterModal';
+import { useState } from 'react';
 
-export default function FilterSection() {
-  const [date, setDate] = useState<Date>(new Date());
+interface Props {
+  date: Date;
+  onDateChange: (date: Date) => void;
+}
+
+export default function FilterSection({ date, onDateChange }: Props) {
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="space-y-3">
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-start">
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -32,7 +37,9 @@ export default function FilterSection() {
             selected={date}
             onSelect={(selectedDate) => {
               if (selectedDate) {
-                setDate(selectedDate);
+                onDateChange(selectedDate);
+
+                setOpen(false);
               }
             }}
           />

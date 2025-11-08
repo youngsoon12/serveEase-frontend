@@ -47,7 +47,7 @@ export default function TablesPage() {
   }, [page, isLast, data]);
 
   return (
-    <div className="mx-auto flex items-center justify-center h-full ">
+    <div className="mx-auto flex items-center justify-center h-full">
       <h1 className="sr-only">테이블 목록</h1>
 
       {noticeText && (
