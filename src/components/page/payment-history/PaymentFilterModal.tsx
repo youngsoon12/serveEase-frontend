@@ -2,40 +2,56 @@
 
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  PERIODS,
-  PAYMENT_METHODS,
-  PAYMENT_TYPES,
-  PeriodType,
-  PaymentMethodType,
-  PaymentTypeType,
-} from '@/constants/payment-history';
 import { useState, useEffect } from 'react';
 import { calculateDateRange } from '@/lib/paymentCalculatePeriod';
 import DatePicker from './DatePicker';
+import {
+  FILTER_ORDER_TYPES,
+  FILTER_PAYMENT_METHODS,
+  FILTER_PERIODS,
+  FilterOrderTypeType,
+  FilterPaymentMethodType,
+  FilterPeriodType,
+  ORDER_TYPE_TO_API,
+  PAYMENT_METHOD_TO_API,
+  PERIOD_TO_API,
+} from '@/constants/payment-filter';
+import { format } from 'date-fns';
 
 interface FilterState {
-  period: PeriodType;
-  paymentMethod: PaymentMethodType;
-  paymentType: PaymentTypeType;
+  period: FilterPeriodType;
+  paymentMethod: FilterPaymentMethodType;
+  orderType: FilterOrderTypeType;
   startDate: Date | undefined;
   endDate: Date | undefined;
   isDateInputDisabled: boolean;
 }
 
-export default function PaymentFilterModal() {
+interface FilterValues {
+  range?: 'TODAY' | 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'CUSTOM';
+  from?: string;
+  to?: string;
+  paymentMethod: 'CARD' | 'CASH';
+  orderType?: 'NORMAL' | 'CANCELED' | 'PARTIAL';
+}
+
+interface Props {
+  onApply: (filters: FilterValues) => void;
+}
+
+export default function PaymentFilterModal({ onApply }: Props) {
   const [filters, setFilters] = useState<FilterState>({
-    period: PERIODS.TODAY,
-    paymentMethod: PAYMENT_METHODS.CARD,
-    paymentType: PAYMENT_TYPES.CANCELLED,
+    period: FILTER_PERIODS.TODAY,
+    paymentMethod: FILTER_PAYMENT_METHODS.CARD,
+    orderType: FILTER_ORDER_TYPES.NORMAL,
     startDate: new Date(),
     endDate: new Date(),
     isDateInputDisabled: true,
   });
 
-  const periods = Object.values(PERIODS);
-  const paymentMethods = Object.values(PAYMENT_METHODS);
-  const paymentTypes = Object.values(PAYMENT_TYPES);
+  const periods = Object.values(FILTER_PERIODS);
+  const paymentMethods = Object.values(FILTER_PAYMENT_METHODS);
+  const orderTypes = Object.values(FILTER_ORDER_TYPES);
 
   // 기간 선택에 따라 날짜 설정
   useEffect(() => {
@@ -55,6 +71,26 @@ export default function PaymentFilterModal() {
       }));
     }
   }, [filters.period]);
+
+  // UI 상태 → API 파라미터로 변환
+  const handleApply = () => {
+    const apiFilters: FilterValues = {
+      range: PERIOD_TO_API[filters.period],
+      paymentMethod: PAYMENT_METHOD_TO_API[filters.paymentMethod],
+      orderType: ORDER_TYPE_TO_API[filters.orderType],
+    };
+
+    if (
+      filters.period === FILTER_PERIODS.CUSTOM &&
+      filters.startDate &&
+      filters.endDate
+    ) {
+      apiFilters.from = format(filters.startDate, 'yyy-mm-dd');
+      apiFilters.from = format(filters.endDate, 'yyy-mm-dd');
+    }
+
+    onApply(apiFilters);
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -130,14 +166,14 @@ export default function PaymentFilterModal() {
             결제/주문유형
           </h3>
           <div className="flex gap-2">
-            {paymentTypes.map((type) => (
+            {orderTypes.map((type) => (
               <button
                 key={type}
                 onClick={() =>
-                  setFilters((prev) => ({ ...prev, paymentType: type }))
+                  setFilters((prev) => ({ ...prev, orderType: type }))
                 }
                 className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  filters.paymentType === type
+                  filters.orderType === type
                     ? 'bg-gray-700 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
@@ -151,7 +187,10 @@ export default function PaymentFilterModal() {
 
       {/* 확인 버튼 */}
       <div className="px-6 py-4 border-t">
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-medium">
+        <Button
+          onClick={handleApply}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-medium"
+        >
           확인
         </Button>
       </div>
