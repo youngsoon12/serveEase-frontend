@@ -1,4 +1,4 @@
-import { OrderItem } from '@/lib/schemas/paymentDetail';
+import { OrderItem } from '@/lib/schemas/payment-detail';
 
 interface Props {
   orderItems: OrderItem[];

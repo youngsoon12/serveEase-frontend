@@ -3,9 +3,9 @@ import { PaymentConfirmRequest, PaymentConfirmResponse } from '@/types/payment';
 import {
   PaymentHistoryParams,
   PaymentHistoryResponseSchema,
-} from '@/lib/schemas/paymentHistory';
+} from '@/lib/schemas/payment-history';
 import { validate } from '@/app/api/validate';
-import { OrderDetailResponseSchema } from '@/lib/schemas/paymentDetail';
+import { OrderDetailResponseSchema } from '@/lib/schemas/payment-detail';
 
 export async function confirmPayment(body: PaymentConfirmRequest) {
   const { data } = await instance.post<PaymentConfirmResponse>(
