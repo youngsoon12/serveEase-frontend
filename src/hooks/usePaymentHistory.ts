@@ -11,19 +11,20 @@ export function usePaymentHistory(date: Date, filters: FilterValues = {}) {
 
   return useInfiniteQuery({
     queryKey: paymentKeys.list({ date: formattedDate, ...filters }),
-    queryFn: ({ pageParam = 0 }) =>
-      getPaymentHistory({
+    queryFn: ({ pageParam = 0 }) => {
+      const hasFilters = Object.keys(filters).length > 0;
+
+      return getPaymentHistory({
         page: pageParam,
         size: PAGE_SIZE,
-        ...(Object.keys(filters).length > 0
-          ? {
-              ...filters,
-            }
+        ...(hasFilters
+          ? filters
           : {
               from: formattedDate,
               to: formattedDate,
             }),
-      }),
+      });
+    },
     staleTime: 5 * 60 * 1000,
 
     getNextPageParam: (lastPage) => {
