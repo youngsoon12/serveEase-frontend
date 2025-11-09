@@ -3,19 +3,33 @@ import { getOrderDetail, getPaymentHistory } from '@/app/api/payments';
 import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 import { format } from 'date-fns';
 
+interface FilterValues {
+  range?: 'TODAY' | 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'CUSTOM';
+  from?: string;
+  to?: string;
+  paymentMethod?: 'CARD' | 'CASH';
+  orderType?: 'NORMAL' | 'CANCELED' | 'PARTIAL';
+}
+
 const PAGE_SIZE = 20;
 
-export function usePaymentHistory(date: Date) {
+export function usePaymentHistory(date: Date, filters: FilterValues = {}) {
   const formattedDate = format(date, 'yyyy-MM-dd');
 
   return useInfiniteQuery({
-    queryKey: paymentKeys.list({ date: formattedDate }),
+    queryKey: paymentKeys.list({ date: formattedDate, ...filters }),
     queryFn: ({ pageParam = 0 }) =>
       getPaymentHistory({
         page: pageParam,
         size: PAGE_SIZE,
-        from: formattedDate,
-        to: formattedDate,
+        ...(Object.keys(filters).length > 0
+          ? {
+              ...filters,
+            }
+          : {
+              from: formattedDate,
+              to: formattedDate,
+            }),
       }),
     staleTime: 5 * 60 * 1000,
 
