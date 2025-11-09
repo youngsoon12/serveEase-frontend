@@ -9,6 +9,7 @@ import Button from '@/components/Button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { useOrderDetail } from '@/hooks/usePaymentHistory';
+import { FilterValues } from '@/lib/schemas/payment-history';
 
 export default function PaymentHistory() {
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(
@@ -16,6 +17,7 @@ export default function PaymentHistory() {
   );
   const [paymentIdList, setPaymentIdList] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
 
   const {
     data: orderDetail,
@@ -38,6 +40,12 @@ export default function PaymentHistory() {
     setSelectedPaymentId(paymentIdList[newIndex]);
   };
 
+  // 내역 조회 시 상세 내역 초기화
+  const handleFilterApply = (filters: FilterValues) => {
+    setAppliedFilters(filters);
+    setSelectedPaymentId(null);
+  };
+
   return (
     <div className="flex h-screen min-h-0 overflow-hidden gap-6 p-6">
       {/* 좌측: 필터 + 리스트 */}
@@ -48,12 +56,18 @@ export default function PaymentHistory() {
         <SearchBar />
 
         {/* 필터 영역 + 상세 조회*/}
-        <FilterSection date={selectedDate} onDateChange={setSelectedDate} />
+        <FilterSection
+          date={selectedDate}
+          onDateChange={setSelectedDate}
+          onFilterApply={handleFilterApply}
+          appliedFilters={appliedFilters}
+        />
 
         {/* 결제 내역 리스트 */}
         <div className="flex-1 min-h-0">
           <PaymentList
             date={selectedDate}
+            filters={appliedFilters}
             selectedId={selectedPaymentId}
             onSelect={setSelectedPaymentId}
             onListChange={setPaymentIdList}

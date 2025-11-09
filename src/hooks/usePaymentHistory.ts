@@ -2,21 +2,29 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getOrderDetail, getPaymentHistory } from '@/app/api/payments';
 import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 import { format } from 'date-fns';
+import { FilterValues } from '@/lib/schemas/payment-history';
 
 const PAGE_SIZE = 20;
 
-export function usePaymentHistory(date: Date) {
+export function usePaymentHistory(date: Date, filters: FilterValues = {}) {
   const formattedDate = format(date, 'yyyy-MM-dd');
 
   return useInfiniteQuery({
-    queryKey: paymentKeys.list({ date: formattedDate }),
-    queryFn: ({ pageParam = 0 }) =>
-      getPaymentHistory({
+    queryKey: paymentKeys.list({ date: formattedDate, ...filters }),
+    queryFn: ({ pageParam = 0 }) => {
+      const hasFilters = Object.keys(filters).length > 0;
+
+      return getPaymentHistory({
         page: pageParam,
         size: PAGE_SIZE,
-        from: formattedDate,
-        to: formattedDate,
-      }),
+        ...(hasFilters
+          ? filters
+          : {
+              from: formattedDate,
+              to: formattedDate,
+            }),
+      });
+    },
     staleTime: 5 * 60 * 1000,
 
     getNextPageParam: (lastPage) => {

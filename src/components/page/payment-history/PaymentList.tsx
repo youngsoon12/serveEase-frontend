@@ -10,9 +10,11 @@ import {
   getApprovalStatusVariant,
   getPaymentMethodLabel,
 } from '@/constants/payment-history';
+import { FilterValues } from '@/lib/schemas/payment-history';
 
 interface Props {
   date: Date;
+  filters: FilterValues;
   selectedId: string | null;
   onSelect: (orderId: string) => void;
   onListChange?: (ids: string[]) => void;
@@ -20,6 +22,7 @@ interface Props {
 
 export default function PaymentList({
   date,
+  filters,
   selectedId,
   onSelect,
   onListChange,
@@ -31,7 +34,7 @@ export default function PaymentList({
     isFetchingNextPage,
     isLoading,
     isError,
-  } = usePaymentHistory(date);
+  } = usePaymentHistory(date, filters);
 
   // 모든 페이지의 content를 하나의 배열로 합침
   const payments = useMemo(

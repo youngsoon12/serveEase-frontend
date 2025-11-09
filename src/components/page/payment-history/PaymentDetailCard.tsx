@@ -1,6 +1,6 @@
 'use client';
 
-import { OrderDetailResponse } from '@/lib/schemas/paymentDetail';
+import { OrderDetailResponse } from '@/lib/schemas/payment-detail';
 import DetailRow from './DetailRow';
 import SplitPaymentItem from './SplitPaymentItem';
 import { format, parseISO } from 'date-fns';

@@ -1,4 +1,4 @@
-import { SplitPayment } from '@/lib/schemas/paymentDetail';
+import { SplitPayment } from '@/lib/schemas/payment-detail';
 import DetailRow from './DetailRow';
 import { format, parseISO } from 'date-fns';
 import { formatApprovalNumber } from '@/lib/paymentUtils';

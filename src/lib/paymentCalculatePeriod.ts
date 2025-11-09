@@ -1,12 +1,12 @@
-import { PERIODS, PeriodType } from '@/constants/payment-history';
+import { FILTER_PERIODS, FilterPeriodType } from '@/constants/payment-filter';
 
 export const DATE_RANGE_CONFIG = {
-  [PERIODS.TODAY]: {
+  [FILTER_PERIODS.TODAY]: {
     start: () => new Date(),
     end: () => new Date(),
     disabled: true,
   },
-  [PERIODS.WEEK]: {
+  [FILTER_PERIODS.LAST_7_DAYS]: {
     start: () => {
       const date = new Date();
       date.setDate(date.getDate() - 7);
@@ -15,7 +15,7 @@ export const DATE_RANGE_CONFIG = {
     end: () => new Date(),
     disabled: true,
   },
-  [PERIODS.MONTH]: {
+  [FILTER_PERIODS.LAST_30_DAYS]: {
     start: () => {
       const date = new Date();
       date.setMonth(date.getMonth() - 1);
@@ -24,15 +24,16 @@ export const DATE_RANGE_CONFIG = {
     end: () => new Date(),
     disabled: true,
   },
-  [PERIODS.CUSTOM]: {
+  [FILTER_PERIODS.CUSTOM]: {
     start: () => null,
     end: () => null,
     disabled: false,
   },
 };
 
-export const calculateDateRange = (period: PeriodType) => {
-  const config = DATE_RANGE_CONFIG[period] || DATE_RANGE_CONFIG[PERIODS.TODAY];
+export const calculateDateRange = (period: FilterPeriodType) => {
+  const config =
+    DATE_RANGE_CONFIG[period] || DATE_RANGE_CONFIG[FILTER_PERIODS.TODAY];
 
   return {
     start: config.start(),

@@ -4,11 +4,11 @@ import { z } from 'zod';
 export const PaymentHistoryParamsSchema = z.object({
   page: z.number().int().min(0).default(0),
   size: z.number().int().min(1).max(100).default(20),
-  range: z.enum(['TODAY', 'WEEK', 'MONTH', 'CUSTOM']).optional(),
+  range: z.enum(['TODAY', 'LAST_7_DAYS', 'LAST_30_DAYS', 'CUSTOM']).optional(),
   from: z.string().optional(),
   to: z.string().optional(),
-  paymentMethod: z.string().optional(),
-  orderType: z.string().optional(),
+  paymentMethod: z.enum(['CARD', 'CASH']).optional(),
+  orderType: z.enum(['NORMAL', 'CANCELED', 'PARTIAL']).optional(),
 });
 
 // 개별 결제 항목 (결제 내역 리스트)
@@ -35,8 +35,15 @@ export const PaymentHistoryResponseSchema = z.object({
   empty: z.boolean(),
 });
 
+// 필터 조건
+export const FilterValuesSchema = PaymentHistoryParamsSchema.omit({
+  page: true,
+  size: true,
+});
+
 export type PaymentHistoryParams = z.infer<typeof PaymentHistoryParamsSchema>;
 export type PaymentSummary = z.infer<typeof PaymentSummarySchema>;
 export type PaymentHistoryResponse = z.infer<
   typeof PaymentHistoryResponseSchema
 >;
+export type FilterValues = z.infer<typeof FilterValuesSchema>;
