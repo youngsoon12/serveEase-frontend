@@ -80,13 +80,14 @@ export default function PaymentFilterModal({ onApply }: Props) {
       orderType: ORDER_TYPE_TO_API[filters.orderType],
     };
 
-    if (
-      filters.period === FILTER_PERIODS.CUSTOM &&
-      filters.startDate &&
-      filters.endDate
-    ) {
-      apiFilters.from = format(filters.startDate, 'yyy-mm-dd');
-      apiFilters.from = format(filters.endDate, 'yyy-mm-dd');
+    if (filters.period === FILTER_PERIODS.CUSTOM) {
+      if (filters.startDate && filters.endDate) {
+        apiFilters.range = 'CUSTOM';
+        apiFilters.from = format(filters.startDate, 'yyyy-MM-dd');
+        apiFilters.to = format(filters.endDate, 'yyyy-MM-dd');
+      }
+    } else {
+      apiFilters.range = PERIOD_TO_API[filters.period];
     }
 
     onApply(apiFilters);
