@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -7,6 +7,7 @@ import {
   paymentsCashFull,
   type RequestCash,
 } from '@/app/api/paymentsCash';
+import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 
 type CashVars = { orderId: number; amount: number };
 type FullVars = { orderId: number };
@@ -18,6 +19,8 @@ export interface CashPaymentResponse {
 
 export function useCashPayment() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   return useMutation<
     {
       orderStatus: 'COMPLETED' | 'PARTIALLY_PAID';
@@ -32,6 +35,11 @@ export function useCashPayment() {
     mutationFn: ({ orderId, amount }) => paymentsCash(orderId, { amount }),
     onSuccess: (data, vars) => {
       toast.success('현금 결제가 처리되었습니다.');
+
+      queryClient.invalidateQueries({
+        queryKey: paymentKeys.lists(),
+      });
+
       const qs = new URLSearchParams({
         orderId: String(vars.orderId),
         amount: String(data.paidAmount ?? vars.amount),
@@ -54,6 +62,8 @@ export function useCashPayment() {
 
 export function useCashPaymentFull() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   return useMutation<
     {
       orderStatus: 'COMPLETED' | 'PARTIALLY_PAID';
@@ -68,6 +78,11 @@ export function useCashPaymentFull() {
     mutationFn: ({ orderId }) => paymentsCashFull(orderId),
     onSuccess: (data, vars) => {
       toast.success('현금 전액 결제가 처리되었습니다.');
+
+      queryClient.invalidateQueries({
+        queryKey: paymentKeys.lists(),
+      });
+
       const qs = new URLSearchParams({
         orderId: String(vars.orderId),
         amount: String(data.paidAmount ?? 0),
