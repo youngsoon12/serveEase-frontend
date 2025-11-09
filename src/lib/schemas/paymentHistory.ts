@@ -4,11 +4,11 @@ import { z } from 'zod';
 export const PaymentHistoryParamsSchema = z.object({
   page: z.number().int().min(0).default(0),
   size: z.number().int().min(1).max(100).default(20),
-  range: z.enum(['TODAY', 'WEEK', 'MONTH', 'CUSTOM']).optional(),
+  range: z.enum(['TODAY', 'LAST_7_DAYS', 'LAST_30_DAYS', 'CUSTOM']).optional(),
   from: z.string().optional(),
   to: z.string().optional(),
-  paymentMethod: z.string().optional(),
-  orderType: z.string().optional(),
+  paymentMethod: z.enum(['CARD', 'CASH']).optional(),
+  orderType: z.enum(['NORMAL', 'CANCELED', 'PARTIAL']).optional(),
 });
 
 // 개별 결제 항목 (결제 내역 리스트)
