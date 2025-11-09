@@ -99,7 +99,7 @@ export default function PaymentFilterModal({ onApply }: Props) {
             <button
               key={period}
               onClick={() => setFilters((prev) => ({ ...prev, period }))}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-lg ${
+              className={`px-4 py-2.5 text-sm font-medium cursor-pointer transition-colors rounded-lg ${
                 filters.period === period
                   ? 'bg-gray-700 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -142,7 +142,7 @@ export default function PaymentFilterModal({ onApply }: Props) {
                 onClick={() =>
                   setFilters((prev) => ({ ...prev, paymentMethod: method }))
                 }
-                className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-6 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
                   filters.paymentMethod === method
                     ? 'bg-gray-700 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -166,7 +166,7 @@ export default function PaymentFilterModal({ onApply }: Props) {
                 onClick={() =>
                   setFilters((prev) => ({ ...prev, orderType: type }))
                 }
-                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
                   filters.orderType === type
                     ? 'bg-gray-700 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
