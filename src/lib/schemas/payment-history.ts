@@ -35,8 +35,15 @@ export const PaymentHistoryResponseSchema = z.object({
   empty: z.boolean(),
 });
 
+// 필터 조건
+export const FilterValuesSchema = PaymentHistoryParamsSchema.omit({
+  page: true,
+  size: true,
+});
+
 export type PaymentHistoryParams = z.infer<typeof PaymentHistoryParamsSchema>;
 export type PaymentSummary = z.infer<typeof PaymentSummarySchema>;
 export type PaymentHistoryResponse = z.infer<
   typeof PaymentHistoryResponseSchema
 >;
+export type FilterValues = z.infer<typeof FilterValuesSchema>;
