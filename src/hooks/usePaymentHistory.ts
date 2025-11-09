@@ -2,14 +2,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getOrderDetail, getPaymentHistory } from '@/app/api/payments';
 import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 import { format } from 'date-fns';
-
-interface FilterValues {
-  range?: 'TODAY' | 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'CUSTOM';
-  from?: string;
-  to?: string;
-  paymentMethod?: 'CARD' | 'CASH';
-  orderType?: 'NORMAL' | 'CANCELED' | 'PARTIAL';
-}
+import { FilterValues } from '@/lib/schemas/payment-history';
 
 const PAGE_SIZE = 20;
 

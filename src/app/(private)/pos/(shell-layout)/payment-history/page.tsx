@@ -9,14 +9,7 @@ import Button from '@/components/Button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { useOrderDetail } from '@/hooks/usePaymentHistory';
-
-interface FilterValues {
-  range?: 'TODAY' | 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'CUSTOM';
-  from?: string;
-  to?: string;
-  paymentMethod?: 'CARD' | 'CASH';
-  orderType?: 'NORMAL' | 'CANCELED' | 'PARTIAL';
-}
+import { FilterValues } from '@/lib/schemas/payment-history';
 
 export default function PaymentHistory() {
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(

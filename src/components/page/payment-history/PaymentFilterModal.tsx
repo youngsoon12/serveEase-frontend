@@ -17,6 +17,7 @@ import {
   PERIOD_TO_API,
 } from '@/constants/payment-filter';
 import { format } from 'date-fns';
+import { FilterValues } from '@/lib/schemas/payment-history';
 
 interface FilterState {
   period: FilterPeriodType;
@@ -25,14 +26,6 @@ interface FilterState {
   startDate: Date | undefined;
   endDate: Date | undefined;
   isDateInputDisabled: boolean;
-}
-
-interface FilterValues {
-  range?: 'TODAY' | 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'CUSTOM';
-  from?: string;
-  to?: string;
-  paymentMethod: 'CARD' | 'CASH';
-  orderType?: 'NORMAL' | 'CANCELED' | 'PARTIAL';
 }
 
 interface Props {
