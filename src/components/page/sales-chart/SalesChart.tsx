@@ -1,6 +1,5 @@
 'use client';
 
-import { Period } from '@/types/sales';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartContainer,
@@ -8,10 +7,14 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { mockChartData } from '@/lib/mock/salesData';
+
+import SalesChartSkeleton from './SalesChartSkeleton';
+import { Period, SalesSeriesData } from '@/lib/schemas';
 
 interface Props {
   period: Period;
+  seriesData: SalesSeriesData[];
+  isLoading?: boolean;
 }
 
 const chartConfig = {
@@ -21,8 +24,27 @@ const chartConfig = {
   },
 };
 
-export default function SalesChart({ period }: Props) {
-  const data = mockChartData[period];
+export default function SalesChart({ period, seriesData, isLoading }: Props) {
+  const chartData = seriesData.map((item) => {
+    let xAxisLabel: string;
+
+    if (period === 'day') {
+      xAxisLabel = item.date.slice(5).replace('-', '/');
+    } else if (period === 'week') {
+      xAxisLabel = `${item.week}주차`;
+    } else {
+      xAxisLabel = `${item.monthValue}월`;
+    }
+
+    return {
+      label: xAxisLabel,
+      sales: item.netSales,
+    };
+  });
+
+  if (isLoading) {
+    return <SalesChartSkeleton />;
+  }
 
   return (
     <Card>
@@ -35,10 +57,10 @@ export default function SalesChart({ period }: Props) {
           config={chartConfig}
           className="h-[clamp(240px,40vh,420px)] w-full"
         >
-          <BarChart data={data}>
+          <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey="label"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -54,6 +76,7 @@ export default function SalesChart({ period }: Props) {
               fill="var(--color-sales)"
               radius={[4, 4, 0, 0]}
               maxBarSize={52}
+              minPointSize={5}
             />
           </BarChart>
         </ChartContainer>

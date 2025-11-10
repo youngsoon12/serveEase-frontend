@@ -4,9 +4,7 @@ import {
   updateTableCount,
   updateTableState,
 } from '@/app/api/tables';
-import { TableCardProps } from '@/components/TableCard';
-import { OrderResponse } from '@/types/order';
-import { TablesResponse } from '@/types/table';
+
 import {
   keepPreviousData,
   useMutation,
@@ -16,10 +14,13 @@ import {
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { OrderResponse } from '@/lib/schemas/order';
+import { orderKeys, tableKeys } from '@/lib/queries/keys';
+import { TableCardProps, TablesResponse } from '@/lib/schemas/table';
 
 export function useTables(page: number) {
   const query = useQuery<TablesResponse>({
-    queryKey: ['tables', page],
+    queryKey: tableKeys.list(page),
     queryFn: () => getTables(page, PAGE_SIZE),
     staleTime: 1000 * 60,
     placeholderData: keepPreviousData,
@@ -34,6 +35,8 @@ export function useTables(page: number) {
   const cards: TableCardProps[] =
     query.data?.content.map((item) => {
       const status = toUIStatus(item.displayStatus);
+      const orderId = item.activeOrder?.orderId;
+
       const href = item.activeOrder?.orderId
         ? `/pos/tables/${item.id}?orderId=${item.activeOrder.orderId}&no=${item.restaurantTableNumber}`
         : `/pos/tables/${item.id}?no=${item.restaurantTableNumber}`;
@@ -46,6 +49,7 @@ export function useTables(page: number) {
         menuItems:
           item.activeOrder?.orderItems?.map((o) => o.menuName).slice(0, 2) ??
           [],
+        orderId,
       };
     }) ?? [];
 
@@ -66,7 +70,7 @@ export function useUpdateTableCount() {
       toast.success('테이블 개수가 정상적으로 수정되었습니다.');
 
       router.push('/pos/tables');
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
+      queryClient.invalidateQueries({ queryKey: tableKeys.all });
     },
     onError: (err) => {
       if (err?.response?.status === 409) {
@@ -96,10 +100,10 @@ export function useUpdateTableStatus() {
     mutationFn: ({ orderId }) => updateTableState(orderId),
 
     onMutate: async ({ orderId }) => {
-      await queryClient.cancelQueries({ queryKey: ['tables'] });
+      await queryClient.cancelQueries({ queryKey: tableKeys.all });
 
       const prevTables = queryClient.getQueriesData<TablesResponse>({
-        queryKey: ['tables'],
+        queryKey: tableKeys.all,
       }) as TablesSnapshot;
 
       for (const [key, data] of prevTables) {
@@ -126,7 +130,7 @@ export function useUpdateTableStatus() {
     onSuccess: (updated) => {
       toast.success('서빙 완료 처리되었습니다.');
 
-      queryClient.setQueryData(['order', updated.id], updated);
+      queryClient.setQueryData(orderKeys.detail(updated.id), updated);
     },
 
     onError: (err, _vars, ctx) => {
@@ -143,8 +147,8 @@ export function useUpdateTableStatus() {
     },
 
     onSettled: (_data, _err, { orderId }) => {
-      queryClient.invalidateQueries({ queryKey: ['order', orderId] });
-      queryClient.invalidateQueries({ queryKey: ['tables'] });
+      queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+      queryClient.invalidateQueries({ queryKey: tableKeys.all });
     },
   });
 }
