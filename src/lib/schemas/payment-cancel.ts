@@ -12,16 +12,14 @@ export const CancelCardPaymentResponseSchema = z.object({
   canceledAmount: z.number(),
   paidAmount: z.number(),
   remainingAmount: z.number(),
-  orderStatus: z.enum(['NORMAL', 'CANCELED', 'PARTIAL']),
+  orderStatus: z.enum(['NORMAL', 'CANCELED', 'PARTIALLY_PAID', 'REFUNDED']),
   canceledAt: z.string(),
   cancelReason: z.string(),
 });
 
 // 현금 환불
 export const RefundCashPaymentRequestSchema = z.object({
-  cashPaymentId: z.number(),
   refundAmount: z.number(),
-  refundReason: z.string(),
 });
 
 export const RefundCashPaymentResponseSchema = z.object({
@@ -30,14 +28,14 @@ export const RefundCashPaymentResponseSchema = z.object({
   refundedAmount: z.number(),
   paidAmount: z.number(),
   remainingAmount: z.number(),
-  orderStatus: z.enum(['NORMAL', 'CANCELED', 'PARTIAL']),
+  orderStatus: z.enum(['NORMAL', 'CANCELED', 'PARTIALLY_PAID', 'REFUNDED']),
   refundedAt: z.string(),
   refundReason: z.string(),
 });
 
 export const RefundCashPaymentParamsSchema = z.object({
-  storeId: z.string(),
-  orderId: z.string(),
+  storeId: z.number(),
+  cashPaymentId: z.number(),
   body: RefundCashPaymentRequestSchema,
 });
 
