@@ -1,3 +1,4 @@
+import { instance } from '@/lib/axios';
 import axios from 'axios';
 
 export type LoginRequest = {
@@ -19,4 +20,14 @@ export async function postLogin(
   });
 
   return data;
+}
+
+export async function postLogout() {
+  try {
+    const { data } = await instance.post('/user/logout');
+    return data;
+  } catch (error) {
+    console.error('로그아웃 실패:', error);
+    throw error;
+  }
 }

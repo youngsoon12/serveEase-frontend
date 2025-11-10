@@ -1,4 +1,4 @@
-import { OrderResponse } from '@/types/order';
+import { OrderResponse } from '@/lib/schemas/order';
 
 export default function ExistingOrderList({
   items,
