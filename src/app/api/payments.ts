@@ -46,11 +46,11 @@ export async function cancelCardPayment(body: CancelCardPaymentRequest) {
 
 export async function refundCashPayment({
   storeId,
-  orderId,
+  cashPaymentId,
   body,
 }: RefundCashPaymentParams) {
   const { data } = await instance.post(
-    `/stores/${storeId}/orders/${orderId}/payments/cash/refund`,
+    `/stores/${storeId}/payments/${cashPaymentId}/cash/refund`,
     body,
   );
 
