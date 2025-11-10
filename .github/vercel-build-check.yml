@@ -1,0 +1,19 @@
+name: Vercel Build Check
+
+on:
+  pull_request:
+    branches: [main, release] # PR이 열릴 때 빌드 검증
+
+jobs:
+  vercel-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Vercel build check
+        run: npx vercel build --token=${{ secrets.VERCEL_TOKEN }}
