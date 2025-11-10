@@ -1,12 +1,12 @@
 import z from 'zod';
 
 // 카드 취소
-export const cancelCardPaymentRequestSchema = z.object({
+export const CancelCardPaymentRequestSchema = z.object({
   paymentKey: z.string(),
   cancelAmount: z.number(),
 });
 
-export const cancelCardPaymentResponseSchema = z.object({
+export const CancelCardPaymentResponseSchema = z.object({
   paymentKey: z.string(),
   orderId: z.string(),
   canceledAmount: z.number(),
@@ -18,13 +18,13 @@ export const cancelCardPaymentResponseSchema = z.object({
 });
 
 // 현금 환불
-export const refundCashPaymentRequestSchema = z.object({
+export const RefundCashPaymentRequestSchema = z.object({
   cashPaymentId: z.number(),
   refundAmount: z.number(),
   refundReason: z.string(),
 });
 
-export const refundCashPaymentResponseSchema = z.object({
+export const RefundCashPaymentResponseSchema = z.object({
   cashPaymentId: z.number(),
   orderId: z.string(),
   refundedAmount: z.number(),
@@ -35,15 +35,24 @@ export const refundCashPaymentResponseSchema = z.object({
   refundReason: z.string(),
 });
 
+export const RefundCashPaymentParamsSchema = z.object({
+  storeId: z.string(),
+  orderId: z.string(),
+  body: RefundCashPaymentRequestSchema,
+});
+
 export type CancelCardPaymentRequest = z.infer<
-  typeof cancelCardPaymentRequestSchema
+  typeof CancelCardPaymentRequestSchema
 >;
 export type CancelCardPaymentResponse = z.infer<
-  typeof cancelCardPaymentResponseSchema
+  typeof CancelCardPaymentResponseSchema
 >;
 export type RefundCashPaymentRequest = z.infer<
-  typeof refundCashPaymentRequestSchema
+  typeof RefundCashPaymentRequestSchema
 >;
 export type RefundCashPaymentResponse = z.infer<
-  typeof refundCashPaymentResponseSchema
+  typeof RefundCashPaymentResponseSchema
+>;
+export type RefundCashPaymentParams = z.infer<
+  typeof RefundCashPaymentParamsSchema
 >;
