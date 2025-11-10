@@ -7,6 +7,12 @@ import { format, parseISO } from 'date-fns';
 import { useState } from 'react';
 import { getPaymentMethodLabel } from '@/constants/payment-history';
 import { formatApprovalNumber } from '@/lib/paymentUtils';
+import {
+  useCancelCardPayment,
+  useRefundCashPayment,
+} from '@/hooks/usePaymentCancel';
+import { getStoreId } from '@/app/api/store';
+import ConfirmModal from '@/components/ConfirmModal';
 
 interface Props {
   detail: OrderDetailResponse;
@@ -23,6 +29,35 @@ export default function PaymentDetailCard({ detail }: Props) {
   const hasRemainingAmount = remaining > 0;
   const isSplitPayment = hasRemainingAmount ? splitCount >= 1 : splitCount > 1;
   const orderStatusText = hasRemainingAmount ? '부분결제 진행중' : '결제완료';
+
+  // 결제 취소
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  const { mutate: cancelCard } = useCancelCardPayment();
+  const { mutate: refundCash } = useRefundCashPayment();
+
+  const handleCancelSinglePayment = () => {
+    const split = detail.splits?.[0];
+
+    if (!split) return;
+
+    if (split.paymentMethod === '간편결제') {
+      cancelCard({
+        paymentKey: split.paymentKey,
+        cancelAmount: split.paymentAmount,
+      });
+    } else if (split.paymentMethod === 'CASH') {
+      const storeId = getStoreId();
+
+      refundCash({
+        storeId,
+        cashPaymentId: split.paymentId,
+        body: {
+          refundAmount: split.paymentAmount,
+        },
+      });
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -48,7 +83,10 @@ export default function PaymentDetailCard({ detail }: Props) {
                   {getPaymentMethodLabel(detail.splits[0].paymentMethod)}
                 </span>
                 {detail.splits[0].paymentStatus !== 'CANCELLED' && (
-                  <button className="px-4 py-1.5 font-semibold text-sm text-red-500 bg-red-50 cursor-pointer rounded hover:bg-red-100">
+                  <button
+                    className="px-4 py-1.5 font-semibold text-sm text-red-500 bg-red-50 cursor-pointer rounded hover:bg-red-100"
+                    onClick={() => setIsCancelModalOpen(true)}
+                  >
                     결제 취소
                   </button>
                 )}
@@ -128,6 +166,14 @@ export default function PaymentDetailCard({ detail }: Props) {
           )}
         </div>
       </div>
+      <ConfirmModal
+        open={isCancelModalOpen}
+        title={'결제를 취소하시겠습니까?'}
+        description={`${detail.splits?.[0].paymentAmount.toLocaleString()}원이 취소됩니다.`}
+        confirmText={'취소'}
+        onOpenChange={setIsCancelModalOpen}
+        onConfirm={handleCancelSinglePayment}
+      />
     </div>
   );
 }
