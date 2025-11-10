@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import type { PaymentConfirmResponse } from '@/types/payment';
+import { useQueryClient } from '@tanstack/react-query';
+import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 
 interface Props {
   payment: PaymentConfirmResponse;
@@ -14,13 +16,18 @@ interface Props {
 export default function PartialPaymentNotice({ payment }: Props) {
   const [lastTableId, setLastTableId] = useState<string | null>(null);
   const [lastOrderId, setLastOrderId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const storedTableId = localStorage.getItem('lastPaymentTableId');
     const storedOrderId = localStorage.getItem('lastPaymentOrderId');
     setLastTableId(storedTableId);
     setLastOrderId(storedOrderId);
-  }, []);
+
+    queryClient.invalidateQueries({
+      queryKey: paymentKeys.lists(),
+    });
+  }, [queryClient]);
 
   const checkoutUrl = lastTableId
     ? `/pos/tables/${lastTableId}/checkout?orderId=${lastOrderId}`
