@@ -3,7 +3,7 @@
 import useTossPayments from '@/hooks/payment/useTossPayments';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { OrderResponse } from '@/types/order';
+import { OrderResponse } from '@/lib/schemas/order';
 
 type TossPaymentProps = {
   data: OrderResponse;
@@ -30,8 +30,7 @@ export default function TossPayment({
 
     try {
       await requestPayment({
-        paymentOrderId,
-        orderIdParam: orderIdParam,
+        parentOrderId: paymentOrderId,
         tableId: data?.restaurantTableId,
         orderData: data,
       });

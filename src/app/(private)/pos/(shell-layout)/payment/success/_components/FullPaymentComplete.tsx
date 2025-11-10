@@ -5,12 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import type { PaymentConfirmResponse } from '@/types/payment';
+import { useQueryClient } from '@tanstack/react-query';
+import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
+import { useEffect } from 'react';
 
 interface Props {
   payment: PaymentConfirmResponse;
 }
 
 export default function FullPaymentComplete({ payment }: Props) {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: paymentKeys.lists(),
+    });
+  }, [queryClient]);
+
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="text-center mb-5">

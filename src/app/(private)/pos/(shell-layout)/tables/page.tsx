@@ -4,9 +4,15 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import TableCard from '@/components/TableCard';
 import { useTables } from '@/hooks/useTables';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { tableKeys } from '@/lib/queries/keys';
+import { getTables, PAGE_SIZE } from '@/app/api/tables';
 
 export default function TablesPage() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const sp = useSearchParams();
   const page = Math.max(0, Number(sp.get('page') ?? 0));
@@ -15,10 +21,8 @@ export default function TablesPage() {
 
   // 페이지네이션
   const pageNumber = data?.number ?? page;
-
   const isFirst = data?.first ?? true;
   const isLast = data?.last ?? true;
-
   const showPager = (data?.totalPages ?? 0) > 1;
 
   const goPrev = () => {
@@ -31,8 +35,19 @@ export default function TablesPage() {
     router.push(`?page=${pageNumber + 1}`);
   };
 
+  // 다음 페이지 프리패치
+  useEffect(() => {
+    if (data && !isLast) {
+      queryClient.prefetchQuery({
+        queryKey: tableKeys.list(page + 1),
+        queryFn: () => getTables(page + 1, PAGE_SIZE),
+        staleTime: 60_000,
+      });
+    }
+  }, [page, isLast, data]);
+
   return (
-    <div className="mx-auto flex items-center justify-center h-full ">
+    <div className="mx-auto flex items-center justify-center h-full">
       <h1 className="sr-only">테이블 목록</h1>
 
       {noticeText && (

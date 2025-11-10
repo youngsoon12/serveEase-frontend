@@ -3,8 +3,9 @@
 import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
-
+import { useLogout } from '@/hooks/useLogin';
 import { cn } from '@/lib/utils';
+import { unknown } from 'zod';
 
 function DropdownMenu({
   ...props
@@ -238,6 +239,20 @@ function DropdownMenuSubContent({
   );
 }
 
+function DropdownLogoutItem() {
+  const { mutate: logout } = useLogout();
+  return (
+    <DropdownMenuItem
+      className="cursor-pointer"
+      onClick={() => {
+        logout();
+      }}
+    >
+      로그아웃
+    </DropdownMenuItem>
+  );
+}
+
 export {
   DropdownMenu,
   DropdownMenuPortal,
@@ -254,4 +269,5 @@ export {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownLogoutItem,
 };
