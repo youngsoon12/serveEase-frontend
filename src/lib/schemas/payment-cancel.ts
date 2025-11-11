@@ -12,7 +12,12 @@ export const CancelCardPaymentResponseSchema = z.object({
   canceledAmount: z.number(),
   paidAmount: z.number(),
   remainingAmount: z.number(),
-  orderStatus: z.enum(['NORMAL', 'CANCELED', 'PARTIALLY_PAID', 'REFUNDED']),
+  orderStatus: z.enum([
+    'COMPLETED',
+    'PARTIALLY_PAID',
+    'REFUNDED',
+    'PARTIALLY_REFUNDED',
+  ]),
   canceledAt: z.string(),
   cancelReason: z.string(),
 });
@@ -28,7 +33,12 @@ export const RefundCashPaymentResponseSchema = z.object({
   refundedAmount: z.number(),
   paidAmount: z.number(),
   remainingAmount: z.number(),
-  orderStatus: z.enum(['NORMAL', 'CANCELED', 'PARTIALLY_PAID', 'REFUNDED']),
+  orderStatus: z.enum([
+    'COMPLETED',
+    'PARTIALLY_PAID',
+    'REFUNDED',
+    'PARTIALLY_REFUNDED',
+  ]),
   refundedAt: z.string(),
   refundReason: z.string(),
 });
