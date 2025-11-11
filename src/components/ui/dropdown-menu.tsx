@@ -1,11 +1,13 @@
 'use client';
 
 import * as React from 'react';
+import { useState } from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import { useLogout } from '@/hooks/useLogin';
 import { cn } from '@/lib/utils';
 import { unknown } from 'zod';
+import ConfirmModal from '../ConfirmModal';
 
 function DropdownMenu({
   ...props
@@ -241,15 +243,34 @@ function DropdownMenuSubContent({
 
 function DropdownLogoutItem() {
   const { mutate: logout } = useLogout();
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleConfirmLogoutClick = () => {
+    logout();
+  };
+
   return (
-    <DropdownMenuItem
-      className="cursor-pointer"
-      onClick={() => {
-        logout();
-      }}
-    >
-      로그아웃
-    </DropdownMenuItem>
+    <>
+      <DropdownMenuItem
+        className="cursor-pointer"
+        onSelect={(e) => {
+          e.preventDefault();
+          setOpen(true);
+        }}
+      >
+        로그아웃
+      </DropdownMenuItem>
+      <ConfirmModal
+        open={open}
+        onOpenChange={setOpen}
+        title="로그아웃 하시겠습니까?"
+        description="로그아웃 후 다시 로그인해야 서비스를 이용할 수 있습니다."
+        confirmText="로그아웃"
+        cancelText="취소"
+        confirmButtonClassName="bg-red-600 hover:bg-red-700 text-white"
+        onConfirm={handleConfirmLogoutClick}
+      />
+    </>
   );
 }
 
