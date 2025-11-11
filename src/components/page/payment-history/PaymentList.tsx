@@ -6,9 +6,9 @@ import { usePaymentHistory } from '@/hooks/usePaymentHistory';
 import { useEffect, useRef, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import {
-  getApprovalStatusLabel,
-  getApprovalStatusVariant,
   getPaymentMethodLabel,
+  getPaymentStatusLabel,
+  getPaymentStatusVariant,
 } from '@/constants/payment-history';
 import { FilterValues } from '@/lib/schemas/payment-history';
 
@@ -41,9 +41,6 @@ export default function PaymentList({
     () => data?.pages.flatMap((page) => page.content) ?? [],
     [data],
   );
-
-  console.log(data);
-  console.log(payments);
 
   // 리스트 컨테이너
   const listRef = useRef<HTMLDivElement>(null);
@@ -131,15 +128,11 @@ export default function PaymentList({
                     {payment.totalPaymentAmount.toLocaleString()}원
                   </p>
                   <Badge
-                    variant={getApprovalStatusVariant(
-                      getApprovalStatusLabel(
-                        payment.representativePaymentStatus,
-                      ),
-                    )}
-                  >
-                    {getApprovalStatusLabel(
+                    variant={getPaymentStatusVariant(
                       payment.representativePaymentStatus,
                     )}
+                  >
+                    {getPaymentStatusLabel(payment.representativePaymentStatus)}
                   </Badge>
                 </div>
 

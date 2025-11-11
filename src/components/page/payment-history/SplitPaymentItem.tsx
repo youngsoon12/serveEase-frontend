@@ -2,10 +2,7 @@ import { SplitPayment } from '@/lib/schemas/payment-detail';
 import DetailRow from './DetailRow';
 import { format, parseISO } from 'date-fns';
 import { formatApprovalNumber } from '@/lib/paymentUtils';
-import {
-  getDisplayStatus,
-  getPaymentMethodLabel,
-} from '@/constants/payment-history';
+import { getPaymentMethodLabel } from '@/constants/payment-history';
 import { useState } from 'react';
 import {
   useCancelCardPayment,
@@ -13,6 +10,7 @@ import {
 } from '@/hooks/usePaymentCancel';
 import { getStoreId } from '@/app/api/store';
 import ConfirmModal from '@/components/ConfirmModal';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   split: SplitPayment;
@@ -31,7 +29,7 @@ export default function SplitPaymentItem({ split, index }: Props) {
         paymentKey: split.paymentKey,
         cancelAmount: split.paymentAmount,
       });
-    } else if (split.paymentMethod === 'CASH') {
+    } else {
       const storeId = getStoreId();
 
       refundCash({
@@ -44,13 +42,21 @@ export default function SplitPaymentItem({ split, index }: Props) {
     }
   };
 
+  // 결제 취소 UI
+  const isCanceled = split.representativePaymentDetailStatus === 'REFUNDED';
+
   return (
     <>
       <div className="border rounded-lg p-4 space-y-3">
         <div className="flex justify-between items-center">
           <h4 className="font-semibold text-gray-900">{index}차 결제</h4>
+          {isCanceled && (
+            <Badge variant="destructive" className="h-6">
+              취소
+            </Badge>
+          )}
 
-          {split.paymentStatus !== 'CANCELLED' && (
+          {!isCanceled && (
             <button
               className="px-3 py-1 text-sm text-red-500 bg-red-50 rounded hover:bg-red-100 font-semibold cursor-pointer"
               onClick={() => setIsCancelModalOpen(true)}
@@ -79,7 +85,7 @@ export default function SplitPaymentItem({ split, index }: Props) {
         />
         <DetailRow
           label="승인 상태"
-          value={getDisplayStatus(split.paymentStatus)}
+          value={split.representativePaymentDetailStatusLabel}
         />
       </div>
 

@@ -13,6 +13,7 @@ import {
 } from '@/hooks/usePaymentCancel';
 import { getStoreId } from '@/app/api/store';
 import ConfirmModal from '@/components/ConfirmModal';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   detail: OrderDetailResponse;
@@ -25,12 +26,16 @@ export default function PaymentDetailCard({ detail }: Props) {
 
   const paidAmount = Number(detail.totalPaymentAmount ?? 0);
   const remaining = Number(detail.remainingAmount ?? 0);
-
   const hasRemainingAmount = remaining > 0;
-  const isSplitPayment = hasRemainingAmount ? splitCount >= 1 : splitCount > 1;
-  const orderStatusText = hasRemainingAmount ? '부분결제 진행중' : '결제완료';
 
-  // 결제 취소
+  // 결제 취소 UI
+  const firstSplit = detail.splits?.[0];
+  const isSplitPayment = splitCount > 1;
+
+  const isSingleCanceled =
+    firstSplit?.representativePaymentDetailStatus === 'REFUNDED';
+
+  // 결제 취소 기능
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const { mutate: cancelCard } = useCancelCardPayment();
@@ -46,7 +51,7 @@ export default function PaymentDetailCard({ detail }: Props) {
         paymentKey: split.paymentKey,
         cancelAmount: split.paymentAmount,
       });
-    } else if (split.paymentMethod === 'CASH') {
+    } else {
       const storeId = getStoreId();
 
       refundCash({
@@ -64,12 +69,14 @@ export default function PaymentDetailCard({ detail }: Props) {
       <div className="rounded-lg border bg-white p-6">
         <div className="mb-3">
           <p className="text-sm text-gray-400 mb-1">총 결제금액</p>
-          <p className="text-2xl font-bold">
-            {isSplitPayment && hasRemainingAmount
-              ? (paidAmount + remaining).toLocaleString()
-              : paidAmount.toLocaleString()}
-            원
-          </p>
+          <div className="flex justify-between">
+            <p className="text-2xl font-bold ">
+              {isSplitPayment && hasRemainingAmount
+                ? (paidAmount + remaining).toLocaleString()
+                : paidAmount.toLocaleString()}
+              원
+            </p>
+          </div>
         </div>
 
         <div className="border-t mb-3"></div>
@@ -79,10 +86,15 @@ export default function PaymentDetailCard({ detail }: Props) {
           {!hasRemainingAmount && splitCount === 1 && detail.splits?.[0] && (
             <>
               <div className="flex justify-between items-center">
-                <span className="font-semibold">
-                  {getPaymentMethodLabel(detail.splits[0].paymentMethod)}
+                <span className="font-semibold flex items-center gap-2">
+                  {getPaymentMethodLabel(firstSplit.paymentMethod)}
+
+                  {isSingleCanceled && (
+                    <Badge variant="destructive">취소</Badge>
+                  )}
                 </span>
-                {detail.splits[0].paymentStatus !== 'CANCELLED' && (
+
+                {!isSingleCanceled && (
                   <button
                     className="px-4 py-1.5 font-semibold text-sm text-red-500 bg-red-50 cursor-pointer rounded hover:bg-red-100"
                     onClick={() => setIsCancelModalOpen(true)}
@@ -118,7 +130,7 @@ export default function PaymentDetailCard({ detail }: Props) {
           {hasRemainingAmount && (
             <>
               <DetailRow
-                label="결제 완료"
+                label="결제 금액"
                 value={`${paidAmount.toLocaleString()}원`}
               />
               <DetailRow
@@ -135,7 +147,10 @@ export default function PaymentDetailCard({ detail }: Props) {
             label="결제 수단"
             value={getPaymentMethodLabel(detail.representativePaymentMethod)}
           />
-          <DetailRow label="결제 상태" value={orderStatusText} />
+          <DetailRow
+            label="결제 상태"
+            value={firstSplit?.representativePaymentDetailStatusLabel}
+          />
 
           {/* 분할 결제 - 아코디언 */}
           {isSplitPayment && (
