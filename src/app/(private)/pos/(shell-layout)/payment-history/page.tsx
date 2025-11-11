@@ -25,6 +25,8 @@ export default function PaymentHistory() {
     error,
   } = useOrderDetail(selectedPaymentId);
 
+  console.log(orderDetail);
+
   // 위아래 네비게이션
   const handleNavigate = (direction: 'up' | 'down') => {
     if (!selectedPaymentId || paymentIdList.length === 0) return;
