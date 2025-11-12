@@ -10,6 +10,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { useOrderDetail } from '@/hooks/usePaymentHistory';
 import { FilterValues } from '@/lib/schemas/payment-history';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function PaymentHistory() {
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(
@@ -18,14 +19,13 @@ export default function PaymentHistory() {
   const [paymentIdList, setPaymentIdList] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
+  const [searchQuery, setSearchQuery] = useState('');
 
   const {
     data: orderDetail,
     isLoading,
     error,
   } = useOrderDetail(selectedPaymentId);
-
-  console.log(orderDetail);
 
   // 위아래 네비게이션
   const handleNavigate = (direction: 'up' | 'down') => {
@@ -48,6 +48,9 @@ export default function PaymentHistory() {
     setSelectedPaymentId(null);
   };
 
+  // 디바운싱 된 검색어
+  const debouncedSearchQuery = useDebounce(searchQuery);
+
   return (
     <div className="flex h-screen min-h-0 overflow-hidden gap-6 p-6">
       {/* 좌측: 필터 + 리스트 */}
@@ -55,7 +58,7 @@ export default function PaymentHistory() {
         <h2 className="text-2xl font-bold">결제내역</h2>
 
         {/* 검색바 */}
-        <SearchBar />
+        <SearchBar value={searchQuery} onChange={setSearchQuery} />
 
         {/* 필터 영역 + 상세 조회*/}
         <FilterSection
@@ -71,6 +74,7 @@ export default function PaymentHistory() {
             date={selectedDate}
             filters={appliedFilters}
             selectedId={selectedPaymentId}
+            searchQuery={debouncedSearchQuery}
             onSelect={setSelectedPaymentId}
             onListChange={setPaymentIdList}
           />
