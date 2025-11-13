@@ -24,26 +24,26 @@ instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const status = error.response?.status;
-    if (status === 400 || status === 401) {
-      const msg =
-        status === 400 ? '로그인이 필요합니다.' : '로그인이 만료되었습니다.';
-      alert(msg);
-      console.warn(`인증 문제 (${status})`);
+    // if (status === 400 || status === 401) {
+    //   const msg =
+    //     status === 400 ? '로그인이 필요합니다.' : '로그인이 만료되었습니다.';
+    //   alert(msg);
+    //   console.warn(`인증 문제 (${status})`);
 
-      document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
-      document.cookie = 'storeId=; Max-Age=0; path=/;';
-      document.cookie = 'storeName=; Max-Age=0; path=/;';
-      try {
-        localStorage.removeItem('storeId');
-        localStorage.removeItem('storeName');
-      } catch {}
+    //   document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
+    //   document.cookie = 'storeId=; Max-Age=0; path=/;';
+    //   document.cookie = 'storeName=; Max-Age=0; path=/;';
+    //   try {
+    //     localStorage.removeItem('storeId');
+    //     localStorage.removeItem('storeName');
+    //   } catch {}
 
-      const currentPath = window.location.pathname;
-      document.cookie = 'accessToken=; Max-Age=0; path=/;';
+    //   const currentPath = window.location.pathname;
+    //   document.cookie = 'accessToken=; Max-Age=0; path=/;';
 
-      window.location.href = `/?redirect=${encodeURIComponent(currentPath)}`;
-      return;
-    }
+    //   window.location.href = `/?redirect=${encodeURIComponent(currentPath)}`;
+    //   return;
+    // }
 
     return Promise.reject(error);
   },
