@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, CreditCard, Clock, FileText } from 'lucide-react';
+import { Check, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -87,7 +87,7 @@ function PaymentMethodRow({ method, company, masked }: any) {
   return (
     <div className="flex justify-between items-center py-2">
       <span className="text-gray-600 flex items-center gap-2 text-sm">
-        <CreditCard size={14} /> 결제 방법
+        결제 방법
       </span>
       <div className="text-right">
         <div className="font-medium text-sm">{method}</div>
