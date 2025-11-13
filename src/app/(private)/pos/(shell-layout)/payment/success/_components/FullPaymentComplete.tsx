@@ -8,6 +8,7 @@ import type { PaymentConfirmResponse } from '@/types/payment';
 import { useQueryClient } from '@tanstack/react-query';
 import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 import { useEffect } from 'react';
+import { format, parseISO } from 'date-fns';
 
 interface Props {
   payment: PaymentConfirmResponse;
@@ -52,7 +53,11 @@ export default function FullPaymentComplete({ payment }: Props) {
             company={payment.cardCompany}
             masked={payment.maskedCardNumber}
           />
-          <InfoRow label="결제 시간" value={payment.approvedAt} />
+          <InfoRow
+            label="결제 시간"
+            value={format(parseISO(payment.approvedAt), 'yyyy-MM-dd HH:mm')}
+          />
+
           <InfoRow label="승인번호" value={payment.approvalNumber} mono />
         </CardContent>
       </Card>
