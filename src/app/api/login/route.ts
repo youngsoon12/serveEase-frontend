@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { NextResponse } from 'next/server';
 
-const API = process.env.NEXT_PUBLIC_BASE_API_URL!.replace(/\/$/, '');
+// const API = process.env.NEXT_PUBLIC_BASE_API_URL!.replace(/\/$/, '');
+const API_BASE = process.env.NEXT_PUBLIC_BASE_API_URL ?? '';
+const API = API_BASE.replace(/\/$/, '');
 
 export async function POST(req: Request) {
   const body = await req.json();
