@@ -6,9 +6,9 @@ import { usePaymentHistory } from '@/hooks/usePaymentHistory';
 import { useEffect, useRef, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import {
-  getApprovalStatusLabel,
-  getApprovalStatusVariant,
   getPaymentMethodLabel,
+  getPaymentStatusLabel,
+  getPaymentStatusVariant,
 } from '@/constants/payment-history';
 import { FilterValues } from '@/lib/schemas/payment-history';
 
@@ -16,6 +16,7 @@ interface Props {
   date: Date;
   filters: FilterValues;
   selectedId: string | null;
+  searchQuery?: string;
   onSelect: (orderId: string) => void;
   onListChange?: (ids: string[]) => void;
 }
@@ -24,6 +25,7 @@ export default function PaymentList({
   date,
   filters,
   selectedId,
+  searchQuery = '',
   onSelect,
   onListChange,
 }: Props) {
@@ -42,8 +44,28 @@ export default function PaymentList({
     [data],
   );
 
-  console.log(data);
-  console.log(payments);
+  // 검색 로직(SearchBar)
+  const filteredPayments = useMemo(() => {
+    if (!searchQuery.trim()) return payments;
+
+    const query = searchQuery.toLowerCase().trim();
+    const numericQuery = query.replace(/[^0-9]/g, '');
+
+    return payments.filter((payment) => {
+      if (
+        numericQuery &&
+        payment.totalPaymentAmount.toString() === numericQuery
+      ) {
+        return true;
+      }
+
+      if (payment.representativeItemName.toLowerCase().includes(query)) {
+        return true;
+      }
+
+      return false;
+    });
+  }, [payments, searchQuery]);
 
   // 리스트 컨테이너
   const listRef = useRef<HTMLDivElement>(null);
@@ -55,17 +77,17 @@ export default function PaymentList({
     threshold: 0,
   });
 
-  // 하단 도달 시 자동으로 다음 페이지 로드
+  // 하단 도달 시 자동으로 다음 페이지 로드(무한 스크롤)
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // 결제 내역들의 orderId 배열 -> 부모의 네비게이션 기능
+  // 결제 내역들의 orderId 배열 → 부모의 네비게이션 기능
   useEffect(() => {
-    onListChange?.(payments.map((p) => p.orderId));
-  }, [payments, onListChange]);
+    onListChange?.(filteredPayments.map((p) => p.orderId));
+  }, [filteredPayments, onListChange]);
 
   if (isLoading) {
     return (
@@ -93,13 +115,26 @@ export default function PaymentList({
     );
   }
 
+  if (filteredPayments.length === 0 && searchQuery) {
+    return (
+      <div className="flex flex-col pt-12 items-center justify-center gap-2">
+        <div className="text-sm text-muted-foreground">
+          &quot;{searchQuery}&quot;에 대한 검색 결과가 없습니다
+        </div>
+        <div className="text-xs text-muted-foreground">
+          주문번호, 금액, 메뉴명으로 검색해보세요
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={listRef}
       className="h-full min-h-0 overflow-y-auto overscroll-contain pr-3"
     >
       <div className="space-y-2">
-        {payments.map((payment) => (
+        {filteredPayments.map((payment) => (
           <Card
             key={payment.orderId}
             className={`p-4 cursor-pointer transition-colors ${
@@ -131,15 +166,11 @@ export default function PaymentList({
                     {payment.totalPaymentAmount.toLocaleString()}원
                   </p>
                   <Badge
-                    variant={getApprovalStatusVariant(
-                      getApprovalStatusLabel(
-                        payment.representativePaymentStatus,
-                      ),
-                    )}
-                  >
-                    {getApprovalStatusLabel(
+                    variant={getPaymentStatusVariant(
                       payment.representativePaymentStatus,
                     )}
+                  >
+                    {getPaymentStatusLabel(payment.representativePaymentStatus)}
                   </Badge>
                 </div>
 
@@ -170,7 +201,7 @@ export default function PaymentList({
           </div>
         )}
 
-        {!hasNextPage && payments.length > 0 && (
+        {!hasNextPage && filteredPayments.length > 0 && (
           <div className="py-4 text-center text-xs text-gray-400">
             모든 결제 내역을 불러왔습니다.
           </div>
