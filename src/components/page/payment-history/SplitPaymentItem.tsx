@@ -11,6 +11,7 @@ import {
 import { getStoreId } from '@/app/api/store';
 import ConfirmModal from '@/components/ConfirmModal';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 
 interface Props {
   split: SplitPayment;
@@ -31,6 +32,11 @@ export default function SplitPaymentItem({ split, index }: Props) {
       });
     } else {
       const storeId = getStoreId();
+
+      if (storeId == null) {
+        toast.error('storeId를 찾을 수 없습니다. 다시 로그인 해주세요.');
+        return;
+      }
 
       refundCash({
         storeId,
