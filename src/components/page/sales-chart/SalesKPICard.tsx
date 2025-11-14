@@ -1,4 +1,4 @@
-import { SalesKPITitle } from '@/types/sales';
+import { SalesKPITitle } from '@/lib/schemas';
 
 interface Props {
   title: SalesKPITitle;

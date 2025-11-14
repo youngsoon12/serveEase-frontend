@@ -10,7 +10,7 @@ import { calendarKeys } from '@/lib/queries/keys/calendarKeys';
 
 import { addMonths, subMonths, format } from 'date-fns';
 
-export default function salesCalendarPage() {
+export default function SalesCalendarPage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   const viewMonthString = useMemo(
     () => format(viewMonth, 'yyyy-MM'),

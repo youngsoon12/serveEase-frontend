@@ -7,7 +7,6 @@ import { AxiosError } from 'axios';
 
 export function useSalesCalendar(month: string) {
   const queryKey = calendarKeys.month(month);
-
   const query = useQuery<SalesCalendarResponse, AxiosError>({
     queryKey,
     queryFn: () => getSalesCalendar(month),

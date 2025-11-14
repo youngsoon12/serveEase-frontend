@@ -1,4 +1,4 @@
-import { SalesReportParams } from '@/types/sales';
+import { SalesReportParams } from '@/lib/schemas';
 
 export const salesKeys = {
   all: ['salesReport'] as const,

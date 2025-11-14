@@ -88,7 +88,15 @@ function InfoRow({
   );
 }
 
-function PaymentMethodRow({ method, company, masked }: any) {
+function PaymentMethodRow({
+  method,
+  company,
+  masked,
+}: {
+  method: string;
+  company?: string | null;
+  masked?: string | null;
+}) {
   return (
     <div className="flex justify-between items-center py-2">
       <span className="text-gray-600 flex items-center gap-2 text-sm">

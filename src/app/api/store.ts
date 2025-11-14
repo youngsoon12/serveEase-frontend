@@ -1,7 +1,10 @@
-export function getStoreId(): number {
-  const storeId = localStorage.getItem('storeId');
+'use client';
 
-  if (!storeId) throw new Error('storeId가 없습니다. 다시 로그인 해주세요.');
+export function getStoreId(): number | null {
+  if (typeof window === 'undefined') return null;
+
+  const storeId = localStorage.getItem('storeId');
+  if (!storeId) return null;
 
   return Number(storeId);
 }

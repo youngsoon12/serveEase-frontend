@@ -55,7 +55,7 @@ export default function PaymentDetailCard({ detail }: Props) {
       const storeId = getStoreId();
 
       refundCash({
-        storeId,
+        storeId: storeId!,
         cashPaymentId: split.paymentId,
         body: {
           refundAmount: split.paymentAmount,

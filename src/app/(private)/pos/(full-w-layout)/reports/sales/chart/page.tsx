@@ -46,7 +46,7 @@ export default function SalesReportChart() {
   } = useSalesReport({
     to: finalTo,
     from: finalFrom,
-    storeId,
+    storeId: storeId ?? 0,
     period,
   });
 
