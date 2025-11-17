@@ -86,7 +86,7 @@ export default function MyPage() {
         </div>
 
         <div className="pt-8">
-          <Button variant="destructive" className="w-full h-11">
+          <Button variant="default" className="w-full h-11">
             로그아웃
           </Button>
         </div>
