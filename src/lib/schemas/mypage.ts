@@ -1,11 +1,15 @@
 import { z } from 'zod';
 
+export const StoreSchema = z.object({
+  storeId: z.number(),
+  storeName: z.string(),
+});
+
 export const MyPageResponseSchema = z.object({
-  loginId: z.string(),
+  userId: z.number(),
   username: z.string(),
   phoneNumber: z.string(),
-  storeName: z.string(),
-  tableCount: z.number(),
+  stores: z.array(StoreSchema),
 });
 
 export type MyPageResponse = z.infer<typeof MyPageResponseSchema>;
