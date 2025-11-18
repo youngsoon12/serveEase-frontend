@@ -35,8 +35,6 @@ export function useCashPayment() {
   >({
     mutationFn: ({ orderId, amount }) => paymentsCash(orderId, { amount }),
     onSuccess: (data, vars) => {
-      toast.success('현금 결제가 처리되었습니다.');
-
       queryClient.invalidateQueries({
         queryKey: paymentKeys.lists(),
       });
