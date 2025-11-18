@@ -8,6 +8,7 @@ import {
   type RequestCash,
 } from '@/app/api/paymentsCash';
 import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
+import { tableKeys } from '@/lib/queries/keys';
 
 type CashVars = { orderId: number; amount: number };
 type FullVars = { orderId: number };
@@ -77,7 +78,9 @@ export function useCashPaymentFull() {
   >({
     mutationFn: ({ orderId }) => paymentsCashFull(orderId),
     onSuccess: (data, vars) => {
-      toast.success('현금 전액 결제가 처리되었습니다.');
+      queryClient.invalidateQueries({
+        queryKey: tableKeys.lists(),
+      });
 
       queryClient.invalidateQueries({
         queryKey: paymentKeys.lists(),
