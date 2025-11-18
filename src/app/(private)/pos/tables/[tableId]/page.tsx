@@ -338,7 +338,6 @@ export default function PosMenuPage() {
             className="w-full bg-slate-600 h-12"
             aria-label="결제 페이지로 이동"
           >
-            {/* <Link href={`/pos/tables/${tableId}/orders?orderId=${orderId}`}> */}
             <Link href={`/pos/tables/${tableId}/checkout?orderId=${orderId}`}>
               <span className="font-semibold" aria-live="polite">
                 {order?.totalPrice
