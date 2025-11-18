@@ -8,12 +8,17 @@ import Button from '@/components/Button';
 import NewProductModal from './@modal/(.)new/page';
 import NewCategoryModal from './@modal/(.)newCategory/page';
 import { productSearchFilters } from '@/lib/productSearchFilters';
+import ConfirmModal from '@/components/ConfirmModal';
 import Loading from '../loading';
 
 export default function Page() {
   const { mutate: deleteProduct } = useDeleteProduct();
   const { rows, isLoading, error, noticeText } = useProducts();
   const [searchName, setSearchName] = useState('');
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+
   const deferredQuery = useDeferredValue(searchName);
   const filteredRows = useMemo(
     () => productSearchFilters(rows, deferredQuery),
@@ -132,7 +137,8 @@ export default function Page() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        deleteProduct(p.id);
+                        setDeleteTargetId(p.id);
+                        setConfirmOpen(true);
                       }}
                       className="cursor-pointer"
                     >
@@ -143,6 +149,19 @@ export default function Page() {
               ))}
             </tbody>
           </table>
+          <ConfirmModal
+            open={confirmOpen}
+            onOpenChange={setConfirmOpen}
+            title="상품 삭제"
+            description="정말 이 상품을 삭제하시겠습니까?"
+            confirmText="삭제"
+            confirmButtonClassName="bg-red-600 hover:bg-red-700"
+            onConfirm={() => {
+              if (deleteTargetId !== null) {
+                deleteProduct(deleteTargetId);
+              }
+            }}
+          />
         </div>
       </div>
 
