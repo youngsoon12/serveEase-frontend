@@ -9,6 +9,7 @@ import {
 } from '@/hooks/useMypage';
 import Button from '@/components/Button';
 import { toast } from 'sonner';
+import { useLogout } from '@/hooks/useLogin';
 
 export default function MyPage() {
   const [editField, setEditField] = useState<string | null>(null);
@@ -20,6 +21,7 @@ export default function MyPage() {
   const { mutate: updatePassword } = usePatchPassword();
   const { mutate: updatePhoneNumber } = usePatchPhoneNumber();
   const { mutate: updateStoreName } = usePatchStoreName();
+  const { mutate: logout } = useLogout();
 
   if (isLoading) return <div className="text-center mt-10">불러오는 중…</div>;
   if (error || !data)
@@ -215,7 +217,13 @@ export default function MyPage() {
         })}
 
         <div className="pt-8">
-          <Button variant="default" className="w-full h-11">
+          <Button
+            variant="default"
+            className="w-full h-11"
+            onClick={() => {
+              logout();
+            }}
+          >
             로그아웃
           </Button>
         </div>
