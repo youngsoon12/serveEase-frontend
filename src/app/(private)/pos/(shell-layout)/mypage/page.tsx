@@ -125,7 +125,7 @@ export default function MyPage() {
                   className="px-4 py-2"
                   onClick={handleSavePassword}
                 >
-                  저장
+                  변경
                 </Button>
                 <Button
                   variant="secondary"

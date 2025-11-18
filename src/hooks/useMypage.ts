@@ -5,7 +5,9 @@ import {
   patchPhoneNumber,
   patchStoreName,
 } from '@/app/api/mypage';
+import { AxiosError } from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export function useMyPage() {
   return useQuery({
@@ -29,6 +31,17 @@ export function usePatchPassword() {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['mypage'] });
+    },
+
+    onError: (err) => {
+      const axiosErr = err as AxiosError<{ message?: string; detail?: string }>;
+
+      const backendMessage =
+        axiosErr.response?.data?.message ||
+        axiosErr.response?.data?.detail ||
+        '비밀번호 변경 실패';
+
+      // toast.error(backendMessage);
     },
   });
 }
