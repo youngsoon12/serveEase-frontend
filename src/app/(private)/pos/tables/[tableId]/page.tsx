@@ -291,7 +291,7 @@ export default function PosMenuPage() {
                 </div>
               ))}
 
-              {cart.cartItems.length === 0 && (
+              {cart.cartItems.length === 0 && !order?.orderId?.length && (
                 <div className="text-gray-400 text-sm">
                   담긴 주문이 없습니다.
                 </div>
