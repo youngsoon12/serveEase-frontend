@@ -22,6 +22,7 @@ export default function Page() {
   const router = useRouter();
   const sp = useSearchParams();
   const open = sp.get('open');
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setSearchName(e.target.value);
 
@@ -44,9 +45,10 @@ export default function Page() {
   if (error) return <div>{noticeText}</div>;
 
   return (
-    <div className="min-w-[500px] mx-auto w-full md:w-[50%] lg:w-[70%] max-w-[1200px] px-4">
+    <div className="w-full max-w-[1000px] mx-auto px-4">
       <h1 className="font-bold my-5 text-3xl md:text-4xl">상품 관리</h1>
 
+      {/* 검색 + 추가 버튼 */}
       <div className="flex items-center gap-6">
         <div className="flex items-center w-full h-14 rounded-full border border-gray-300 bg-white px-4 gap-4">
           <Search className="text-gray-400" />
@@ -66,16 +68,19 @@ export default function Page() {
           </Button>
         </Link>
       </div>
-      <div className="mt-5 overflow-x-auto">
-        {/* 헤더(고정) */}
-        <table className="w-full table-fixed border-separate border-spacing-y-3">
+
+      {/* 테이블 전체 스크롤 */}
+      <div className="mt-5 overflow-x-auto w-full">
+        {/* 헤더 */}
+        <table className="min-w-[900px] w-full table-fixed border-separate border-spacing-y-3">
           <colgroup>
             <col className="w-[40%]" />
             <col className="w-[20%]" />
             <col className="w-[20%]" />
             <col className="w-[15%]" />
-            <col className="w-[5%]" />
+            <col className="w-[60px]" />
           </colgroup>
+
           <thead className="bg-[#f5f5f5]">
             <tr>
               <th className="px-4 py-2 text-left">상품명</th>
@@ -84,7 +89,7 @@ export default function Page() {
                 <div className="flex items-center justify-center gap-1">
                   <span>카테고리</span>
                   <Link href="/pos/products/newCategory" scroll={false}>
-                    <Settings className="w-4 h-4 text-gray-700 hover:text-gray-700" />
+                    <Settings className="w-4 h-4 text-gray-700" />
                   </Link>
                 </div>
               </th>
@@ -99,14 +104,15 @@ export default function Page() {
           className="max-h-[60vh] overflow-y-auto"
           style={{ scrollbarGutter: 'stable' }}
         >
-          <table className="w-full table-fixed border-separate border-spacing-y-3">
+          <table className="min-w-[900px] w-full table-fixed border-separate border-spacing-y-3">
             <colgroup>
               <col className="w-[40%]" />
               <col className="w-[20%]" />
               <col className="w-[20%]" />
               <col className="w-[15%]" />
-              <col className="w-[5%]" />
+              <col className="w-[60px]" />
             </colgroup>
+
             <tbody>
               {filteredRows?.map((p) => (
                 <tr
@@ -120,6 +126,8 @@ export default function Page() {
                   </td>
                   <td className="px-4 py-4 text-center">{p.category}</td>
                   <td className="px-4 py-4 text-center">{p.available}</td>
+
+                  {/* 휴지통 버튼 */}
                   <td className="px-4 py-2 text-center">
                     <button
                       onClick={(e) => {
@@ -128,7 +136,7 @@ export default function Page() {
                       }}
                       className="cursor-pointer"
                     >
-                      <Trash2 className="w-5 h-5 mt-1" />
+                      <Trash2 className="w-5 h-5 mt-[2px]" />
                     </button>
                   </td>
                 </tr>
@@ -137,6 +145,8 @@ export default function Page() {
           </table>
         </div>
       </div>
+
+      {/* 모달 */}
       {open === 'new' && <NewProductModal />}
       {open === 'newCategory' && <NewCategoryModal />}
     </div>
