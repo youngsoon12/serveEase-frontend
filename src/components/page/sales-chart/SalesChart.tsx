@@ -10,6 +10,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import SalesChartSkeleton from './SalesChartSkeleton';
 import { Period, SalesSeriesData } from '@/lib/schemas';
+import { getWeekOfMonth } from 'date-fns';
 
 interface Props {
   period: Period;
@@ -25,13 +26,18 @@ const chartConfig = {
 };
 
 export default function SalesChart({ period, seriesData, isLoading }: Props) {
+  console.log(seriesData);
   const chartData = seriesData.map((item) => {
     let xAxisLabel: string;
 
     if (period === 'day') {
       xAxisLabel = item.date.slice(5).replace('-', '/');
     } else if (period === 'week') {
-      xAxisLabel = `${item.week}주차`;
+      const date = new Date(item.date);
+      const month = date.getMonth() + 1;
+      const weekOfMonth = getWeekOfMonth(date);
+
+      xAxisLabel = `${month}월 ${weekOfMonth}주차`;
     } else {
       xAxisLabel = `${item.monthValue}월`;
     }

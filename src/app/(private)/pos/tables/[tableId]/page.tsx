@@ -187,7 +187,7 @@ export default function PosMenuPage() {
       </div>
 
       {/* 오른쪽 주문 영역 */}
-      <div className="w-[clamp(18rem,30vw,24rem)] shrink-0 bg-white border-l flex flex-col h-full">
+      <div className="w-[clamp(18rem,30vw,24rem)] shrink-0 bg-white border-l flex flex-col h-full select-none">
         {/* 테이블 정보 */}
         <div className="p-[18px] border-b flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -291,7 +291,7 @@ export default function PosMenuPage() {
                 </div>
               ))}
 
-              {cart.cartItems.length === 0 && (
+              {cart.cartItems.length === 0 && !order?.orderId?.length && (
                 <div className="text-gray-400 text-sm">
                   담긴 주문이 없습니다.
                 </div>
@@ -338,7 +338,6 @@ export default function PosMenuPage() {
             className="w-full bg-slate-600 h-12"
             aria-label="결제 페이지로 이동"
           >
-            {/* <Link href={`/pos/tables/${tableId}/orders?orderId=${orderId}`}> */}
             <Link href={`/pos/tables/${tableId}/checkout?orderId=${orderId}`}>
               <span className="font-semibold" aria-live="polite">
                 {order?.totalPrice

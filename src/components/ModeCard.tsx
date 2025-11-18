@@ -21,7 +21,7 @@ export default function ModeCard({
   return (
     <Link href={href}>
       <Card
-        className={`${variants[variant]} text-white  font-semibold cursor-pointer transition-colors h-56 w-[clamp(14rem,30vw,20rem)] rounded-2xl shadow-lg flex items-center justify-center`}
+        className={`${variants[variant]} text-white  font-semibold cursor-pointer transition-colors h-56 w-[clamp(14rem,30vw,20rem)] rounded-2xl shadow-lg flex items-center justify-center select-none`}
       >
         <CardContent className="flex flex-col items-center justify-center gap-3 ">
           {variant === 'table' ? (

@@ -38,7 +38,9 @@ export default function ModalShell({
           className={`${SIZE[size]} rounded-2xl bg-white shadow-xl max-h-[90vh] overflow-y-auto`}
         >
           <div className="sticky top-0 bg-white/95 px-6 py-1 flex justify-between items-center">
-            <DialogTitle className="text-[23px] p-6">{title}</DialogTitle>
+            <DialogTitle className="text-[23px] p-6 select-none font-semibold">
+              {title}
+            </DialogTitle>
             <button
               aria-label="닫기"
               onClick={() => router.back()}

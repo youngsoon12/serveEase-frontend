@@ -39,7 +39,7 @@ export default function TableCard({
 
   return (
     <Link href={href} onMouseEnter={prefetchOrder}>
-      <Card className="h-38 relative w-[clamp(2rem,20vw,12rem)]">
+      <Card className="h-38 relative w-[clamp(2rem,20vw,12rem)] select-none">
         <CardHeader className="">
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl">{tableNumber}</CardTitle>
