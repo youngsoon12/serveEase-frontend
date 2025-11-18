@@ -19,7 +19,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="h-20 bg-header text-white">
+    <header className="h-20 bg-header text-white select-none">
       <div className="mx-auto  h-full flex items-center justify-between px-16">
         <Link href={'/pos'} aria-label="메인 홈으로 이동">
           <Logo />

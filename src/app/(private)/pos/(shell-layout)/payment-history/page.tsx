@@ -52,10 +52,10 @@ export default function PaymentHistory() {
   const debouncedSearchQuery = useDebounce(searchQuery);
 
   return (
-    <div className="flex h-screen min-h-0 overflow-hidden gap-6 p-6">
+    <div className="flex h-screen min-h-0 overflow-hidden gap-6 p-6 select-none">
       {/* 좌측: 필터 + 리스트 */}
       <div className="flex w-[40%] flex-col gap-4 min-h-0">
-        <h2 className="text-2xl font-bold">결제내역</h2>
+        <h2 className="text-2xl font-bold">결제 내역</h2>
 
         {/* 검색바 */}
         <SearchBar value={searchQuery} onChange={setSearchQuery} />

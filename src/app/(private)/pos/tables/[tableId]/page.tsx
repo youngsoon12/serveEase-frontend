@@ -187,7 +187,7 @@ export default function PosMenuPage() {
       </div>
 
       {/* 오른쪽 주문 영역 */}
-      <div className="w-[clamp(18rem,30vw,24rem)] shrink-0 bg-white border-l flex flex-col h-full">
+      <div className="w-[clamp(18rem,30vw,24rem)] shrink-0 bg-white border-l flex flex-col h-full select-none">
         {/* 테이블 정보 */}
         <div className="p-[18px] border-b flex-shrink-0">
           <div className="flex items-center justify-between">
