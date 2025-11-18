@@ -24,7 +24,7 @@ export default function Dropdown() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href={'/'}>마이페이지</Link>
+          <Link href={'/pos/mypage'}>마이페이지</Link>
         </DropdownMenuItem>
         <DropdownLogoutItem />
       </DropdownMenuContent>
