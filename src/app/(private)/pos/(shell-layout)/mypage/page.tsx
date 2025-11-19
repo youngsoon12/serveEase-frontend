@@ -165,13 +165,21 @@ export default function MyPage() {
               {isEditing ? (
                 <div className="mt-2 flex items-center gap-4">
                   <input
-                    type="text"
+                    type={key === 'phoneNumber' ? 'text' : 'text'}
+                    inputMode={key === 'phoneNumber' ? 'numeric' : undefined}
+                    pattern={key === 'phoneNumber' ? '[0-9]*' : undefined}
                     autoFocus
                     className="flex-1 rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                     defaultValue={
                       mappedData[key as 'phoneNumber' | 'storeName']
                     }
                     id={`edit-${key}`}
+                    onInput={(e) => {
+                      if (key === 'phoneNumber') {
+                        const target = e.target as HTMLInputElement;
+                        target.value = target.value.replace(/\D/g, ''); // 숫자만 남기기
+                      }
+                    }}
                   />
 
                   <div className="flex gap-2">
