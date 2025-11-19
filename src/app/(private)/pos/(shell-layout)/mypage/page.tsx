@@ -97,7 +97,11 @@ export default function MyPage() {
 
         <div className="py-4 border-b">
           <span className="text-gray-500 text-sm">비밀번호</span>
-
+          {editField === 'password' && (
+            <span className="ml-2 px-2 py-0.5 text-xs rounded-md bg-blue-50 text-blue-600 border border-blue-100">
+              최소 8자, 영문과 숫자를 포함시켜 주세요.
+            </span>
+          )}
           {editField === 'password' ? (
             <div className="mt-2 flex items-start gap-4">
               <div className="flex-1 space-y-2">
@@ -161,7 +165,11 @@ export default function MyPage() {
           return (
             <div key={key} className="py-4 border-b">
               <span className="text-gray-500 text-sm">{label}</span>
-
+              {key === 'phoneNumber' && editField === 'phoneNumber' && (
+                <span className="ml-2 px-2 py-0.5 text-xs rounded-md bg-blue-50 text-blue-600 border border-blue-100">
+                  숫자만 입력
+                </span>
+              )}
               {isEditing ? (
                 <div className="mt-2 flex items-center gap-4">
                   <input
@@ -177,7 +185,7 @@ export default function MyPage() {
                     onInput={(e) => {
                       if (key === 'phoneNumber') {
                         const target = e.target as HTMLInputElement;
-                        target.value = target.value.replace(/\D/g, ''); // 숫자만 남기기
+                        target.value = target.value.replace(/\D/g, '');
                       }
                     }}
                   />
@@ -224,16 +232,13 @@ export default function MyPage() {
           );
         })}
 
-        <div className="pt-8">
-          <Button
-            variant="default"
-            className="w-full h-11"
-            onClick={() => {
-              logout();
-            }}
+        <div className="pt-6 my-2 flex justify-center">
+          <button
+            className="text-gray-500 text-sm hover:text-gray-700 transition-colors cursor-pointer"
+            onClick={() => logout()}
           >
             로그아웃
-          </Button>
+          </button>
         </div>
       </div>
     </div>
