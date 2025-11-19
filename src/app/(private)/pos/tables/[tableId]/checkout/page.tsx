@@ -156,7 +156,7 @@ export default function CheckoutPage() {
                     총 결제 금액
                   </div>
                   <div className="mt-3 text-4xl font-bold tracking-tight">
-                    {totalAmount.toLocaleString()}원을 결제할게요
+                    {remainingAmount.toLocaleString()}원을 결제할게요
                   </div>
                 </div>
                 <button
@@ -171,7 +171,7 @@ export default function CheckoutPage() {
                 <dl className="grid grid-cols-[1fr_auto] gap-y-2.5 text-sm">
                   <dt className="text-gray-500">총 결제</dt>
                   <dd className="tabular-nums font-medium">
-                    {totalAmount.toLocaleString()}원
+                    {remainingAmount.toLocaleString()}원
                   </dd>
 
                   <dt className="text-gray-500">이번 결제</dt>
