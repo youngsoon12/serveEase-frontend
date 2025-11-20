@@ -20,6 +20,7 @@ import {
 import ExistingOrderList from '@/components/ExistingOrderList';
 import { useUpdateTableStatus } from '@/hooks/useTables';
 import usePaymentFail from '@/hooks/payment/usePaymentFail';
+import { TableStatus } from '@/lib/schemas/table';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -119,10 +120,11 @@ export default function PosMenuPage() {
   const cancelOrder = useCancelOrder(Number(orderId));
 
   // 테이블 상태
-  const STATUS_COLORS: Record<'EMPTY' | 'ORDERED' | 'SERVED', string> = {
+  const STATUS_COLORS: Record<TableStatus, string> = {
     EMPTY: 'bg-gray-300 text-gray-800',
     ORDERED: 'bg-amber-500 text-white',
     SERVED: 'bg-green-600 text-white',
+    PARTIALLY_PAID: 'bg-purple-500 text-white',
   };
 
   // 테이블 상태 변경
