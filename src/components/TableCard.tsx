@@ -9,7 +9,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { orderKeys } from '@/lib/queries/keys';
 import { getOrder } from '@/app/api/order';
-import { TableCardProps } from '@/lib/schemas/table';
+import { TableCardProps, TableStatus } from '@/lib/schemas/table';
 
 export default function TableCard({
   tableNumber,
@@ -31,10 +31,11 @@ export default function TableCard({
     });
   };
 
-  const BADGE_TABLE: Record<'EMPTY' | 'ORDERED' | 'SERVED', string> = {
+  const BADGE_TABLE: Record<TableStatus, string> = {
     EMPTY: 'bg-gray-300 text-gray-800',
     ORDERED: 'bg-amber-500 ',
     SERVED: 'bg-green-600',
+    PARTIALLY_PAID: 'bg-purple-500',
   };
 
   return (
