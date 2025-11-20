@@ -21,8 +21,16 @@ export const SplitPaymentSchema = z.object({
     'CANCELED',
     'COMPLETED',
   ]),
-  representativePaymentDetailStatus: z.enum(['PAID', 'REFUNDED']),
-  representativePaymentDetailStatusLabel: z.enum(['결제 완료', '결제 취소']),
+  representativePaymentDetailStatus: z.enum([
+    'PAID',
+    'REFUNDED',
+    'CONFIRMATION_REQUIRED',
+  ]),
+  representativePaymentDetailStatusLabel: z.enum([
+    '결제 완료',
+    '결제 취소',
+    '확인 필요',
+  ]),
   approvedAt: z.string(),
   approvalNumber: z.string(),
   approvalStatus: z.string().nullable(),
