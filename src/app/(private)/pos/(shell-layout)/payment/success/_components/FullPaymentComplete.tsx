@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, CreditCard, Clock, FileText } from 'lucide-react';
+import { Check, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -8,6 +8,7 @@ import type { PaymentConfirmResponse } from '@/types/payment';
 import { useQueryClient } from '@tanstack/react-query';
 import { paymentKeys } from '@/lib/queries/keys/paymentKeys';
 import { useEffect } from 'react';
+import { format, parseISO } from 'date-fns';
 
 interface Props {
   payment: PaymentConfirmResponse;
@@ -52,7 +53,11 @@ export default function FullPaymentComplete({ payment }: Props) {
             company={payment.cardCompany}
             masked={payment.maskedCardNumber}
           />
-          <InfoRow label="결제 시간" value={payment.approvedAt} />
+          <InfoRow
+            label="결제 시간"
+            value={format(parseISO(payment.approvedAt), 'yyyy-MM-dd HH:mm')}
+          />
+
           <InfoRow label="승인번호" value={payment.approvalNumber} mono />
         </CardContent>
       </Card>
@@ -95,7 +100,7 @@ function PaymentMethodRow({
   return (
     <div className="flex justify-between items-center py-2">
       <span className="text-gray-600 flex items-center gap-2 text-sm">
-        <CreditCard size={14} /> 결제 방법
+        결제 방법
       </span>
       <div className="text-right">
         <div className="font-medium text-sm">{method}</div>

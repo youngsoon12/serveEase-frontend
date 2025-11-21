@@ -72,7 +72,7 @@ export default function HomeContent() {
   };
 
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative h-screen w-full select-none">
       <Image
         src="/images/landingImg.png"
         alt="랜딩 배경"

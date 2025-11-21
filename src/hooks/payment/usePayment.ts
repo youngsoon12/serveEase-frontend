@@ -12,7 +12,6 @@ export function useConfirmPayment() {
       mutationFn: confirmPayment,
       onSuccess: (data) => {
         console.log('결제 성공:', data);
-
         queryClient.invalidateQueries({ queryKey: ['tables'] });
       },
       onError: (err) => {

@@ -18,7 +18,7 @@ export default function MenuButton({
   return (
     <Button
       variant="outline"
-      className={`h-32 w-[clamp(14rem, 22vw, 48rem)] flex flex-col justify-between p-4 relative  ${
+      className={`h-32 w-[clamp(14rem, 22vw, 48rem)] flex flex-col justify-between p-4 relative select-none  ${
         isOutOfStock ? 'bg-gray-100 text-gray-500  hover:text-gray-500  ' : ''
       }`}
       onClick={onClick}

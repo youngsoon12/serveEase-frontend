@@ -44,10 +44,10 @@ const Singnup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 select-none">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
         <div className="flex flex-row items-center mb-6">
-          <h2 className="text-2xl font-bold text-center">회원가입</h2>
+          <h2 className="text-2xl font-bold text-center ">회원가입</h2>
         </div>
         {/* 회원가입 폼 */}
         <form className="space-y-4" onSubmit={handleSubmitClick}>

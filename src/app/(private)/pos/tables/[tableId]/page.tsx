@@ -20,6 +20,7 @@ import {
 import ExistingOrderList from '@/components/ExistingOrderList';
 import { useUpdateTableStatus } from '@/hooks/useTables';
 import usePaymentFail from '@/hooks/payment/usePaymentFail';
+import { TableStatus } from '@/lib/schemas/table';
 
 type ModalType = 'trash' | 'cancel';
 
@@ -119,10 +120,11 @@ export default function PosMenuPage() {
   const cancelOrder = useCancelOrder(Number(orderId));
 
   // 테이블 상태
-  const STATUS_COLORS: Record<'EMPTY' | 'ORDERED' | 'SERVED', string> = {
+  const STATUS_COLORS: Record<TableStatus, string> = {
     EMPTY: 'bg-gray-300 text-gray-800',
     ORDERED: 'bg-amber-500 text-white',
     SERVED: 'bg-green-600 text-white',
+    PARTIALLY_PAID: 'bg-purple-500 text-white',
   };
 
   // 테이블 상태 변경
@@ -187,7 +189,7 @@ export default function PosMenuPage() {
       </div>
 
       {/* 오른쪽 주문 영역 */}
-      <div className="w-[clamp(18rem,30vw,24rem)] shrink-0 bg-white border-l flex flex-col h-full">
+      <div className="w-[clamp(18rem,30vw,24rem)] shrink-0 bg-white border-l flex flex-col h-full select-none">
         {/* 테이블 정보 */}
         <div className="p-[18px] border-b flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -291,7 +293,7 @@ export default function PosMenuPage() {
                 </div>
               ))}
 
-              {cart.cartItems.length === 0 && (
+              {cart.cartItems.length === 0 && !order?.orderId?.length && (
                 <div className="text-gray-400 text-sm">
                   담긴 주문이 없습니다.
                 </div>
@@ -338,7 +340,6 @@ export default function PosMenuPage() {
             className="w-full bg-slate-600 h-12"
             aria-label="결제 페이지로 이동"
           >
-            {/* <Link href={`/pos/tables/${tableId}/orders?orderId=${orderId}`}> */}
             <Link href={`/pos/tables/${tableId}/checkout?orderId=${orderId}`}>
               <span className="font-semibold" aria-live="polite">
                 {order?.totalPrice

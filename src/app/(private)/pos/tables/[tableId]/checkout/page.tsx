@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import SplitPaymentModal from './_components/SplitPaymentModal';
+import ConfirmModal from '@/components/ConfirmModal';
 import BackButton from '@/components/BackButton';
 import PaymentTypeBtn from './_components/PaymentTypeBtn';
 import OrderCheck2 from './_components/OrderCheck2';
@@ -12,7 +14,6 @@ import {
   useCashPayment,
   useCashPaymentFull,
 } from '@/hooks/payment/usePaymentsCash';
-import { toast } from 'sonner';
 
 const paymentMethod = [
   { title: '💳', name: '신용 카드' },
@@ -24,7 +25,7 @@ export default function CheckoutPage() {
   const params = useSearchParams();
   const orderIdParam = params.get('orderId');
   const orderId = orderIdParam ? Number(orderIdParam) : undefined;
-
+  type ModalType = 'splitPayment' | 'cashConfirm' | null;
   const { data: order, isLoading } = useOrder(orderId);
 
   useEffect(() => {
@@ -44,6 +45,7 @@ export default function CheckoutPage() {
   }, [order?.restaurantTableId, order?.id, orderId]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<ModalType>(null);
   const [partialAmount, setPartialAmount] = useState<number | null>(null);
 
   const totalAmount = order?.totalPrice ?? 0;
@@ -154,11 +156,11 @@ export default function CheckoutPage() {
                     총 결제 금액
                   </div>
                   <div className="mt-3 text-4xl font-bold tracking-tight">
-                    {totalAmount.toLocaleString()}원을 결제할게요
+                    {remainingAmount.toLocaleString()}원을 결제할게요
                   </div>
                 </div>
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => setModalType('splitPayment')}
                   className="bg-[#e6f3ff] text-[#3B82F6] px-6 py-3 rounded-md cursor-pointer hover:bg-[#d9ecff] transition-colors duration-200 "
                 >
                   분할 결제
@@ -169,7 +171,7 @@ export default function CheckoutPage() {
                 <dl className="grid grid-cols-[1fr_auto] gap-y-2.5 text-sm">
                   <dt className="text-gray-500">총 결제</dt>
                   <dd className="tabular-nums font-medium">
-                    {totalAmount.toLocaleString()}원
+                    {remainingAmount.toLocaleString()}원
                   </dd>
 
                   <dt className="text-gray-500">이번 결제</dt>
@@ -191,8 +193,7 @@ export default function CheckoutPage() {
             <div className="flex-1 min-h-0">
               <div className="flex items-end gap-3">
                 <span className="text-xl font-semibold">결제 방법</span>
-                <span className="text-lg font-semibold text-[#3B82F6]">
-                </span>
+                <span className="text-lg font-semibold text-[#3B82F6]"></span>
               </div>
 
               <div className="mt-5 flex gap-5">
@@ -205,7 +206,7 @@ export default function CheckoutPage() {
                       name === '신용 카드'
                         ? handleCreditCardPayment
                         : name === '현금'
-                        ? handleCashPayment
+                        ? () => setModalType('cashConfirm')
                         : undefined
                     }
                     disabled={
@@ -232,14 +233,35 @@ export default function CheckoutPage() {
         </aside>
       </div>
 
-      {/* 분할 금액 입력 모달 */}
-      <SplitPaymentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        totalAmount={totalAmount}
-        remainingAmount={remainingAmount}
-        onConfirm={(value) => setPartialAmount(value)}
-      />
+      {/* 분할 결제 모달 */}
+      {modalType === 'splitPayment' && (
+        <SplitPaymentModal
+          isOpen
+          onClose={() => setModalType(null)}
+          totalAmount={totalAmount}
+          remainingAmount={remainingAmount}
+          onConfirm={(value) => setPartialAmount(value)}
+        />
+      )}
+
+      {/* 현금 결제 확인 모달 */}
+      {modalType === 'cashConfirm' && (
+        <ConfirmModal
+          open={true}
+          title="현금 결제 확인"
+          description="현금 결제를 진행하시겠습니까?"
+          confirmText="결제하기"
+          cancelText="취소"
+          confirmButtonClassName="bg-blue-600 hover:bg-blue-700"
+          onOpenChange={(open) => {
+            if (!open) setModalType(null);
+          }}
+          onConfirm={async () => {
+            await handleCashPayment();
+            setModalType(null);
+          }}
+        />
+      )}
     </>
   );
 }
