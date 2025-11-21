@@ -16,7 +16,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { OrderResponse } from '@/lib/schemas/order';
 import { orderKeys, tableKeys } from '@/lib/queries/keys';
-import { TableCardProps, TablesResponse } from '@/lib/schemas/table';
+import {
+  TableCardProps,
+  TablesResponse,
+  TableStatus,
+} from '@/lib/schemas/table';
 
 export function useTables(page: number) {
   const query = useQuery<TablesResponse>({
@@ -26,9 +30,10 @@ export function useTables(page: number) {
     placeholderData: keepPreviousData,
   });
 
-  const toUIStatus = (s: string): 'EMPTY' | 'ORDERED' | 'SERVED' => {
+  const toUIStatus = (s: string): TableStatus => {
     if (s === 'EMPTY') return 'EMPTY';
     if (s === 'SERVED') return 'SERVED';
+    if (s === 'PARTIALLY_PAID') return 'PARTIALLY_PAID';
     return 'ORDERED';
   };
 

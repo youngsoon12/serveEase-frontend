@@ -31,7 +31,12 @@ export const TablesResponseSchema = z.object({
 });
 
 // 테이블 카드 Props 스키마
-export const TableStatusSchema = z.enum(['EMPTY', 'ORDERED', 'SERVED']);
+export const TableStatusSchema = z.enum([
+  'EMPTY',
+  'ORDERED',
+  'SERVED',
+  'PARTIALLY_PAID',
+]);
 
 export const TableCardPropsSchema = z.object({
   tableNumber: z.number(),
